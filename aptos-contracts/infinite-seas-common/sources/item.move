@@ -224,13 +224,13 @@ module infinite_seas_common::item {
         table::add(&mut tables.item_table, item.item_id, item);
     }
 
-    // public fun get_item(item_id: u32): pass_object::PassObject<Item> acquires Tables {
-    //     let item = remove_item(item_id);
-    //     pass_object::new(item)
-    // }
+    public fun get_item(store_address: address, item_id: u32): pass_object::PassObject<Item> acquires Tables {
+        let item = remove_item(store_address, item_id);
+        pass_object::new_with_address(item, store_address)
+    }
 
-    public fun return_item(store_address: address, item_pass_obj: pass_object::PassObject<Item>) acquires Tables {
-        let item = pass_object::extract(item_pass_obj);
+    public fun return_item(item_pass_obj: pass_object::PassObject<Item>) acquires Tables {
+        let (item, store_address) = pass_object::extract_value_and_address(item_pass_obj);
         private_add_item(store_address, item);
     }
 

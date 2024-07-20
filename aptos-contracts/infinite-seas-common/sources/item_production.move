@@ -331,13 +331,13 @@ module infinite_seas_common::item_production {
         table::add(&mut tables.item_production_table, item_production.item_production_id, item_production);
     }
 
-    // public fun get_item_production(item_production_id: SkillTypeItemIdPair): pass_object::PassObject<ItemProduction> acquires Tables {
-    //     let item_production = remove_item_production(item_production_id);
-    //     pass_object::new(item_production)
-    // }
+    public fun get_item_production(store_address: address, item_production_id: SkillTypeItemIdPair): pass_object::PassObject<ItemProduction> acquires Tables {
+        let item_production = remove_item_production(store_address, item_production_id);
+        pass_object::new(item_production)
+    }
 
-    public fun return_item_production(store_address: address, item_production_pass_obj: pass_object::PassObject<ItemProduction>) acquires Tables {
-        let item_production = pass_object::extract(item_production_pass_obj);
+    public fun return_item_production(item_production_pass_obj: pass_object::PassObject<ItemProduction>) acquires Tables {
+        let (item_production, store_address) = pass_object::extract_value_and_address(item_production_pass_obj);
         private_add_item_production(store_address, item_production);
     }
 
