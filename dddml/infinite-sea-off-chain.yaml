@@ -1,0 +1,38 @@
+aggregates:
+  #
+  # These entities are only used in the off-chain service (indexer).
+  #
+  RosterLocation:
+    id:
+      name: RosterObjectId
+      type: address
+    noSurrogateId: true
+    properties:
+      Coordinates:
+        type: Coordinates
+        description: "The quasi-real-time coordinates of the roster."
+      Status:
+        type: u8
+        description: "The quasi-real-time status of the roster."
+
+  # FaucetRequested:
+  #   metadata:
+  #     AbsolutelyNoEventSourcing: true
+  #     # This option disables the generation of event-sourcing related code.
+  #   implements:
+  #     - AptosXxx
+  #     - AptosXxx_2
+  #     # These "built-in" interfaces are introduced to add properties to the entity that are needed to save on-chain events.
+  #   id:
+  #     name: EventId
+  #     type: string
+  #     length: 100
+  #   noSurrogateId: true
+  #   properties:
+  #     RequesterAccount:
+  #       type: address
+  #     RequestedAmount:
+  #       type: u64
+  #     Description:
+  #       type: string
+  #       length: 500

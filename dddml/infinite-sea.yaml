@@ -1,0 +1,805 @@
+# aggregates:
+#   SkillProcess:
+#     metadata:
+#       Preprocessors: [ "MOVE_CRUD_IT" ]
+#       CRUD_IT_NO_UPDATE: true
+#       CRUD_IT_NO_DELETE: true
+#       NO_MOVE_EVENT_MODULE: true
+#       ShouldIssuePublisherObject: true
+#     friends:
+#       - Player.ClaimIsland
+#     id:
+#       name: SkillProcessId
+#       type: SkillProcessId
+#       generator:
+#         class: assigned
+#         tableName: SkillProcessTable
+#     properties:
+#       ItemId:
+#         type: u32
+#         defaultLogic:
+#           Move: "infinite_seas_common::item_id::unused_item()"
+#       StartedAt:
+#         type: u64
+#         defaultLogic:
+#           Move: "0"
+#       CreationTime:
+#         type: u64
+#         defaultLogic:
+#           Move: "0"
+#       Completed:
+#         type: bool
+#         defaultLogic:
+#           Move: "true"
+#       EndedAt:
+#         type: u64
+#         defaultLogic:
+#           Move: "0"
+#       EnergyVault:
+#         type: "Balance<ENERGY>"
+#       ProductionMaterials:
+#         type: ItemIdQuantityPairs
+#         optional: true
+#         description: "Actual input materials for production"
+#         defaultLogic:
+#           Move: "std::option::none()"
+#       BatchSize:
+#         type: u32
+#         defaultLogic:
+#           Move: "1"
+
+#     methods:
+#       Create:
+#         parameters:
+#           Player:
+#             referenceType: Player
+#             isIgnoredInEvent: true
+#         event:
+#           isObjectShared: true # Share the object after created.
+#         constants:
+#           EInvalidPlayerId:
+#             constantExpression:
+#               Move: 10
+#             type: u64
+#           ESenderHasNoPermission:
+#             constantExpression:
+#               Move: 22
+#             type: u64
+#           EInvalidSequenceNumber:
+#             constantExpression:
+#               Move: 23
+#             type: u64
+#         verificationLogic:
+#           Move: >
+#             assert!(sui::tx_context::sender(ctx) == player::owner(player), ESenderHasNoPermission);
+#                     let player_id = infinite_seas_common::skill_process_id::player_id(&skill_process_id);
+#                     assert!(player::id(player) == player_id, EInvalidPlayerId);
+#                     assert!(
+#                         infinite_seas_common::skill_process_id::sequence_number(
+#                             &skill_process_id
+#                         ) <= infinite_seas::skill_process_util::skill_type_max_sequence_number(
+#                             infinite_seas_common::skill_process_id::skill_type(&skill_process_id)
+#                         ),
+#                         EInvalidSequenceNumber
+#                     );
+
+#       StartProduction:
+#         inheritsFrom: SkillProcessTemplate.StartProduction
+#         parameters:
+#           BatchSize:
+#             type: u32
+#         event:
+#           name: ProductionProcessStarted
+
+#       CompleteProduction:
+#         inheritsFrom: SkillProcessTemplate.CompleteProduction
+#         event:
+#           name: ProductionProcessCompleted
+
+#       StartShipProduction:
+#         inheritsFrom: SkillProcessTemplate.StartProduction
+#         parameters:
+#           ProductionMaterials:
+#             type: ItemIdQuantityPairs
+#         event:
+#           name: ShipProductionProcessStarted
+
+#       CompleteShipProduction:
+#         inheritsFrom: SkillProcessTemplate.CompleteProduction
+#         parameters:
+#           UnassignedShips:
+#             referenceType: Roster
+#             isMutableReference: true
+#             isIgnoredInEvent: true
+#         event:
+#           name: ShipProductionProcessCompleted
+#         #result:
+#         #  type: Ship
+
+#       StartCreation:
+#         inheritsFrom: SkillProcessTemplate.StartCreation
+#         parameters:
+#           BatchSize:
+#             type: u32
+#         event:
+#           name: CreationProcessStarted
+
+#       CompleteCreation:
+#         inheritsFrom: SkillProcessTemplate.CompleteCreation
+#         event:
+#           name: CreationProcessCompleted
+
+#   Ship:
+#     metadata:
+#       HasStoreAbility: true
+#       Preprocessors: [ "MOVE_CRUD_IT" ]
+#       CRUD_IT_NO_UPDATE: true
+#       CRUD_IT_NO_DELETE: true
+#       ShouldIssuePublisherObject: true
+#       DataAccessFriends:
+#         - ShipBattle.MakeMove
+#         - ShipBattle.TakeLoot
+#         - Roster.PutInShipInventory
+#         - Roster.TakeOutShipInventory
+#         - Roster.TransferShipInventory
+#     friends:
+#       - SkillProcess.CompleteShipProduction
+#       #- SkillProcess.StartShipProduction
+#       - Roster.CreateEnvironmentRoster
+#     id:
+#       name: Id
+#       type: UID
+#     properties:
+#       Owner:
+#         type: address # PlayerId
+#       HealthPoints:
+#         type: u32
+#       Attack:
+#         type: u32
+#       Protection:
+#         type: u32
+#       Speed:
+#         type: u32
+#       BuildingExpenses:
+#         type: ItemIdQuantityPairs
+#       Inventory:
+#         itemType: ItemIdQuantityPair
+#         defaultLogic:
+#           Move: "std::vector::empty()"
+#     methods:
+#       Create:
+#         isInternal: true
+#         result:
+#           isObjectReturned: true
+#         #event:
+#         #  isObjectShared: true # Share the object after created.
+
+
+#   Roster:
+#     id:
+#       name: RosterId
+#       type: RosterId
+#       generator:
+#         class: assigned
+#         tableName: RosterTable
+#     metadata:
+#       #HasStoreAbility: true
+#       Preprocessors: [ "MOVE_CRUD_IT" ]
+#       CRUD_IT_NO_UPDATE: true
+#       CRUD_IT_NO_DELETE: true
+#       ShouldIssuePublisherObject: true
+#       IS_MOVE_SCHEMA_VERSIONED: true
+#       DataAccessFriends:
+#         # Make some methods can access ("write") Roster's data model.
+#         # This should only be done occasionally!
+#         - ShipBattle.InitiateBattle
+#         - ShipBattle.MakeMove
+#         - ShipBattle.TakeLoot
+#     friends:
+#       - Player.Create
+#       - Player.ClaimIsland
+#       - SkillProcess.CompleteShipProduction
+#       - ShipBattle.InitiateBattle
+#     properties:
+#       Status:
+#         type: u8
+#       Speed:
+#         type: u32
+#       ShipIds:
+#         itemtype: address # Ship ID
+#         defaultLogic:
+#           Move: "std::vector::empty()"
+#       Ships:
+#         type: ObjectTable<ID, Ship>
+#         typeArguments:
+#           - # not set for ID
+#           - persistenceType: JsonObject
+#       UpdatedCoordinates:
+#         type: Coordinates
+#         description: "The last updated coordinates"
+#       CoordinatesUpdatedAt:
+#         type: u64
+#       TargetCoordinates:
+#         type: Coordinates
+#         optional: true
+#       OriginCoordinates:
+#         type: Coordinates
+#         optional: true
+#       SailDuration:
+#         type: u64
+#         defaultLogic:
+#           Move: "0"
+#       ShipBattleId:
+#         type: address
+#         optional: true
+#       EnvironmentOwned:
+#         type: bool
+#         description: "Whether the roster is owned by the environment"
+#         defaultLogic:
+#           Move: "false"
+#       BaseExperience:
+#         type: u32
+#         optional: true
+#         description: "The base experience value gained by the player when the roster is destroyed"
+#         defaultLogic:
+#           Move: "std::option::none()"
+#       EnergyVault:
+#         type: "Balance<ENERGY>"
+#     methods:
+#       Create:
+#         isInternal: true
+#         result:
+#           isObjectReturned: true
+#         event:
+#           isObjectShared: true # Share the object after created.
+
+#       CreateEnvironmentRoster:
+#         isCreationCommand: true
+#         requiredPermission: "__Publisher__"
+#         metadata:
+#           ParametersIncludedInMutationFunction: [ "Clock" ]
+#         parameters:
+#           Coordinates:
+#             type: Coordinates
+#           ShipResourceQuantity:
+#             type: u32
+#           ShipBaseResourceQuantity:
+#             type: u32
+#           BaseExperience:
+#             type: u32
+#           Clock:
+#             referenceType: Clock
+#             isIgnoredInEvent: true
+#         event:
+#           name: EnvironmentRosterCreated
+#           isObjectShared: true
+
+#       AddShip:
+#         isInternal: true
+#         parameters:
+#           Ship:
+#             type: Ship
+#           Position:
+#             type: u64
+#             optional: true
+#         event:
+#           name: RosterShipAdded
+
+#       SetSail:
+#         #requiredPermission: Owner
+#         parameters:
+#           Player:
+#             referenceType: Player
+#             isIgnoredInEvent: true
+#           TargetCoordinates:
+#             type: Coordinates
+#           Clock:
+#             referenceType: Clock
+#             isIgnoredInEvent: true
+#           Energy:
+#             type: "Balance<ENERGY>"
+#             eventPropertyName: EnergyCost
+#           SailDuration:
+#             type: u64
+#           UpdatedCoordinates:
+#             type: Coordinates
+#         event:
+#           name: RosterSetSail
+#           properties:
+#             SetSailAt:
+#               type: u64
+#             UpdatedCoordinates:
+#               type: Coordinates
+#             EnergyCost:
+#               type: u64
+
+#       UpdateLocation:
+#         parameters:
+#           Clock:
+#             referenceType: Clock
+#             isIgnoredInEvent: true
+#           UpdatedCoordinates:
+#             type: Coordinates
+#         event:
+#           name: RosterLocationUpdated
+#           properties:
+#             UpdatedCoordinates:
+#               type: Coordinates
+#             CoordinatesUpdatedAt:
+#               type: u64
+#             NewStatus:
+#               type: u8
+#             #OldStatus:
+#             #  type: u8
+
+#       AdjustShipsPosition:
+#         parameters:
+#           Player:
+#             referenceType: Player
+#             isIgnoredInEvent: true
+#           Positions:
+#             itemType: u64
+#           ShipIds:
+#             itemtype: address
+#         event:
+#           name: RosterShipsPositionAdjusted
+
+#       TransferShip:
+#         parameters:
+#           Player:
+#             referenceType: Player
+#             isIgnoredInEvent: true
+#           ShipId:
+#             type: address
+#           #FromRoster: # from current roster
+#           ToRoster:
+#             referenceType: Roster
+#             isMutableReference: true
+#             eventPropertyName: ToRosterId
+#           ToPosition:
+#             type: u64
+#             optional: true
+#         event:
+#           name: RosterShipTransferred
+
+#       TransferShipInventory:
+#         parameters:
+#           Player:
+#             referenceType: Player
+#             isIgnoredInEvent: true
+#           FromShipId:
+#             type: address
+#           ToShipId:
+#             type: address
+#           ItemIdQuantityPairs:
+#             type: ItemIdQuantityPairs
+#         event:
+#           name: RosterShipInventoryTransferred
+
+#       TakeOutShipInventory:
+#         inheritsFrom: RosterTemplate.InOutShipInventory
+#         #parameters:
+#         event:
+#           name: RosterShipInventoryTakenOut
+
+#       PutInShipInventory:
+#         inheritsFrom: RosterTemplate.InOutShipInventory
+#         #parameters:
+#         event:
+#           name: RosterShipInventoryPutIn
+
+
+#   ShipBattle:
+#     id:
+#       name: Id
+#       type: UID
+#     properties:
+#       Initiator:
+#         type: address # Roster ID
+#       Responder:
+#         type: address # Roster ID
+#       Status:
+#         type: u8
+#       InitiatorExperiences:
+#         # The experiences Initiator has gained during the battle
+#         itemType: u32
+#         isList: true
+#         defaultLogic:
+#           Move: "std::vector::empty()"
+#       ResponderExperiences:
+#         itemType: u32
+#         isList: true
+#         defaultLogic:
+#           Move: "std::vector::empty()"
+#       EndedAt:
+#         type: u64
+#         optional: true
+#         defaultLogic:
+#           Move: "std::option::none()"
+#       Winner:
+#         type: u8
+#         optional: true
+#         description: "1: Initiator, 0: Responder"
+#         defaultLogic:
+#           Move: "std::option::none()"
+#       RoundNumber:
+#         type: u32
+#         defaultLogic:
+#           Move: "1"
+#       RoundStartedAt:
+#         type: u64
+#       RoundMover:
+#         type: u8
+#         optional: true
+#         description: "1: Initiator, 0: Responder"
+#       RoundAttackerShip:
+#         type: address
+#         optional: true
+#       RoundDefenderShip:
+#         type: address
+#         optional: true
+#     methods:
+#       InitiateBattle:
+#         isCreationCommand: true
+#         parameters:
+#           Player:
+#             referenceType: Player
+#             isIgnoredInEvent: true
+#           Initiator:
+#             referenceType: Roster
+#             isMutableReference: true
+#             isIgnoredInEvent: true
+#           Responder:
+#             referenceType: Roster
+#             isMutableReference: true
+#             isIgnoredInEvent: true
+#           Clock:
+#             referenceType: Clock
+#             isIgnoredInEvent: true
+#           InitiatorCoordinates:
+#             type: Coordinates
+#           ResponderCoordinates:
+#             type: Coordinates
+#         result:
+#           isObjectReturned: true
+#         event:
+#           name: ShipBattleInitiated
+#           isObjectShared: true
+#           properties:
+#             InitiatorId:
+#               type: address
+#             ResponderId:
+#               type: address
+#             StartedAt:
+#               type: u64
+#             FirstRoundMover:
+#               type: u8
+#               optional: true
+#             FirstRoundAttackerShip:
+#               type: address
+#               optional: true
+#             FirstRoundDefenderShip:
+#               type: address
+#               optional: true
+
+#       MakeMove:
+#         parameters:
+#           Player:
+#             referenceType: Player
+#             isIgnoredInEvent: true
+#           Initiator:
+#             referenceType: Roster
+#             isMutableReference: true
+#             isIgnoredInEvent: true
+#           Responder:
+#             referenceType: Roster
+#             isMutableReference: true
+#             isIgnoredInEvent: true
+#           Clock:
+#             referenceType: Clock
+#             isIgnoredInEvent: true
+#           AttackerCommand:
+#             type: ShipBattleCommand
+#         event:
+#           name: ShipBattleMoveMade
+#           properties:
+#             DefenderCommand:
+#               type: ShipBattleCommand
+#             RoundNumber:
+#               type: u32
+#             DefenderDamageTaken:
+#               type: u32
+#             AttackerDamageTaken:
+#               type: u32
+#             IsBattleEnded:
+#               type: bool
+#             Winner:
+#               type: u8
+#               optional: true
+#               description: "1: Initiator, 0: Responder"
+#             NextRoundStartedAt:
+#               type: u64
+#             NextRoundMover:
+#               type: u8
+#               optional: true
+#             NextRoundAttackerShip:
+#               type: address
+#               optional: true
+#             NextRoundDefenderShip:
+#               type: address
+#               optional: true
+
+#       TakeLoot:
+#         parameters:
+#           Player:
+#             referenceType: Player
+#             isMutableReference: true
+#             isIgnoredInEvent: true
+#           LoserPlayer:
+#             referenceType: Player
+#             isMutableReference: true
+#             isIgnoredInEvent: true
+#           Initiator:
+#             referenceType: Roster
+#             isMutableReference: true
+#             isIgnoredInEvent: true
+#           Responder:
+#             referenceType: Roster
+#             isMutableReference: true
+#             isIgnoredInEvent: true
+#           ExperienceTable:
+#             referenceType: ExperienceTable
+#             isIgnoredInEvent: true
+#           Clock:
+#             referenceType: Clock
+#             isIgnoredInEvent: true
+#           #Winner:
+#           #  type: u8 # 1: Initiator, 0: Responder
+#           Choice:
+#             type: u8
+#             description: "1: Take all, 0: Leave it"
+#         event:
+#           name: ShipBattleLootTaken
+#           properties:
+#             Loot:
+#               itemType: ItemIdQuantityPair
+#             LootedAt:
+#               type: u64
+#               description: "The time when the loot is taken"
+#             IncreasedExperience:
+#               type: u32
+#             NewLevel:
+#               type: u16
+#             LoserIncreasedExperience:
+#               type: u32
+#             LoserNewLevel:
+#               type: u16
+
+# superObjects:
+#   SkillProcessTemplate:
+#     isTemplate: true
+#     methods:
+#       StartProduction:
+#         parameters:
+#           Player:
+#             referenceType: Player
+#             isMutableReference: true
+#             isIgnoredInEvent: true
+#           ItemProduction:
+#             referenceType: ItemProduction
+#             #eventPropertyName: ItemProductionId
+#             isIgnoredInEvent: true
+#           Clock:
+#             referenceType: Clock
+#             isIgnoredInEvent: true
+#           Energy:
+#             type: "Balance<ENERGY>"
+#             eventPropertyName: EnergyCost
+#         event:
+#           properties:
+#             ItemId:
+#               type: u32
+#             EnergyCost:
+#               type: u64
+#             StartedAt:
+#               type: u64
+#             CreationTime:
+#               type: u64
+#             ProductionMaterials:
+#               type: ItemIdQuantityPairs
+
+#       CompleteProduction:
+#         parameters:
+#           Player:
+#             referenceType: Player
+#             isMutableReference: true
+#             isIgnoredInEvent: true
+#           ItemProduction:
+#             referenceType: ItemProduction
+#             isIgnoredInEvent: true
+#           ExperienceTable:
+#             referenceType: ExperienceTable
+#             isIgnoredInEvent: true
+#           Clock:
+#             referenceType: Clock
+#             isIgnoredInEvent: true
+#         event:
+#           properties:
+#             ItemId:
+#               type: u32
+#             StartedAt:
+#               type: u64
+#             CreationTime:
+#               type: u64
+#             EndedAt:
+#               type: u64
+#             Successful:
+#               type: bool
+#             Quantity:
+#               type: u32
+#             Experience:
+#               type: u32
+#               description: "Increased experience value"
+#             NewLevel:
+#               type: u16
+
+
+#       StartCreation:
+#         parameters:
+#           Player:
+#             referenceType: Player
+#             isMutableReference: true
+#             isIgnoredInEvent: true
+#           ItemCreation:
+#             referenceType: ItemCreation
+#             isIgnoredInEvent: true
+#           Clock:
+#             referenceType: Clock
+#             isIgnoredInEvent: true
+#           Energy:
+#             type: "Balance<ENERGY>"
+#             eventPropertyName: EnergyCost
+#         event:
+#           properties:
+#             ItemId: # ItemId to be created
+#               type: u32
+#             EnergyCost:
+#               type: u64
+#             ResourceCost:
+#               type: u32
+#             StartedAt:
+#               type: u64
+#             CreationTime:
+#               type: u64
+
+#       CompleteCreation:
+#         parameters:
+#           Player:
+#             referenceType: Player
+#             isMutableReference: true
+#             isIgnoredInEvent: true
+#           ItemCreation:
+#             referenceType: ItemCreation
+#             isIgnoredInEvent: true
+#           ExperienceTable:
+#             referenceType: ExperienceTable
+#             isIgnoredInEvent: true
+#           Clock:
+#             referenceType: Clock
+#             isIgnoredInEvent: true
+#         event:
+#           properties:
+#             ItemId:
+#               type: u32
+#             StartedAt:
+#               type: u64
+#             CreationTime:
+#               type: u64
+#             EndedAt:
+#               type: u64
+#             Successful:
+#               type: bool
+#             Quantity:
+#               type: u32
+#             Experience:
+#               type: u32
+#               description: "Increased experience value"
+#             NewLevel:
+#               type: u16
+
+#   RosterTemplate:
+#     isTemplate: true
+#     methods:
+#       InOutShipInventory:
+#         parameters:
+#           Player:
+#             referenceType: Player
+#             isMutableReference: true
+#             isIgnoredInEvent: true
+#           Clock:
+#             referenceType: Clock
+#             isIgnoredInEvent: true
+#           ShipId:
+#             type: address
+#           ItemIdQuantityPairs:
+#             type: ItemIdQuantityPairs
+#           UpdatedCoordinates:
+#             type: Coordinates
+
+
+singletonObjects:
+  Map:
+    metadata:
+      IS_MOVE_SCHEMA_VERSIONED: true
+    friends:
+      - Player.ClaimIsland
+    properties:
+      Locations:
+        itemType: MapLocation
+    entities:
+      MapLocation:
+        id:
+          name: Coordinates
+          type: Coordinates
+        properties:
+          Type:
+            type: u32
+          OccupiedBy:
+            type: address # PlayerId
+            optional: true
+          Resources:
+            itemType: ItemIdQuantityPair
+          GatheredAt:
+            type: u64
+    methods:
+      # "__Init__":
+      #   event:
+      #     isObjectShared: true # Share the object after initialization.
+
+      AddIsland:
+        #requiredPermission: "AdminCap"
+        requiredPermission: "__Publisher__"
+        parameters:
+          Coordinates:
+            type: Coordinates
+          Resources:
+            type: ItemIdQuantityPairs
+        event:
+          name: IslandAdded
+
+      ClaimIsland:
+        isInternal: true
+        parameters:
+          Coordinates:
+            type: Coordinates
+          ClaimedBy:
+            type: address # PlayerId
+          ClaimedAt:
+            type: u64
+        event:
+          name: MapIslandClaimed
+
+      GatherIslandResources:
+        # metadata:
+        #   ParametersIncludedInMutationFunction: [ "Clock" ]
+        parameters:
+          Player:
+            #referenceType: Player
+            #isMutableReference: true
+            #isIgnoredInEvent: true
+            type: Object<Player>
+            eventPropertyName: PlayerId
+          # Clock:
+          #   referenceType: Clock
+          #   isIgnoredInEvent: true
+        event:
+          name: IslandResourcesGathered
+          properties:
+            PlayerId:
+              type: address
+            Coordinates:
+              type: Coordinates
+            Resources:
+              itemType: ItemIdQuantityPair
+            GatheredAt:
+              type: u64

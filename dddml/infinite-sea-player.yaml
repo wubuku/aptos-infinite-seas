@@ -1,0 +1,99 @@
+aggregates:
+  Player:
+    metadata:
+      ShouldIssuePublisherObject: true
+      MOVE_AGGREGATE_MODULE_ATTRIBUTES: "#[allow(unused_mut_parameter, unused_use)]"
+      # DataAccessFriends:
+      #   - Roster.PutInShipInventory
+      #   - Roster.TakeOutShipInventory
+      #   - ShipBattle.TakeLoot
+      #   - "infinite_seas::player_properties"
+      # Generate scheduled method that pulls on-chain states of all instances
+      GENERATE_PULLING_ALL_ON_CHAIN_INSTANCE_STATES: true
+    id:
+      name: Id
+      type: AptosObjectID
+      generator:
+        class: AptosObject
+        isNamedObject: true
+        creatorType: ResourceAccount
+        seed:
+          "__Property__": "Owner"
+    properties:
+      Owner:
+        type: address
+      Level:
+        type: u16
+        defaultLogic:
+          Move: "1"
+      Experience:
+        type: u32
+        defaultLogic:
+          Move: "0"
+      Name:
+        type: String
+        length: 50
+      ClaimedIsland:
+        type: Coordinates
+        optional: true
+        defaultLogic:
+          Move: "std::option::none()"
+      Inventory:
+        itemType: ItemIdQuantityPair
+
+    methods:
+      Create:
+        isCreationCommand: true
+        parameters:
+          Name:
+            type: String
+        event:
+          #isObjectShared: true # Share the object after created.
+          name: PlayerCreated
+          #properties:
+          #  Owner:
+          #    type: address
+
+      ClaimIsland:
+        parameters:
+          # Map:
+          #   referenceType: Map
+          #   isMutableReference: true
+          #   isIgnoredInEvent: true
+          Coordinates:
+            type: Coordinates
+          # Clock:
+          #   referenceType: Clock
+          #   isIgnoredInEvent: true
+          # RosterTable:
+          #   referenceType: RosterTable
+          #   isMutableReference: true
+          #   isIgnoredInEvent: true
+          # SkillProcessTable:
+          #   referenceType: SkillProcessTable
+          #   isMutableReference: true
+          #   isIgnoredInEvent: true
+        event:
+          name: IslandClaimed
+          properties:
+            ClaimedAt:
+              type: u64
+        constants:
+          ESenderHasNoPermission:
+            constantExpression:
+              Move: 22
+            type: u64
+        verificationLogic:
+          Move: >
+            assert!(sui::tx_context::sender(ctx) == player::owner(player), ESenderHasNoPermission);
+
+      Airdrop:
+        requiredPermission: "__Publisher__"
+        #requiredPermission: AdminCap
+        parameters:
+          ItemId:
+            type: u32
+          Quantity:
+            type: u32
+        event:
+          name: PlayerAirdropped

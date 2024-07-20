@@ -1,0 +1,10 @@
+[package]
+name = "InfiniteSeas"
+version = "0.0.1"
+
+[addresses]
+infinite_seas = "_"
+
+[dependencies]
+AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "main" }
+InfiniteSeasCommon = { local = "../infinite-seas-common" }

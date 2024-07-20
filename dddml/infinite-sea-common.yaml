@@ -1,0 +1,346 @@
+aggregates:
+  Item:
+    module: "Common"
+    metadata:
+      Preprocessors: [ "MOVE_CRUD_IT" ]
+      #CRUD_IT_NO_UPDATE: true
+      CRUD_IT_NO_DELETE: true
+      ShouldIssuePublisherObject: true
+    id:
+      name: ItemId
+      type: u32
+      generator:
+        class: assigned
+        tableName: ItemTable
+    properties:
+      Name:
+        type: String # NOTAsciiString
+        length: 100
+      #Type:
+      #  type: ItemType
+      RequiredForCompletion:
+        type: bool
+      SellsFor:
+        type: u32
+    methods:
+      Create:
+        requiredPermission: "__Publisher__"
+        #event:
+        #  isObjectShared: true # Share the object after created.
+      Update:
+        requiredPermission: "__Publisher__"
+
+
+  ItemCreation:
+    module: "Common"
+    metadata:
+      Preprocessors: [ "MOVE_CRUD_IT" ]
+      #CRUD_IT_NO_UPDATE: true
+      CRUD_IT_NO_DELETE: true
+    implements:
+      - ItemCreationOrProduction
+    id:
+      name: ItemCreationId
+      type: SkillTypeItemIdPair
+      generator:
+        class: assigned
+        tableName: ItemCreationTable
+    properties:
+      ResourceCost:
+        type: u32
+    methods:
+      Create:
+        requiredPermission: "__Publisher__"
+        #event:
+        #  isObjectShared: true # Share the object after created.
+      Update:
+        requiredPermission: "__Publisher__"
+
+
+  ItemProduction:
+    module: "Common"
+    metadata:
+      Preprocessors: [ "MOVE_CRUD_IT" ]
+      #CRUD_IT_NO_UPDATE: true
+      CRUD_IT_NO_DELETE: true
+    implements:
+      - ItemCreationOrProduction
+    id:
+      name: ItemProductionId
+      type: SkillTypeItemIdPair
+      generator:
+        class: assigned
+        tableName: ItemProductionTable
+    properties:
+      ProductionMaterials:
+        type: ItemIdQuantityPairs
+    methods:
+      Create:
+        requiredPermission: "__Publisher__"
+        event:
+          isObjectShared: true # Share the object after created.
+      Update:
+        requiredPermission: "__Publisher__"
+
+
+superObjects:
+  ItemCreationOrProduction:
+    properties:
+      #RequirementsSkill:
+      #  type: SkillType
+      RequirementsLevel:
+        type: u16
+      BaseQuantity:
+        type: u32
+      BaseExperience:
+        type: u32
+      BaseCreationTime:
+        type: u64
+      EnergyCost:
+        type: u64
+      SuccessRate: #(percentage)
+        type: u16
+
+
+singletonObjects:
+  ExperienceTable:
+    module: "Common"
+    properties:
+      Levels:
+        itemType: ExperienceLevel
+        isList: true
+    methods:
+      #"__Init__":
+      #  event:
+      #    isObjectShared: true # Share the object after initialization.
+      AddLevel:
+        requiredPermission: "__Publisher__"
+        parameters:
+          Level:
+            type: u16
+          Experience:
+            type: u32
+          Difference:
+            type: u32
+        event:
+          name: ExperienceLevelAdded
+      UpdateLevel:
+        requiredPermission: "__Publisher__"
+        parameters:
+          Level:
+            type: u16
+          Experience:
+            type: u32
+          Difference:
+            type: u32
+        event:
+          name: ExperienceLevelUpdated
+
+
+valueObjects:
+  SkillTypeItemIdPair:
+    module: "Common"
+    properties:
+      SkillType:
+        type: SkillType
+      ItemId:
+        type: u32
+
+  SkillTypePlayerIdPair:
+    module: "Common"
+    properties:
+      SkillType:
+        type: SkillType
+      PlayerId:
+        type: address #Object ID
+
+  SkillProcessId:
+    module: "Common"
+    properties:
+      SkillType:
+        type: SkillType
+      PlayerId:
+        type: address
+      SequenceNumber:
+        type: u8
+
+  RosterId:
+    module: "Common"
+    properties:
+      PlayerId:
+        type: address
+      SequenceNumber:
+        type: u32
+        #type: u8
+
+  ExperienceLevel:
+    module: "Common"
+    properties:
+      Level:
+        type: u16
+      Experience:
+        type: u32
+      Difference:
+        type: u32
+
+  ItemIdQuantityPairs:
+    module: "Common"
+    hibernateMappingType: ItemIdQuantityPairs
+    properties:
+      Items:
+        itemType: ItemIdQuantityPair
+        isList: true
+    methods:
+      New:
+        isConstructor: true
+        parameters:
+          ItemIdList:
+            itemType: u32
+          ItemQuantityList:
+            itemType: u32
+        implementationLogic:
+          Move: >-
+            let items = infinite_seas_common::sorted_vector_util::new_item_id_quantity_pairs(item_id_list, item_quantity_list);
+                    {_INSTANTIATE_STRUCT_}
+      NewByVector:
+        isConstructor: true
+        parameters:
+          Items:
+            itemType: ItemIdQuantityPair
+        implementationLogic:
+          Move: >-
+            {_INSTANTIATE_STRUCT_}
+
+#        constants:
+#          EEmptyList:
+#            constantExpression:
+#              Move: 10
+#            type: u64
+#          EIncorrectListLength:
+#            constantExpression:
+#              Move: 11
+#            type: u64
+
+  ItemIdQuantityPair:
+    module: "Common"
+    properties:
+      ItemId:
+        type: u32
+      Quantity:
+        type: u32
+
+
+  Coordinates:
+    module: "Common"
+    properties:
+      X:
+        type: u32
+      Y:
+        type: u32
+
+enumObjects:
+  SkillType:
+    module: "Common"
+    baseType: u8
+    values:
+      Farming:
+        value: 0
+      Woodcutting:
+        value: 1
+      Fishing:
+        value: 2
+      Mining:
+        value: 3
+      Smithing:
+        value: 4
+      Cooking:
+        value: 5
+      Crafting:
+        value: 6
+      Township:
+        value: 7
+      Sailing:
+        value: 8
+      #Thieving:
+      #  value: xxx
+
+
+  MapLocationType:
+    module: "Common"
+    baseType: u32
+    values:
+      Island:
+        value: 0
+
+  RosterSequenceNumber:
+    module: "Common"
+    baseType: u32
+    #baseType: u8
+    values:
+      UnassignedShips:
+        value: 0
+      First:
+        value: 1
+      Second:
+        value: 2
+      Third:
+        value: 3
+      Fourth:
+        value: 4
+
+  RosterStatus:
+    module: "Common"
+    baseType: u8
+    values:
+      AtAnchor:
+        value: 0
+      Underway:
+        value: 1
+      InBattle:
+        value: 2
+      Destroyed:
+        value: 3
+
+  ShipBattleCommand:
+    module: "Common"
+    baseType: u8
+    values:
+      Attack:
+        value: 0
+      SwapPositions:
+        value: 1
+      Pass:
+        value: 2
+
+  BattleStatus:
+    module: "Common"
+    baseType: u8
+    values:
+      InProgress:
+        value: 0
+      Ended:
+        value: 1
+      Looted:
+        value: 2
+        # The loot has been taken.
+
+#  IslandResourceType:
+#    module: "Common"
+#    baseType: u8
+#    values:
+#      Seed:
+#        value: 0
+#      Wood:
+#        value: 1
+#      Fish:
+#        value: 2
+#      Mineral:
+#        value: 3
+
+#  ItemType:
+#    module: "Common"
+#    baseType: u8
+#    values:
+#      Logs:
+#        value: 0
+
