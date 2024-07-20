@@ -7,8 +7,8 @@ module infinite_seas_common::item_production {
     use aptos_framework::account;
     use aptos_framework::event;
     use aptos_std::table::{Self, Table};
-    use infinite_seas_common::item_id_quantity_pairs::ItemIdQuantityPairs;
     use infinite_seas_common::infinite_seas_common_pass_object as pass_object;
+    use infinite_seas_common::item_id_quantity_pairs::ItemIdQuantityPairs;
     use infinite_seas_common::skill_type_item_id_pair::SkillTypeItemIdPair;
     friend infinite_seas_common::item_production_create_logic;
     friend infinite_seas_common::item_production_update_logic;

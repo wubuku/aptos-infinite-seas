@@ -150,11 +150,6 @@ module infinite_seas_common::experience_table {
         move_to(store_account, experience_table);
     }
 
-    // public fun get_experience_table(): pass_object::PassObject<ExperienceTable> acquires ExperienceTable {
-    //     let experience_table = remove_experience_table();
-    //     pass_object::new(experience_table)
-    // }
-
     public fun singleton_version(store_address: address, ): u64 acquires ExperienceTable {
         let experience_table = borrow_global<ExperienceTable>(store_address);
         experience_table.version
@@ -175,10 +170,15 @@ module infinite_seas_common::experience_table {
         experience_table.levels = levels;
     }
 
-    // public fun return_experience_table(store_address: address, experience_table_pass_obj: pass_object::PassObject<ExperienceTable>) {
-    //     let experience_table = pass_object::extract(experience_table_pass_obj);
-    //     private_add_experience_table(store_address, experience_table);
-    // }
+    public fun get_all_porperties(store_address: address, ): vector<ExperienceLevel> acquires ExperienceTable {
+        assert!(exists<ExperienceTable>(store_address), ENotInitialized);
+        let experience_table = borrow_global<ExperienceTable>(store_address);
+        all_porperties(experience_table)
+    }
+
+    public fun all_porperties(experience_table: &ExperienceTable): vector<ExperienceLevel> {
+        experience_table.levels
+    }
 
     public(friend) fun set_all_porperties(store_address: address, levels: vector<ExperienceLevel>) acquires ExperienceTable {
         assert!(exists<ExperienceTable>(store_address), ENotInitialized);
