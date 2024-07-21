@@ -332,11 +332,11 @@ module infinite_seas_common::item_creation {
 
     public fun get_item_creation(store_address: address, item_creation_id: SkillTypeItemIdPair): pass_object::PassObject<ItemCreation> acquires Tables {
         let item_creation = remove_item_creation(store_address, item_creation_id);
-        pass_object::new_with_address(item_creation, store_address)
+        pass_object::new_with_address(item_creation, store_address, )
     }
 
     public fun return_item_creation(item_creation_pass_obj: pass_object::PassObject<ItemCreation>) acquires Tables {
-        let (item_creation, store_address) = pass_object::extract_value_and_address(item_creation_pass_obj);
+        let (item_creation, store_address, ) = pass_object::extract_value_and_address(item_creation_pass_obj);
         private_add_item_creation(store_address, item_creation);
     }
 

@@ -68,7 +68,6 @@ module infinite_seas::map {
         assert!(!table_with_length::contains(&map.locations, coordinates), EIdAlreadyExists);
         table_with_length::add(&mut map.locations, coordinates, location);
         emit_map_location_table_item_added(MapLocationTableItemAdded {
-            //Xxx entity.OuterEntity is SingletonObject
             coordinates,
         });
     }

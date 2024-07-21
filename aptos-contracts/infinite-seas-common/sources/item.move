@@ -226,11 +226,11 @@ module infinite_seas_common::item {
 
     public fun get_item(store_address: address, item_id: u32): pass_object::PassObject<Item> acquires Tables {
         let item = remove_item(store_address, item_id);
-        pass_object::new_with_address(item, store_address)
+        pass_object::new_with_address(item, store_address, )
     }
 
     public fun return_item(item_pass_obj: pass_object::PassObject<Item>) acquires Tables {
-        let (item, store_address) = pass_object::extract_value_and_address(item_pass_obj);
+        let (item, store_address, ) = pass_object::extract_value_and_address(item_pass_obj);
         private_add_item(store_address, item);
     }
 

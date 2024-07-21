@@ -170,16 +170,6 @@ module infinite_seas_common::experience_table {
         experience_table.levels = levels;
     }
 
-    public fun get_all_porperties(store_address: address, ): vector<ExperienceLevel> acquires ExperienceTable {
-        assert!(exists<ExperienceTable>(store_address), ENotInitialized);
-        let experience_table = borrow_global<ExperienceTable>(store_address);
-        all_porperties(experience_table)
-    }
-
-    public fun all_porperties(experience_table: &ExperienceTable): vector<ExperienceLevel> {
-        experience_table.levels
-    }
-
     public(friend) fun set_all_porperties(store_address: address, levels: vector<ExperienceLevel>) acquires ExperienceTable {
         assert!(exists<ExperienceTable>(store_address), ENotInitialized);
         let experience_table = borrow_global_mut<ExperienceTable>(store_address);
