@@ -160,6 +160,27 @@ module infinite_seas_common::experience_table {
         experience_table.version = version;
     }
 
+    public fun singleton_levels_length(store_address: address, ): u64 acquires ExperienceTable {
+        let experience_table = borrow_global<ExperienceTable>(store_address);
+        std::vector::length(&experience_table.levels)
+    }
+
+    public fun singleton_levels_get(store_address: address, i: u64): ExperienceLevel acquires ExperienceTable {
+        let experience_table = borrow_global<ExperienceTable>(store_address);
+        *std::vector::borrow(&experience_table.levels, i)
+    }
+
+    public(friend) fun singleton_levels_set(store_address: address, i: u64, level :ExperienceLevel) acquires ExperienceTable {
+        let experience_table = borrow_global_mut<ExperienceTable>(store_address);
+        std::vector::remove(&mut experience_table.levels, i);
+        std::vector::insert(&mut experience_table.levels, i, level)
+    }
+
+    public(friend) fun singleton_levels_push_back(store_address: address, level :ExperienceLevel) acquires ExperienceTable {
+        let experience_table = borrow_global_mut<ExperienceTable>(store_address);
+        std::vector::push_back(&mut experience_table.levels, level)
+    }
+
     public fun singleton_levels(store_address: address, ): vector<ExperienceLevel> acquires ExperienceTable {
         let experience_table = borrow_global<ExperienceTable>(store_address);
         experience_table.levels
