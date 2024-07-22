@@ -7,11 +7,14 @@ configuration:
 
   defaultModule:
     name: "Aptos.InfiniteSeas"
-    requiredModules: [ "Common" ] #, "Nft"
+    requiredModules: [ "Common", "Map" ] #, "Nft"
     isAptosExternalStoreEnabled: false
   submodules:
     Common:
       requiredModules: [ ]
+      isAptosExternalStoreEnabled: true
+    Map:
+      requiredModules: [ "Common" ]
       isAptosExternalStoreEnabled: true
     #Nft:
     #  requiredModules: [ ]

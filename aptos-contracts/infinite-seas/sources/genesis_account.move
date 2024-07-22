@@ -12,8 +12,6 @@ module infinite_seas::genesis_account {
 
     friend infinite_seas::player;
     friend infinite_seas::player_aggregate;
-    friend infinite_seas::map;
-    friend infinite_seas::map_aggregate;
 
     const ENotGenesisAccount: u64 = 100;
 
