@@ -14,8 +14,7 @@ module infinite_seas_map::map_add_island_logic {
         coordinates: Coordinates,
         resources: ItemIdQuantityPairs,
     ): map::IslandAdded {
-        //todo assert!(!map::locations_contains(map, coordinates), ELocationAlreadyExists);
-        //map::new_island_added(map, coordinates, resources)
+        assert!(!map::singleton_locations_contains(store_address, coordinates), ELocationAlreadyExists);
         map::new_island_added(store_address, coordinates, resources)
     }
 

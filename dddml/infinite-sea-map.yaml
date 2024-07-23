@@ -55,6 +55,7 @@ singletonObjects:
       GatherIslandResources:
         # metadata:
         #   ParametersIncludedInMutationFunction: [ "Clock" ]
+        isInternal: true
         parameters:
           PlayerId:
             #referenceType: Player
@@ -62,6 +63,9 @@ singletonObjects:
             #isIgnoredInEvent: true
             type: address #Object<Player>
             eventPropertyName: PlayerId
+          Coordinates:
+            type: Coordinates
+            eventPropertyName: Coordinates
           # Clock:
           #   referenceType: Clock
           #   isIgnoredInEvent: true

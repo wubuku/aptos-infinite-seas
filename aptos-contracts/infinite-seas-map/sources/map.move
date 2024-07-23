@@ -60,25 +60,44 @@ module infinite_seas_map::map {
         map.version
     }
 
-    public(friend) fun add_location(map: &mut Map, location: MapLocation) { //TODO acquires Events {
+    public(friend) fun add_location(store_address: address, map: &mut Map, location: MapLocation) acquires Events {
         let coordinates = map_location::coordinates(&location);
         assert!(!table_with_length::contains(&map.locations, coordinates), EIdAlreadyExists);
         table_with_length::add(&mut map.locations, coordinates, location);
-        // TODO: xxx
-        // emit_map_location_table_item_added(MapLocationTableItemAdded {
-        //     coordinates,
-        // });
+        emit_map_location_table_item_added(store_address, MapLocationTableItemAdded {
+            coordinates,
+        });
     }
 
-    public(friend) fun remove_location(map: &mut Map, coordinates: Coordinates) {
+    public(friend) fun singleton_add_location(store_address: address, location: MapLocation) acquires Map, Events {
+        let map = borrow_global_mut<Map>(store_address);
+        add_location(store_address, map, location)
+    }
+
+    public(friend) fun remove_location(map: &mut Map, coordinates: Coordinates): MapLocation {
         assert!(table_with_length::contains(&map.locations, coordinates), EIdNotFound);
-        let location = table_with_length::remove(&mut map.locations, coordinates);
+        table_with_length::remove(&mut map.locations, coordinates)
+    }
+
+    public(friend) fun remove_and_drop_location(map: &mut Map, coordinates: Coordinates) {
+        let location = remove_location(map, coordinates);
         map_location::drop_map_location(location);
+    }
+
+    public(friend) fun singleton_remove_location(store_address: address, coordinates: Coordinates): MapLocation acquires Map {
+        let map = borrow_global_mut<Map>(store_address);
+        remove_location(map, coordinates)
     }
 
     public(friend) fun borrow_mut_location(map: &mut Map, coordinates: Coordinates): &mut MapLocation {
         table_with_length::borrow_mut(&mut map.locations, coordinates)
     }
+
+    // Such code will not pass compilation:
+    // public(friend) fun singleton_borrow_mut_location(store_address: address, coordinates: Coordinates): &mut MapLocation acquires Map {
+    //     let map = borrow_global_mut<Map>(store_address);
+    //     table_with_length::borrow_mut(&mut map.locations, coordinates)
+    // }
 
     public fun borrow_location(map: &Map, coordinates: Coordinates): &MapLocation {
         table_with_length::borrow(&map.locations, coordinates)
@@ -88,8 +107,18 @@ module infinite_seas_map::map {
         table_with_length::contains(&map.locations, coordinates)
     }
 
+    public fun singleton_locations_contains(store_address: address, coordinates: Coordinates): bool acquires Map {
+        let map = borrow_global<Map>(store_address);
+        locations_contains(map, coordinates)
+    }
+
     public fun locations_length(map: &Map): u64 {
         table_with_length::length(&map.locations)
+    }
+
+    public fun singleton_locations_length(store_address: address): u64 acquires Map {
+        let map = borrow_global<Map>(store_address);
+        locations_length(map)
     }
 
     public(friend) fun new_map(

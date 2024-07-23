@@ -2,7 +2,8 @@ module infinite_seas_map::map_claim_island_logic {
     use infinite_seas_common::coordinates::Coordinates;
     use infinite_seas_common::map_location_type;
     use infinite_seas_map::map;
-    use infinite_seas_map::map_location::{Self, MapLocation};
+    use infinite_seas_map::map_location;
+    use std::option;
 
     friend infinite_seas_map::map_aggregate;
 
@@ -17,12 +18,13 @@ module infinite_seas_map::map_claim_island_logic {
         claimed_by: address,
         claimed_at: u64,
     ): map::MapIslandClaimed {
-        //todo assert!(map::locations_contains(map, coordinates), ELocationNotFound);
-        // let island = map::borrow_location(map, coordinates);
-        // assert!(map_location::type(island) == map_location_type::island(), ELocationTypeMismatch);
-        // assert!(option::is_none(&map_location::occupied_by(island)), EIslandAlreadyClaimed);
+        assert!(map::singleton_locations_contains(store_address, coordinates), ELocationNotFound);
+        let island = map::singleton_remove_location(store_address, coordinates);
+        assert!(map_location::type(&island) == map_location_type::island(), ELocationTypeMismatch);
+        assert!(option::is_none(&map_location::occupied_by(&island)), EIslandAlreadyClaimed);
+        map::singleton_add_location(store_address, island);
         map::new_map_island_claimed(
-            store_address,//map,
+            store_address,
             coordinates,
             claimed_by,
             claimed_at
