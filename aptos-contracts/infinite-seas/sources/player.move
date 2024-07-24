@@ -153,6 +153,7 @@ module infinite_seas::player {
     struct PlayerCreated has store, drop {
         id: option::Option<address>,
         name: String,
+        owner: address,
     }
 
     public fun player_created_id(player_created: &PlayerCreated): option::Option<address> {
@@ -167,12 +168,18 @@ module infinite_seas::player {
         player_created.name
     }
 
+    public fun player_created_owner(player_created: &PlayerCreated): address {
+        player_created.owner
+    }
+
     public(friend) fun new_player_created(
         name: String,
+        owner: address,
     ): PlayerCreated {
         PlayerCreated {
             id: option::none(),
             name,
+            owner,
         }
     }
 

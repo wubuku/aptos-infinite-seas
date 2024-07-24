@@ -10,9 +10,10 @@ module infinite_seas::player_create_logic {
         account: &signer,
         name: String,
     ): player::PlayerCreated {
-        //let owner = signer::address_of(account);
+        let owner = signer::address_of(account);
         player::new_player_created(
             name,
+            owner,
         )
     }
 

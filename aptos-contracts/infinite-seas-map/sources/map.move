@@ -10,7 +10,6 @@ module infinite_seas_map::map {
     use infinite_seas_common::coordinates::Coordinates;
     use infinite_seas_common::item_id_quantity_pair::ItemIdQuantityPair;
     use infinite_seas_common::item_id_quantity_pairs::ItemIdQuantityPairs;
-    //use infinite_seas_map::infinite_seas_map_genesis_account as genesis_account;
     use infinite_seas_map::infinite_seas_map_pass_object as pass_object;
     use infinite_seas_map::map_location::{Self, MapLocation};
     friend infinite_seas_map::map_add_island_logic;
@@ -49,6 +48,8 @@ module infinite_seas_map::map {
             map_location_table_item_added_handle: account::new_event_handle<MapLocationTableItemAdded>(store_account),
         });
 
+        let map = new_map();
+        add_map(store_account, map);
     }
 
     struct Map has key, store {
@@ -126,6 +127,16 @@ module infinite_seas_map::map {
         Map {
             version: 0,
             locations: table_with_length::new<Coordinates, MapLocation>(),
+        }
+    }
+
+    struct MapInitialized has store, drop {
+    }
+
+    public(friend) fun new_map_initialized(
+        map: &Map,
+    ): MapInitialized {
+        MapInitialized {
         }
     }
 

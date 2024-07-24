@@ -27,6 +27,8 @@ module infinite_seas_common::experience_table {
             experience_level_updated_handle: account::new_event_handle<ExperienceLevelUpdated>(store_account),
         });
 
+        let experience_table = new_experience_table();
+        add_experience_table(store_account, experience_table);
     }
 
     struct ExperienceTable has key, store {
@@ -55,11 +57,21 @@ module infinite_seas_common::experience_table {
     }
 
     public(friend) fun new_experience_table(
-        levels: vector<ExperienceLevel>,
+        //levels: vector<ExperienceLevel>,
     ): ExperienceTable {
         ExperienceTable {
             version: 0,
-            levels,
+            levels: std::vector::empty(),
+        }
+    }
+
+    struct ExperienceTableInitialized has store, drop {
+    }
+
+    public(friend) fun new_experience_table_initialized(
+        experience_table: &ExperienceTable,
+    ): ExperienceTableInitialized {
+        ExperienceTableInitialized {
         }
     }
 
