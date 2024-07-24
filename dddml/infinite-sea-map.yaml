@@ -25,9 +25,10 @@ singletonObjects:
           GatheredAt:
             type: u64
     methods:
-      # "__Init__":
-      #   event:
-      #     isObjectShared: true # Share the object after initialization.
+      "__Init__":
+        event:
+          name: MapInitialized
+          #isObjectShared: true # Share the object after initialization.
 
       AddIsland:
         #requiredPermission: "AdminCap"
@@ -69,6 +70,8 @@ singletonObjects:
           # Clock:
           #   referenceType: Clock
           #   isIgnoredInEvent: true
+        result:
+          type: ItemIdQuantityPairs
         event:
           name: IslandResourcesGathered
           properties:

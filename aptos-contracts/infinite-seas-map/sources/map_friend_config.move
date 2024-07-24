@@ -18,7 +18,7 @@ module infinite_seas_map::map_friend_config {
         caller_allowlist: vector<String>,
     }
 
-    public entry fun initialize(account: &signer) { // Or init_module?
+    fun init_module(account: &signer) { // Or //? public entry fun initialize(account: &signer) {
         assert!(std::signer::address_of(account) == @infinite_seas_map, ENotPublisher); // NOTE: Is this ok?
         let config = MapFriendConfig {
             caller_allowlist: vector::empty(),
@@ -42,7 +42,7 @@ module infinite_seas_map::map_friend_config {
         vector::remove_value(&mut config.caller_allowlist, &type_name);
     }
 
-    public fun assert_allowlisted<WT: drop>(_impl_witness: WT) acquires MapFriendConfig {
+    public fun assert_allowlisted<WT: drop>(_friend_witness: WT) acquires MapFriendConfig {
         assert!(exists<MapFriendConfig>(@infinite_seas_map), ENotInitialized);
         let config = borrow_global<MapFriendConfig>(@infinite_seas_map);
         assert!(vector::contains(&config.caller_allowlist, &type_info::type_name<WT>()), ENotAllowedCaller);

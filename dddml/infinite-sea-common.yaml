@@ -110,9 +110,10 @@ singletonObjects:
         itemType: ExperienceLevel
         isList: true
     methods:
-      #"__Init__":
-      #  event:
-      #    isObjectShared: true # Share the object after initialization.
+      "__Init__":
+        event:
+          name: ExperienceTableInitialized
+          #isObjectShared: true # Share the object after initialization.
       AddLevel:
         requiredPermission: "__Publisher__"
         parameters:
