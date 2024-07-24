@@ -26,6 +26,8 @@ module infinite_seas::player_aggregate {
             account,
             name,
         );
+        //TODO: This is a temporary solution to get the owner address
+        let owner = std::signer::address_of(account);
         let constructor_ref = object::create_named_object(&genesis_account::resource_account_signer(), std::bcs::to_bytes(&owner));
         let object_signer = object::generate_signer(&constructor_ref);
         let extend_ref = object::generate_extend_ref(&constructor_ref);

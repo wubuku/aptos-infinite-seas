@@ -50,9 +50,9 @@ aggregates:
         event:
           #isObjectShared: true # Share the object after created.
           name: PlayerCreated
-          #properties:
-          #  Owner:
-          #    type: address
+          properties:
+            Owner:
+              type: address
 
       ClaimIsland:
         parameters:

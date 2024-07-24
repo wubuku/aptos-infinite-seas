@@ -69,7 +69,7 @@ module infinite_seas_map::map_aggregate {
         map::emit_map_island_claimed(store_address, map_island_claimed);
     }
 
-    public(friend) fun gather_island_resources<FWT: drop>(
+    public fun gather_island_resources<FWT: drop>(
         account: &signer,
         _friend_witness: FWT,
         store_address: address,
