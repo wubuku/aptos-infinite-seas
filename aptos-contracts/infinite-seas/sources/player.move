@@ -22,6 +22,12 @@ module infinite_seas::player {
     const EInappropriateVersion: u64 = 103;
     const ENotInitialized: u64 = 110;
 
+    struct FriendWitness has drop {}
+
+    public(friend) fun friend_witness(): FriendWitness {
+        FriendWitness {}
+    }
+
     struct Events has key {
         player_created_handle: event::EventHandle<PlayerCreated>,
         island_claimed_handle: event::EventHandle<IslandClaimed>,

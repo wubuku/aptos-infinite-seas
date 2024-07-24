@@ -57,7 +57,6 @@ module infinite_seas_common::experience_table {
     }
 
     public(friend) fun new_experience_table(
-        //levels: vector<ExperienceLevel>,
     ): ExperienceTable {
         ExperienceTable {
             version: 0,

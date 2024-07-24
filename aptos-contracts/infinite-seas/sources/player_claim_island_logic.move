@@ -2,14 +2,17 @@ module infinite_seas::player_claim_island_logic {
     use std::option;
     use std::vector;
     use aptos_framework::timestamp;
-    use infinite_seas::genesis_account;
-    use infinite_seas::player;
+
     use infinite_seas_common::coordinates::Coordinates;
     use infinite_seas_common::skill_type;
     use infinite_seas_common::sorted_vector_util;
+    use infinite_seas_map::infinite_seas_map_pass_object;
     use infinite_seas_map::map;
     use infinite_seas_map::map_aggregate;
     use infinite_seas_map::map_location;
+
+    use infinite_seas::genesis_account;
+    use infinite_seas::player;
 
     friend infinite_seas::player_aggregate;
 
@@ -42,12 +45,22 @@ module infinite_seas::player_claim_island_logic {
         player::set_claimed_island(&mut player, option::some(coordinates));
 
         let store_address = genesis_account::resource_account_address();
+        let map_pass_obj = map::get_singleton_map(store_address);
+        let map = infinite_seas_map_pass_object::borrow(&map_pass_obj);
         // move resources from island to player inventory
-        // TODO let island = map::borrow_location(map, coordinates);
-        // let inv = player::borrow_mut_inventory(&mut player);
-        // sorted_vector_util::merge_item_id_quantity_pairs(inv, map_location::borrow_resources(island));
-        // // call map_aggregate::claim_island
-        // map_aggregate::claim_island(_account, fwt, store_address, coordinates, player_id, claimed_at);
+        let island = map::borrow_location(map, coordinates);
+        let inv = player::borrow_mut_inventory(&mut player);
+        sorted_vector_util::merge_item_id_quantity_pairs(inv, map_location::borrow_resources(island));
+        map::return_singleton_map(&genesis_account::resource_account_signer(), map_pass_obj);
+        // call map_aggregate::claim_island
+        map_aggregate::claim_island(
+            _account,
+            player::friend_witness(),
+            store_address,
+            coordinates,
+            player_id,
+            claimed_at
+        );
 
         // create rosters after claiming the island
         let roster_sequence_number: u32 = 0;
@@ -81,5 +94,4 @@ module infinite_seas::player_claim_island_logic {
 
         player
     }
-
 }

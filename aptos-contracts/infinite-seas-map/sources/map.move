@@ -22,6 +22,7 @@ module infinite_seas_map::map {
     const EInappropriateVersion: u64 = 103;
     const ENotInitialized: u64 = 110;
     const EIdNotFound: u64 = 111;
+    const EMismatchedStoreAddress: u64 = 112;
 
     struct Events has key {
         island_added_handle: event::EventHandle<IslandAdded>,
@@ -274,6 +275,17 @@ module infinite_seas_map::map {
         assert!(exists<Map>(store_address), ENotInitialized);
         let map = borrow_global_mut<Map>(store_address);
         map.version = map.version + 1;
+    }
+
+    public fun get_singleton_map(store_address: address): pass_object::PassObject<Map> acquires Map {
+        let map = remove_map(store_address);
+        pass_object::new_with_address(map, store_address, )
+    }
+
+    public fun return_singleton_map(store_account: &signer, map_pass_obj: pass_object::PassObject<Map>) {
+        let (map, store_address, ) = pass_object::extract_value_and_address(map_pass_obj);
+        assert!(std::signer::address_of(store_account) == store_address, EMismatchedStoreAddress);
+        private_add_map(store_account, map);
     }
 
     public(friend) fun drop_map(map: Map) {
