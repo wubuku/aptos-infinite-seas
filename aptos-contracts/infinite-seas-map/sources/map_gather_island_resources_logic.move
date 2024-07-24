@@ -75,8 +75,12 @@ module infinite_seas_map::map_gather_island_resources_logic {
         let coordinates = map::island_resources_gathered_coordinates(island_resources_gathered);
         let resources = map::island_resources_gathered_resources(island_resources_gathered);
         let gathered_at = map::island_resources_gathered_gathered_at(island_resources_gathered);
-        // TODO ...
-        //
+
+        let island = map::singleton_remove_location(store_address, coordinates);
+        map_location::set_resources(&mut island, vector::empty());
+        map_location::set_gathered_at(&mut island, gathered_at);
+        map::singleton_add_location(store_address, island); // return the MapLocation back to the map.
+
         item_id_quantity_pairs::new_by_vector(resources)
     }
 

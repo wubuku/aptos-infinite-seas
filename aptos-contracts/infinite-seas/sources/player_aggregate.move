@@ -11,6 +11,7 @@ module infinite_seas::player_aggregate {
     use infinite_seas::player_airdrop_logic;
     use infinite_seas::player_claim_island_logic;
     use infinite_seas::player_create_logic;
+    use infinite_seas::player_gather_island_resources_logic;
     use infinite_seas_common::coordinates::{Self, Coordinates};
     use std::string::String;
 
@@ -100,6 +101,27 @@ module infinite_seas::player_aggregate {
         );
         player::update_version_and_add(id, updated_player);
         player::emit_player_airdropped(player_airdropped);
+    }
+
+    public entry fun gather_island_resources(
+        account: &signer,
+        player_obj: Object<Player>,
+    ) {
+        let id = object::object_address(&player_obj);
+        let player = player::remove_player(id);
+        let player_island_resources_gathered = player_gather_island_resources_logic::verify(
+            account,
+            id,
+            &player,
+        );
+        let updated_player = player_gather_island_resources_logic::mutate(
+            account,
+            &player_island_resources_gathered,
+            id,
+            player,
+        );
+        player::update_version_and_add(id, updated_player);
+        player::emit_player_island_resources_gathered(player_island_resources_gathered);
     }
 
 }

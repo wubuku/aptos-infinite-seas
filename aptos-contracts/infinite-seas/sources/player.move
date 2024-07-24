@@ -16,7 +16,9 @@ module infinite_seas::player {
     friend infinite_seas::player_create_logic;
     friend infinite_seas::player_claim_island_logic;
     friend infinite_seas::player_airdrop_logic;
+    friend infinite_seas::player_gather_island_resources_logic;
     friend infinite_seas::player_aggregate;
+    friend infinite_seas::player_properties;
 
     const EDataTooLong: u64 = 102;
     const EInappropriateVersion: u64 = 103;
@@ -32,6 +34,7 @@ module infinite_seas::player {
         player_created_handle: event::EventHandle<PlayerCreated>,
         island_claimed_handle: event::EventHandle<IslandClaimed>,
         player_airdropped_handle: event::EventHandle<PlayerAirdropped>,
+        player_island_resources_gathered_handle: event::EventHandle<PlayerIslandResourcesGathered>,
     }
 
     public fun initialize(account: &signer) {
@@ -42,6 +45,7 @@ module infinite_seas::player {
             player_created_handle: account::new_event_handle<PlayerCreated>(&res_account),
             island_claimed_handle: account::new_event_handle<IslandClaimed>(&res_account),
             player_airdropped_handle: account::new_event_handle<PlayerAirdropped>(&res_account),
+            player_island_resources_gathered_handle: account::new_event_handle<PlayerIslandResourcesGathered>(&res_account),
         });
 
     }
@@ -255,6 +259,25 @@ module infinite_seas::player {
         }
     }
 
+    struct PlayerIslandResourcesGathered has store, drop {
+        id: address,
+        version: u64,
+    }
+
+    public fun player_island_resources_gathered_id(player_island_resources_gathered: &PlayerIslandResourcesGathered): address {
+        player_island_resources_gathered.id
+    }
+
+    public(friend) fun new_player_island_resources_gathered(
+        id: address,
+        player: &Player,
+    ): PlayerIslandResourcesGathered {
+        PlayerIslandResourcesGathered {
+            id,
+            version: version(player),
+        }
+    }
+
 
     public(friend) fun update_version_and_add(obj_addr: address, player: Player) acquires ObjectController {
         player.version = player.version + 1;
@@ -316,6 +339,12 @@ module infinite_seas::player {
         assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
         let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
         event::emit_event(&mut events.player_airdropped_handle, player_airdropped);
+    }
+
+    public(friend) fun emit_player_island_resources_gathered(player_island_resources_gathered: PlayerIslandResourcesGathered) acquires Events {
+        assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
+        let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
+        event::emit_event(&mut events.player_island_resources_gathered_handle, player_island_resources_gathered);
     }
 
 }

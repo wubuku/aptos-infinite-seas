@@ -3,6 +3,7 @@ singletonObjects:
     module: "Map"
     metadata:
       IS_MOVE_SCHEMA_VERSIONED: true
+      MoveExternalFriendConfiguration: "MapFriendConfig"
     friends:
       - Player.ClaimIsland
       - Player.GatherIslandResources
@@ -42,7 +43,9 @@ singletonObjects:
           name: IslandAdded
 
       ClaimIsland:
-        isInternal: true
+        #isInternal: true
+        metadata:
+          IsExternalFriendly: true
         parameters:
           Coordinates:
             type: Coordinates
@@ -54,8 +57,9 @@ singletonObjects:
           name: MapIslandClaimed
 
       GatherIslandResources:
-        # metadata:
-        #   ParametersIncludedInMutationFunction: [ "Clock" ]
+        metadata:
+          IsExternalFriendly: true
+          #ParametersIncludedInMutationFunction: [ "Clock" ]
         isInternal: true
         parameters:
           PlayerId:
