@@ -7,6 +7,7 @@ module infinite_seas::pass_object {
     use std::option::{Self, Option};
 
     friend infinite_seas::player;
+    friend infinite_seas::skill_process;
 
     const EIncorrectUsage: u64 = 101;
 

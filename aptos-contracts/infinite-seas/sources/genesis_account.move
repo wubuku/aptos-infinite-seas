@@ -13,6 +13,8 @@ module infinite_seas::genesis_account {
     friend infinite_seas::player;
     friend infinite_seas::player_aggregate;
     friend infinite_seas::player_claim_island_logic;
+    friend infinite_seas::skill_process;
+    friend infinite_seas::skill_process_aggregate;
 
     const ENotGenesisAccount: u64 = 100;
 

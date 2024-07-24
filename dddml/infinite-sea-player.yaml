@@ -3,11 +3,11 @@ aggregates:
     metadata:
       ShouldIssuePublisherObject: true
       MOVE_AGGREGATE_MODULE_ATTRIBUTES: "#[allow(unused_mut_parameter, unused_use)]"
-      # DataAccessFriends:
-      #   - Roster.PutInShipInventory
-      #   - Roster.TakeOutShipInventory
-      #   - ShipBattle.TakeLoot
-      #   - "infinite_seas::player_properties"
+      DataAccessFriends:
+        #- Roster.PutInShipInventory
+        #- Roster.TakeOutShipInventory
+        #- ShipBattle.TakeLoot
+        - "infinite_seas::player_properties"
       # Generate scheduled method that pulls on-chain states of all instances
       GENERATE_PULLING_ALL_ON_CHAIN_INSTANCE_STATES: true
     id:
@@ -85,7 +85,7 @@ aggregates:
             type: u64
         verificationLogic:
           Move: >
-            assert!(sui::tx_context::sender(ctx) == player::owner(player), ESenderHasNoPermission);
+            assert!(std::signer::address_of(account) == player::owner(player), ESenderHasNoPermission);
 
       Airdrop:
         requiredPermission: "__Publisher__"

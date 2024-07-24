@@ -1,87 +1,103 @@
-# aggregates:
-#   SkillProcess:
-#     metadata:
-#       Preprocessors: [ "MOVE_CRUD_IT" ]
-#       CRUD_IT_NO_UPDATE: true
-#       CRUD_IT_NO_DELETE: true
-#       NO_MOVE_EVENT_MODULE: true
-#       ShouldIssuePublisherObject: true
-#     friends:
-#       - Player.ClaimIsland
-#     id:
-#       name: SkillProcessId
-#       type: SkillProcessId
-#       generator:
-#         class: assigned
-#         tableName: SkillProcessTable
-#     properties:
-#       ItemId:
-#         type: u32
-#         defaultLogic:
-#           Move: "infinite_seas_common::item_id::unused_item()"
-#       StartedAt:
-#         type: u64
-#         defaultLogic:
-#           Move: "0"
-#       CreationTime:
-#         type: u64
-#         defaultLogic:
-#           Move: "0"
-#       Completed:
-#         type: bool
-#         defaultLogic:
-#           Move: "true"
-#       EndedAt:
-#         type: u64
-#         defaultLogic:
-#           Move: "0"
-#       EnergyVault:
-#         type: "Balance<ENERGY>"
-#       ProductionMaterials:
-#         type: ItemIdQuantityPairs
-#         optional: true
-#         description: "Actual input materials for production"
-#         defaultLogic:
-#           Move: "std::option::none()"
-#       BatchSize:
-#         type: u32
-#         defaultLogic:
-#           Move: "1"
+ aggregates:
+   SkillProcess:
+     metadata:
+       Preprocessors: [ "MOVE_CRUD_IT" ]
+       CRUD_IT_NO_UPDATE: true
+       CRUD_IT_NO_DELETE: true
+       NO_MOVE_EVENT_MODULE: true
+       #ShouldIssuePublisherObject: true
+     friends:
+       - Player.ClaimIsland
+     id:
+       name: Id
+       type: AptosObjectID
+       generator:
+         class: AptosObject
+         isNamedObject: true
+         creatorType: ResourceAccount
+         seed:
+           "__Property__": "SkillProcessId"
+     #id:
+     #  name: SkillProcessId
+     #  type: SkillProcessId
+     #  generator:
+     #    class: assigned
+     #    tableName: SkillProcessTable
+     properties:
+       SkillProcessId:
+         type: SkillProcessId
+       ItemId:
+         type: u32
+         defaultLogic:
+           Move: "infinite_seas_common::item_id::unused_item()"
+       StartedAt:
+         type: u64
+         defaultLogic:
+           Move: "0"
+       CreationTime:
+         type: u64
+         defaultLogic:
+           Move: "0"
+       Completed:
+         type: bool
+         defaultLogic:
+           Move: "true"
+       EndedAt:
+         type: u64
+         defaultLogic:
+           Move: "0"
+       #EnergyVault:
+       #  type: "Balance<ENERGY>"
+       ProductionMaterials:
+         type: ItemIdQuantityPairs
+         optional: true
+         description: "Actual input materials for production"
+         defaultLogic:
+           Move: "std::option::none()"
+       BatchSize:
+         type: u32
+         defaultLogic:
+           Move: "1"
 
-#     methods:
-#       Create:
-#         parameters:
-#           Player:
-#             referenceType: Player
-#             isIgnoredInEvent: true
-#         event:
-#           isObjectShared: true # Share the object after created.
-#         constants:
-#           EInvalidPlayerId:
-#             constantExpression:
-#               Move: 10
-#             type: u64
-#           ESenderHasNoPermission:
-#             constantExpression:
-#               Move: 22
-#             type: u64
-#           EInvalidSequenceNumber:
-#             constantExpression:
-#               Move: 23
-#             type: u64
-#         verificationLogic:
-#           Move: >
-#             assert!(sui::tx_context::sender(ctx) == player::owner(player), ESenderHasNoPermission);
-#                     let player_id = infinite_seas_common::skill_process_id::player_id(&skill_process_id);
-#                     assert!(player::id(player) == player_id, EInvalidPlayerId);
-#                     assert!(
-#                         infinite_seas_common::skill_process_id::sequence_number(
-#                             &skill_process_id
-#                         ) <= infinite_seas::skill_process_util::skill_type_max_sequence_number(
-#                             infinite_seas_common::skill_process_id::skill_type(&skill_process_id)
-#                         ),
-#                         EInvalidSequenceNumber
-#                     );
+     methods:
+       Create:
+         parameters:
+           SkillProcessId:
+             type: SkillProcessId
+           #Player:
+           #  referenceType: Player
+           #  isIgnoredInEvent: true
+         #event:
+         #  isObjectShared: true # Share the object after created.
+         constants:
+           EInvalidPlayerId:
+             constantExpression:
+               Move: 10
+             type: u64
+           ESenderHasNoPermission:
+             constantExpression:
+               Move: 22
+             type: u64
+           EInvalidSequenceNumber:
+             constantExpression:
+               Move: 23
+             type: u64
+         verificationLogic:
+           Move: >
+             let player_id = infinite_seas_common::skill_process_id::player_id(&skill_process_id);
+                     assert!(aptos_framework::object::object_exists<infinite_seas::player::Player>(player_id), EInvalidPlayerId);
+                     let player_pass_obj = infinite_seas::player::get_player(player_id);
+                     let player = infinite_seas::pass_object::borrow(&player_pass_obj);
+                     assert!(std::signer::address_of(account) == infinite_seas::player::owner(player), ESenderHasNoPermission);
+                     infinite_seas::player::return_player(player_pass_obj);
+                     assert!(
+                         infinite_seas_common::skill_process_id::sequence_number(
+                             &skill_process_id
+                         ) <= infinite_seas::skill_process_util::skill_type_max_sequence_number(
+                             infinite_seas_common::skill_process_id::skill_type(&skill_process_id)
+                         ),
+                         EInvalidSequenceNumber
+                     );
 
 #       StartProduction:
 #         inheritsFrom: SkillProcessTemplate.StartProduction
