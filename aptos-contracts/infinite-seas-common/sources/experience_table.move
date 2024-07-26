@@ -15,6 +15,7 @@ module infinite_seas_common::experience_table {
     const EDataTooLong: u64 = 102;
     const EInappropriateVersion: u64 = 103;
     const ENotInitialized: u64 = 110;
+    const EMismatchedStoreAddress: u64 = 112;
 
     struct Events has key {
         experience_level_added_handle: event::EventHandle<ExperienceLevelAdded>,
@@ -209,7 +210,7 @@ module infinite_seas_common::experience_table {
 
     public fun return_singleton_experience_table(store_account: &signer, experience_table_pass_obj: pass_object::PassObject<ExperienceTable>) {
         let (experience_table, store_address, ) = pass_object::extract_value_and_address(experience_table_pass_obj);
-        //todo assert!(std::signer::address_of(store_account, ) == store_address, EMismatchedStoreAddress);
+        assert!(std::signer::address_of(store_account, ) == store_address, EMismatchedStoreAddress);
         private_add_experience_table(store_account, experience_table);
     }
 

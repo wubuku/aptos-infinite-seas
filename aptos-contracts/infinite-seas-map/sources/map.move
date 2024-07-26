@@ -72,7 +72,7 @@ module infinite_seas_map::map {
     }
 
     public(friend) fun singleton_add_location(store_address: address, location: MapLocation) acquires Map, Events {
-        let map = borrow_global_mut<Map>(store_address);
+        let map = borrow_global_mut<Map>(store_address, );
         add_location(store_address, map, location)
     }
 
@@ -105,7 +105,7 @@ module infinite_seas_map::map {
     }
 
     public fun singleton_locations_contains(store_address: address, coordinates: Coordinates): bool acquires Map {
-        let map = borrow_global<Map>(store_address);
+        let map = borrow_global<Map>(store_address, );
         locations_contains(map, coordinates)
     }
 
@@ -113,8 +113,8 @@ module infinite_seas_map::map {
         table_with_length::length(&map.locations)
     }
 
-    public fun singleton_locations_length(store_address: address): u64 acquires Map {
-        let map = borrow_global<Map>(store_address);
+    public fun singleton_locations_length(store_address: address, ): u64 acquires Map {
+        let map = borrow_global<Map>(store_address, );
         locations_length(map)
     }
 
