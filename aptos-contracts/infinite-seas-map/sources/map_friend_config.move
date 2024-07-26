@@ -26,7 +26,7 @@ module infinite_seas_map::map_friend_config {
         move_to(account, config);
     }
 
-    public fun add_allowed_caller<WT: drop>(account: &signer) acquires MapFriendConfig {
+    public entry fun add_allowed_caller<WT: drop>(account: &signer) acquires MapFriendConfig {
         assert!(std::signer::address_of(account) == @infinite_seas_map, ENotPublisher); // NOTE: Is this ok?
         let config = borrow_global_mut<MapFriendConfig>(signer::address_of(account));
         let type_name = type_info::type_name<WT>();
@@ -35,7 +35,7 @@ module infinite_seas_map::map_friend_config {
         };
     }
 
-    public fun remove_allowed_caller<WT: drop>(account: &signer) acquires MapFriendConfig {
+    public entry fun remove_allowed_caller<WT: drop>(account: &signer) acquires MapFriendConfig {
         assert!(std::signer::address_of(account) == @infinite_seas_map, ENotPublisher); // NOTE: Is this ok?
         let config = borrow_global_mut<MapFriendConfig>(signer::address_of(account));
         let type_name = type_info::type_name<WT>();

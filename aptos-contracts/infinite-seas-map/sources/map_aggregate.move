@@ -6,10 +6,10 @@
 module infinite_seas_map::map_aggregate {
     use infinite_seas_common::coordinates::{Self, Coordinates};
     use infinite_seas_common::item_id_quantity_pairs::{Self, ItemIdQuantityPairs};
-    use infinite_seas_map::map_friend_config;
     use infinite_seas_map::map;
     use infinite_seas_map::map_add_island_logic;
     use infinite_seas_map::map_claim_island_logic;
+    use infinite_seas_map::map_friend_config;
     use infinite_seas_map::map_gather_island_resources_logic;
 
     const ENotPublisher: u64 = 50;
@@ -46,8 +46,8 @@ module infinite_seas_map::map_aggregate {
     }
 
     public fun claim_island<FWT: drop>(
-        account: &signer,
         _friend_witness: FWT,
+        account: &signer,
         store_address: address,
         coordinates: Coordinates,
         claimed_by: address,
@@ -70,8 +70,8 @@ module infinite_seas_map::map_aggregate {
     }
 
     public fun gather_island_resources<FWT: drop>(
-        account: &signer,
         _friend_witness: FWT,
+        account: &signer,
         store_address: address,
         player_id: address,
         coordinates: Coordinates,

@@ -18,23 +18,23 @@ module infinite_seas::player {
     friend infinite_seas::player_airdrop_logic;
     friend infinite_seas::player_gather_island_resources_logic;
     friend infinite_seas::player_aggregate;
-    friend infinite_seas::player_properties;
 
+    friend infinite_seas::player_properties;
     const EDataTooLong: u64 = 102;
     const EInappropriateVersion: u64 = 103;
     const ENotInitialized: u64 = 110;
-
-    struct FriendWitness has drop {}
-
-    public(friend) fun friend_witness(): FriendWitness {
-        FriendWitness {}
-    }
 
     struct Events has key {
         player_created_handle: event::EventHandle<PlayerCreated>,
         island_claimed_handle: event::EventHandle<IslandClaimed>,
         player_airdropped_handle: event::EventHandle<PlayerAirdropped>,
         player_island_resources_gathered_handle: event::EventHandle<PlayerIslandResourcesGathered>,
+    }
+
+    struct FriendWitness has drop {}
+
+    public(friend) fun friend_witness(): FriendWitness {
+        FriendWitness {}
     }
 
     public fun initialize(account: &signer) {

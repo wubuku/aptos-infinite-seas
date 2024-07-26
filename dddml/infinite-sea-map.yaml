@@ -57,10 +57,10 @@ singletonObjects:
           name: MapIslandClaimed
 
       GatherIslandResources:
+        #isInternal: true
         metadata:
           IsExternalFriendly: true
           #ParametersIncludedInMutationFunction: [ "Clock" ]
-        isInternal: true
         parameters:
           PlayerId:
             #referenceType: Player

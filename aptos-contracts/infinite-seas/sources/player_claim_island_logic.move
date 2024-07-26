@@ -54,8 +54,8 @@ module infinite_seas::player_claim_island_logic {
         map::return_singleton_map(&genesis_account::resource_account_signer(), map_pass_obj);
         // call map_aggregate::claim_island
         map_aggregate::claim_island(
-            _account,
             player::friend_witness(),
+            _account,
             store_address,
             coordinates,
             player_id,

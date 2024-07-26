@@ -29,8 +29,8 @@ module infinite_seas::player_gather_island_resources_logic {
     ): player::Player {
         let coordinates_o = player::claimed_island(&player);
         let resources = map_aggregate::gather_island_resources(
-            _account,
             player::friend_witness(),
+            _account,
             genesis_account::resource_account_address(),
             id,
             option::extract(&mut coordinates_o),
