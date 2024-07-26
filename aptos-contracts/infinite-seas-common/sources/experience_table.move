@@ -161,6 +161,11 @@ module infinite_seas_common::experience_table {
         move_to(store_account, experience_table);
     }
 
+    public fun get_singleton_experience_table(store_address: address, ): pass_object::PassObject<ExperienceTable> acquires ExperienceTable {
+        let experience_table = remove_experience_table(store_address, );
+        pass_object::new_with_address(experience_table, store_address, )
+    }
+
     public fun singleton_version(store_address: address, ): u64 acquires ExperienceTable {
         let experience_table = borrow_global<ExperienceTable>(store_address);
         experience_table.version
@@ -200,6 +205,12 @@ module infinite_seas_common::experience_table {
     public fun set_singleton_levels(store_address: address, levels: vector<ExperienceLevel>) acquires ExperienceTable {
         let experience_table = borrow_global_mut<ExperienceTable>(store_address);
         experience_table.levels = levels;
+    }
+
+    public fun return_singleton_experience_table(store_account: &signer, experience_table_pass_obj: pass_object::PassObject<ExperienceTable>) {
+        let (experience_table, store_address, ) = pass_object::extract_value_and_address(experience_table_pass_obj);
+        //todo assert!(std::signer::address_of(store_account, ) == store_address, EMismatchedStoreAddress);
+        private_add_experience_table(store_account, experience_table);
     }
 
     public(friend) fun set_all_porperties(store_address: address, levels: vector<ExperienceLevel>) acquires ExperienceTable {

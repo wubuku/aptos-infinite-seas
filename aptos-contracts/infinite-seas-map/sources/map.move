@@ -87,19 +87,14 @@ module infinite_seas_map::map {
     }
 
     public(friend) fun singleton_remove_location(store_address: address, coordinates: Coordinates): MapLocation acquires Map {
-        let map = borrow_global_mut<Map>(store_address);
+        let map = borrow_global_mut<Map>(store_address, );
         remove_location(map, coordinates)
     }
+
 
     public(friend) fun borrow_mut_location(map: &mut Map, coordinates: Coordinates): &mut MapLocation {
         table_with_length::borrow_mut(&mut map.locations, coordinates)
     }
-
-    // Such code will not pass compilation:
-    // public(friend) fun singleton_borrow_mut_location(store_address: address, coordinates: Coordinates): &mut MapLocation acquires Map {
-    //     let map = borrow_global_mut<Map>(store_address);
-    //     table_with_length::borrow_mut(&mut map.locations, coordinates)
-    // }
 
     public fun borrow_location(map: &Map, coordinates: Coordinates): &MapLocation {
         table_with_length::borrow(&map.locations, coordinates)
@@ -261,6 +256,11 @@ module infinite_seas_map::map {
         move_to(store_account, map);
     }
 
+    public fun get_singleton_map(store_address: address, ): pass_object::PassObject<Map> acquires Map {
+        let map = remove_map(store_address, );
+        pass_object::new_with_address(map, store_address, )
+    }
+
     public fun singleton_version(store_address: address, ): u64 acquires Map {
         let map = borrow_global<Map>(store_address);
         map.version
@@ -271,21 +271,16 @@ module infinite_seas_map::map {
         map.version = version;
     }
 
+    public fun return_singleton_map(store_account: &signer, map_pass_obj: pass_object::PassObject<Map>) {
+        let (map, store_address, ) = pass_object::extract_value_and_address(map_pass_obj);
+        assert!(std::signer::address_of(store_account, ) == store_address, EMismatchedStoreAddress);
+        private_add_map(store_account, map);
+    }
+
     public(friend) fun set_all_porperties(store_address: address, ) acquires Map {
         assert!(exists<Map>(store_address), ENotInitialized);
         let map = borrow_global_mut<Map>(store_address);
         map.version = map.version + 1;
-    }
-
-    public fun get_singleton_map(store_address: address): pass_object::PassObject<Map> acquires Map {
-        let map = remove_map(store_address);
-        pass_object::new_with_address(map, store_address, )
-    }
-
-    public fun return_singleton_map(store_account: &signer, map_pass_obj: pass_object::PassObject<Map>) {
-        let (map, store_address, ) = pass_object::extract_value_and_address(map_pass_obj);
-        assert!(std::signer::address_of(store_account) == store_address, EMismatchedStoreAddress);
-        private_add_map(store_account, map);
     }
 
     public(friend) fun drop_map(map: Map) {
