@@ -22,6 +22,9 @@ module infinite_seas::genesis_account {
     friend infinite_seas::ship;
     friend infinite_seas::ship_aggregate;
     friend infinite_seas::ship_create_logic;
+    friend infinite_seas::roster;
+    friend infinite_seas::roster_aggregate;
+    friend infinite_seas::roster_create_logic;
 
     const ENotGenesisAccount: u64 = 100;
 

@@ -9,6 +9,7 @@ module infinite_seas::pass_object {
     friend infinite_seas::player;
     friend infinite_seas::skill_process;
     friend infinite_seas::ship;
+    friend infinite_seas::roster;
 
     const EIncorrectUsage: u64 = 101;
     const ENoneObjectAddress: u64 = 102;

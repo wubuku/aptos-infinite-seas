@@ -191,83 +191,88 @@
          #  isObjectShared: true # Share the object after created.
 
 
-#   Roster:
-#     id:
-#       name: RosterId
-#       type: RosterId
-#       generator:
-#         class: assigned
-#         tableName: RosterTable
-#     metadata:
-#       #HasStoreAbility: true
-#       Preprocessors: [ "MOVE_CRUD_IT" ]
-#       CRUD_IT_NO_UPDATE: true
-#       CRUD_IT_NO_DELETE: true
-#       ShouldIssuePublisherObject: true
-#       IS_MOVE_SCHEMA_VERSIONED: true
+   Roster:
+     id:
+       name: Id
+       type: AptosObjectID
+       generator:
+         class: AptosObject
+         isNamedObject: true
+         creatorType: ResourceAccount
+         seed:
+           "__Property__": "RosterId"
+     metadata:
+       #HasStoreAbility: true
+       Preprocessors: [ "MOVE_CRUD_IT" ]
+       CRUD_IT_NO_UPDATE: true
+       CRUD_IT_NO_DELETE: true
+       ShouldIssuePublisherObject: true
+       IS_MOVE_SCHEMA_VERSIONED: true
 #       DataAccessFriends:
 #         # Make some methods can access ("write") Roster's data model.
 #         # This should only be done occasionally!
 #         - ShipBattle.InitiateBattle
 #         - ShipBattle.MakeMove
 #         - ShipBattle.TakeLoot
-#     friends:
-#       - Player.Create
-#       - Player.ClaimIsland
+     friends:
+       - Player.Create
+       - Player.ClaimIsland
 #       - SkillProcess.CompleteShipProduction
 #       - ShipBattle.InitiateBattle
-#     properties:
-#       Status:
-#         type: u8
-#       Speed:
-#         type: u32
-#       ShipIds:
-#         itemtype: address # Ship ID
-#         defaultLogic:
-#           Move: "std::vector::empty()"
-#       Ships:
-#         type: ObjectTable<ID, Ship>
-#         typeArguments:
-#           - # not set for ID
-#           - persistenceType: JsonObject
-#       UpdatedCoordinates:
-#         type: Coordinates
-#         description: "The last updated coordinates"
-#       CoordinatesUpdatedAt:
-#         type: u64
-#       TargetCoordinates:
-#         type: Coordinates
-#         optional: true
-#       OriginCoordinates:
-#         type: Coordinates
-#         optional: true
-#       SailDuration:
-#         type: u64
-#         defaultLogic:
-#           Move: "0"
-#       ShipBattleId:
-#         type: address
-#         optional: true
-#       EnvironmentOwned:
-#         type: bool
-#         description: "Whether the roster is owned by the environment"
-#         defaultLogic:
-#           Move: "false"
-#       BaseExperience:
-#         type: u32
-#         optional: true
-#         description: "The base experience value gained by the player when the roster is destroyed"
-#         defaultLogic:
-#           Move: "std::option::none()"
-#       EnergyVault:
-#         type: "Balance<ENERGY>"
-#     methods:
-#       Create:
-#         isInternal: true
-#         result:
-#           isObjectReturned: true
-#         event:
-#           isObjectShared: true # Share the object after created.
+     properties:
+       RosterId:
+         type: RosterId
+       Status:
+         type: u8
+       Speed:
+         type: u32
+       ShipIds:
+         itemType: address # Ship ID
+         defaultLogic:
+           Move: "std::vector::empty()"
+       #Ships:
+       #  type: ObjectTable<ID, Ship>
+       #  typeArguments:
+       #    - # not set for ID
+       #    - persistenceType: JsonObject
+       UpdatedCoordinates:
+         type: Coordinates
+         description: "The last updated coordinates"
+       CoordinatesUpdatedAt:
+         type: u64
+       TargetCoordinates:
+         type: Coordinates
+         optional: true
+       OriginCoordinates:
+         type: Coordinates
+         optional: true
+       SailDuration:
+         type: u64
+         defaultLogic:
+           Move: "0"
+       ShipBattleId:
+         type: address
+         optional: true
+       EnvironmentOwned:
+         type: bool
+         description: "Whether the roster is owned by the environment"
+         defaultLogic:
+           Move: "false"
+       BaseExperience:
+         type: u32
+         optional: true
+         description: "The base experience value gained by the player when the roster is destroyed"
+         defaultLogic:
+           Move: "std::option::none()"
+       #TODO: EnergyVault:
+       #  type: "Balance<ENERGY>"
+     methods:
+       Create:
+         isInternal: true
+         result:
+           isObjectReturned: true
+         #event:
+         #  isObjectShared: true # Share the object after created.
 
 #       CreateEnvironmentRoster:
 #         isCreationCommand: true
@@ -356,7 +361,7 @@
 #           Positions:
 #             itemType: u64
 #           ShipIds:
-#             itemtype: address
+#             itemType: address
 #         event:
 #           name: RosterShipsPositionAdjusted
 
