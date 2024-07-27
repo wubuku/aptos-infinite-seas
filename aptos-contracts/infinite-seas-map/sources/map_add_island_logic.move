@@ -1,8 +1,12 @@
 module infinite_seas_map::map_add_island_logic {
     use infinite_seas_common::coordinates::Coordinates;
+    use infinite_seas_common::item_id_quantity_pairs;
     use infinite_seas_common::item_id_quantity_pairs::ItemIdQuantityPairs;
+    use infinite_seas_common::map_location_type;
     use infinite_seas_map::map;
     use infinite_seas_map::map_location::{Self, MapLocation};
+    use std::option;
+    use infinite_seas_map::infinite_seas_map_pass_object;
 
     friend infinite_seas_map::map_aggregate;
 
@@ -25,8 +29,15 @@ module infinite_seas_map::map_add_island_logic {
     ) {
         let coordinates = map::island_added_coordinates(island_added);
         let resources = map::island_added_resources(island_added);
-        // ...
-        //
+
+        let island = map_location::new_map_location(
+            coordinates,
+            map_location_type::island(),
+            option::none(),
+            item_id_quantity_pairs::items(&resources),
+            0
+        );
+        map::singleton_add_location(store_address, island);
     }
 
 }

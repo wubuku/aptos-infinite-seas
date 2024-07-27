@@ -261,6 +261,10 @@ module infinite_seas_map::map {
         pass_object::new_with_address(map, store_address, )
     }
 
+    public(friend) fun borrow_singleton_mut(map_pass_obj: &mut pass_object::PassObject<Map>): &mut Map {
+        pass_object::borrow_mut(map_pass_obj)
+    }
+
     public fun singleton_version(store_address: address, ): u64 acquires Map {
         let map = borrow_global<Map>(store_address);
         map.version

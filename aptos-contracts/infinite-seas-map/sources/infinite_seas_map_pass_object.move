@@ -50,6 +50,10 @@ module infinite_seas_map::infinite_seas_map_pass_object {
         borrow(pass_object)
     }
 
+    public(friend) fun borrow_mut<T>(pass_object: &mut PassObject<T>): &mut T {
+        &mut pass_object.value
+    }
+
     public fun object_address<T>(pass_object: &PassObject<T>): Option<address> {
         pass_object.object_address
     }
