@@ -5,7 +5,61 @@
 
 module infinite_seas::ship_battle_aggregate {
     use aptos_framework::object::{Self, Object};
+    use infinite_seas::player::Player;
+    use infinite_seas::roster::Roster;
     use infinite_seas::ship_battle::{Self, ShipBattle};
+    use infinite_seas::ship_battle_initiate_battle_logic;
+    use infinite_seas_common::coordinates::{Self, Coordinates};
     use std::signer;
+
+    public fun initiate_battle(
+        account: &signer,
+        player: Object<Player>,
+        initiator: Object<Roster>,
+        responder: Object<Roster>,
+        initiator_coordinates_x: u32,
+        initiator_coordinates_y: u32,
+        responder_coordinates_x: u32,
+        responder_coordinates_y: u32,
+    ): Object<ship_battle::ShipBattle> {
+        let initiator_coordinates: Coordinates = coordinates::new(
+            initiator_coordinates_x,
+            initiator_coordinates_y,
+        );
+        let responder_coordinates: Coordinates = coordinates::new(
+            responder_coordinates_x,
+            responder_coordinates_y,
+        );
+        let ship_battle_initiated = ship_battle_initiate_battle_logic::verify(
+            account,
+            player,
+            initiator,
+            responder,
+            initiator_coordinates,
+            responder_coordinates,
+        );
+        let account_address = signer::address_of(account);
+        let constructor_ref = object::create_object(account_address);
+        let object_signer = object::generate_signer(&constructor_ref);
+        let extend_ref = object::generate_extend_ref(&constructor_ref);
+        let delete_ref = object::generate_delete_ref(&constructor_ref);
+        let transfer_ref = object::generate_transfer_ref(&constructor_ref);
+        object::disable_ungated_transfer(&transfer_ref);
+        let id = object::address_from_constructor_ref(&constructor_ref);
+        let ship_battle = ship_battle_initiate_battle_logic::mutate(
+            account,
+            &mut ship_battle_initiated,
+            id,
+        );
+        ship_battle::add_ship_battle(&object_signer, ship_battle);
+        ship_battle::save_object_controller(&object_signer,
+            extend_ref,
+            delete_ref,
+            transfer_ref,
+        );
+        ship_battle::set_ship_battle_initiated_id(&mut ship_battle_initiated, id);
+        ship_battle::emit_ship_battle_initiated(ship_battle_initiated);
+        object::address_to_object(id)
+    }
 
 }

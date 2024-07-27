@@ -459,49 +459,51 @@
        RoundDefenderShip:
          type: address
          optional: true
-#     methods:
-#       InitiateBattle:
-#         isCreationCommand: true
-#         parameters:
-#           Player:
-#             referenceType: Player
-#             isIgnoredInEvent: true
-#           Initiator:
-#             referenceType: Roster
-#             isMutableReference: true
-#             isIgnoredInEvent: true
-#           Responder:
-#             referenceType: Roster
-#             isMutableReference: true
-#             isIgnoredInEvent: true
-#           Clock:
-#             referenceType: Clock
-#             isIgnoredInEvent: true
-#           InitiatorCoordinates:
-#             type: Coordinates
-#           ResponderCoordinates:
-#             type: Coordinates
-#         result:
-#           isObjectReturned: true
-#         event:
-#           name: ShipBattleInitiated
-#           isObjectShared: true
-#           properties:
-#             InitiatorId:
-#               type: address
-#             ResponderId:
-#               type: address
-#             StartedAt:
-#               type: u64
-#             FirstRoundMover:
-#               type: u8
-#               optional: true
-#             FirstRoundAttackerShip:
-#               type: address
-#               optional: true
-#             FirstRoundDefenderShip:
-#               type: address
-#               optional: true
+     methods:
+       InitiateBattle:
+         isCreationCommand: true
+         parameters:
+           Player:
+             type: Object<Player> #referenceType: Player
+             eventPropertyName: PlayerId #isIgnoredInEvent: true
+           Initiator:
+             type: Object<Roster> #referenceType: Roster
+             #isMutableReference: true
+             eventPropertyName: InitiatorId #isIgnoredInEvent: true
+           Responder:
+             type: Object<Roster> #referenceType: Roster
+             #isMutableReference: true
+             eventPropertyName: ResponderId #isIgnoredInEvent: true
+           #Clock:
+           #  referenceType: Clock
+           #  isIgnoredInEvent: true
+           InitiatorCoordinates:
+             type: Coordinates
+           ResponderCoordinates:
+             type: Coordinates
+         result:
+           isObjectReturned: true
+         event:
+           name: ShipBattleInitiated
+           #isObjectShared: true
+           properties:
+             InitiatorId:
+               type: address
+             ResponderId:
+               type: address
+             PlayerId:
+               type: address
+             StartedAt:
+               type: u64
+             FirstRoundMover:
+               type: u8
+               optional: true
+             FirstRoundAttackerShip:
+               type: address
+               optional: true
+             FirstRoundDefenderShip:
+               type: address
+               optional: true
 
 #       MakeMove:
 #         parameters:

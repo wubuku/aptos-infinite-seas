@@ -9,7 +9,9 @@ module infinite_seas::ship_battle {
     use aptos_framework::object;
     use infinite_seas::genesis_account;
     use infinite_seas::pass_object;
+    use infinite_seas_common::coordinates::Coordinates;
     use std::option::{Self, Option};
+    friend infinite_seas::ship_battle_initiate_battle_logic;
     friend infinite_seas::ship_battle_aggregate;
 
     const EDataTooLong: u64 = 102;
@@ -17,6 +19,7 @@ module infinite_seas::ship_battle {
     const ENotInitialized: u64 = 110;
 
     struct Events has key {
+        ship_battle_initiated_handle: event::EventHandle<ShipBattleInitiated>,
     }
 
     public fun initialize(account: &signer) {
@@ -24,6 +27,7 @@ module infinite_seas::ship_battle {
 
         let res_account = genesis_account::resource_account_signer();
         move_to(&res_account, Events {
+            ship_battle_initiated_handle: account::new_event_handle<ShipBattleInitiated>(&res_account),
         });
 
     }
@@ -211,6 +215,100 @@ module infinite_seas::ship_battle {
         }
     }
 
+    struct ShipBattleInitiated has store, drop {
+        id: option::Option<address>,
+        player_id: address,
+        initiator_id: address,
+        responder_id: address,
+        initiator_coordinates: Coordinates,
+        responder_coordinates: Coordinates,
+        started_at: u64,
+        first_round_mover: Option<u8>,
+        first_round_attacker_ship: Option<address>,
+        first_round_defender_ship: Option<address>,
+    }
+
+    public fun ship_battle_initiated_id(ship_battle_initiated: &ShipBattleInitiated): option::Option<address> {
+        ship_battle_initiated.id
+    }
+
+    public(friend) fun set_ship_battle_initiated_id(ship_battle_initiated: &mut ShipBattleInitiated, id: address) {
+        ship_battle_initiated.id = option::some(id);
+    }
+
+    public fun ship_battle_initiated_player_id(ship_battle_initiated: &ShipBattleInitiated): address {
+        ship_battle_initiated.player_id
+    }
+
+    public fun ship_battle_initiated_initiator_id(ship_battle_initiated: &ShipBattleInitiated): address {
+        ship_battle_initiated.initiator_id
+    }
+
+    public fun ship_battle_initiated_responder_id(ship_battle_initiated: &ShipBattleInitiated): address {
+        ship_battle_initiated.responder_id
+    }
+
+    public fun ship_battle_initiated_initiator_coordinates(ship_battle_initiated: &ShipBattleInitiated): Coordinates {
+        ship_battle_initiated.initiator_coordinates
+    }
+
+    public fun ship_battle_initiated_responder_coordinates(ship_battle_initiated: &ShipBattleInitiated): Coordinates {
+        ship_battle_initiated.responder_coordinates
+    }
+
+    public fun ship_battle_initiated_started_at(ship_battle_initiated: &ShipBattleInitiated): u64 {
+        ship_battle_initiated.started_at
+    }
+
+    public fun ship_battle_initiated_first_round_mover(ship_battle_initiated: &ShipBattleInitiated): Option<u8> {
+        ship_battle_initiated.first_round_mover
+    }
+
+    public(friend) fun set_ship_battle_initiated_first_round_mover(ship_battle_initiated: &mut ShipBattleInitiated, first_round_mover: Option<u8>) {
+        ship_battle_initiated.first_round_mover = first_round_mover;
+    }
+
+    public fun ship_battle_initiated_first_round_attacker_ship(ship_battle_initiated: &ShipBattleInitiated): Option<address> {
+        ship_battle_initiated.first_round_attacker_ship
+    }
+
+    public(friend) fun set_ship_battle_initiated_first_round_attacker_ship(ship_battle_initiated: &mut ShipBattleInitiated, first_round_attacker_ship: Option<address>) {
+        ship_battle_initiated.first_round_attacker_ship = first_round_attacker_ship;
+    }
+
+    public fun ship_battle_initiated_first_round_defender_ship(ship_battle_initiated: &ShipBattleInitiated): Option<address> {
+        ship_battle_initiated.first_round_defender_ship
+    }
+
+    public(friend) fun set_ship_battle_initiated_first_round_defender_ship(ship_battle_initiated: &mut ShipBattleInitiated, first_round_defender_ship: Option<address>) {
+        ship_battle_initiated.first_round_defender_ship = first_round_defender_ship;
+    }
+
+    public(friend) fun new_ship_battle_initiated(
+        player_id: address,
+        initiator_id: address,
+        responder_id: address,
+        initiator_coordinates: Coordinates,
+        responder_coordinates: Coordinates,
+        started_at: u64,
+        first_round_mover: Option<u8>,
+        first_round_attacker_ship: Option<address>,
+        first_round_defender_ship: Option<address>,
+    ): ShipBattleInitiated {
+        ShipBattleInitiated {
+            id: option::none(),
+            player_id,
+            initiator_id,
+            responder_id,
+            initiator_coordinates,
+            responder_coordinates,
+            started_at,
+            first_round_mover,
+            first_round_attacker_ship,
+            first_round_defender_ship,
+        }
+    }
+
 
     public(friend) fun update_version_and_add(obj_addr: address, ship_battle: ShipBattle) acquires ObjectController {
         ship_battle.version = ship_battle.version + 1;
@@ -271,6 +369,12 @@ module infinite_seas::ship_battle {
             round_attacker_ship: _round_attacker_ship,
             round_defender_ship: _round_defender_ship,
         } = ship_battle;
+    }
+
+    public(friend) fun emit_ship_battle_initiated(ship_battle_initiated: ShipBattleInitiated) acquires Events {
+        assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
+        let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
+        event::emit_event(&mut events.ship_battle_initiated_handle, ship_battle_initiated);
     }
 
 }
