@@ -410,55 +410,55 @@
 #           name: RosterShipInventoryPutIn
 
 
-#   ShipBattle:
-#     id:
-#       name: Id
-#       type: UID
-#     properties:
-#       Initiator:
-#         type: address # Roster ID
-#       Responder:
-#         type: address # Roster ID
-#       Status:
-#         type: u8
-#       InitiatorExperiences:
-#         # The experiences Initiator has gained during the battle
-#         itemType: u32
-#         isList: true
-#         defaultLogic:
-#           Move: "std::vector::empty()"
-#       ResponderExperiences:
-#         itemType: u32
-#         isList: true
-#         defaultLogic:
-#           Move: "std::vector::empty()"
-#       EndedAt:
-#         type: u64
-#         optional: true
-#         defaultLogic:
-#           Move: "std::option::none()"
-#       Winner:
-#         type: u8
-#         optional: true
-#         description: "1: Initiator, 0: Responder"
-#         defaultLogic:
-#           Move: "std::option::none()"
-#       RoundNumber:
-#         type: u32
-#         defaultLogic:
-#           Move: "1"
-#       RoundStartedAt:
-#         type: u64
-#       RoundMover:
-#         type: u8
-#         optional: true
-#         description: "1: Initiator, 0: Responder"
-#       RoundAttackerShip:
-#         type: address
-#         optional: true
-#       RoundDefenderShip:
-#         type: address
-#         optional: true
+   ShipBattle:
+     id:
+       name: Id
+       type: AptosObjectID
+     properties:
+       Initiator:
+         type: address # Roster ID
+       Responder:
+         type: address # Roster ID
+       Status:
+         type: u8
+       InitiatorExperiences:
+         # The experiences Initiator has gained during the battle
+         itemType: u32
+         isList: true
+         defaultLogic:
+           Move: "std::vector::empty()"
+       ResponderExperiences:
+         itemType: u32
+         isList: true
+         defaultLogic:
+           Move: "std::vector::empty()"
+       EndedAt:
+         type: u64
+         optional: true
+         defaultLogic:
+           Move: "std::option::none()"
+       Winner:
+         type: u8
+         optional: true
+         description: "1: Initiator, 0: Responder"
+         defaultLogic:
+           Move: "std::option::none()"
+       RoundNumber:
+         type: u32
+         defaultLogic:
+           Move: "1"
+       RoundStartedAt:
+         type: u64
+       RoundMover:
+         type: u8
+         optional: true
+         description: "1: Initiator, 0: Responder"
+       RoundAttackerShip:
+         type: address
+         optional: true
+       RoundDefenderShip:
+         type: address
+         optional: true
 #     methods:
 #       InitiateBattle:
 #         isCreationCommand: true
