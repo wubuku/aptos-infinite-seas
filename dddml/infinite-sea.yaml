@@ -145,12 +145,12 @@
 #         event:
 #           name: CreationProcessCompleted
 
-#   Ship:
-#     metadata:
-#       HasStoreAbility: true
-#       Preprocessors: [ "MOVE_CRUD_IT" ]
-#       CRUD_IT_NO_UPDATE: true
-#       CRUD_IT_NO_DELETE: true
+   Ship:
+     metadata:
+       HasStoreAbility: true
+       Preprocessors: [ "MOVE_CRUD_IT" ]
+       CRUD_IT_NO_UPDATE: true
+       CRUD_IT_NO_DELETE: true
 #       ShouldIssuePublisherObject: true
 #       DataAccessFriends:
 #         - ShipBattle.MakeMove
@@ -160,35 +160,35 @@
 #         - Roster.TransferShipInventory
 #     friends:
 #       - SkillProcess.CompleteShipProduction
-#       #- SkillProcess.StartShipProduction
 #       - Roster.CreateEnvironmentRoster
-#     id:
-#       name: Id
-#       type: UID
-#     properties:
-#       Owner:
-#         type: address # PlayerId
-#       HealthPoints:
-#         type: u32
-#       Attack:
-#         type: u32
-#       Protection:
-#         type: u32
-#       Speed:
-#         type: u32
-#       BuildingExpenses:
-#         type: ItemIdQuantityPairs
-#       Inventory:
-#         itemType: ItemIdQuantityPair
-#         defaultLogic:
-#           Move: "std::vector::empty()"
-#     methods:
-#       Create:
-#         isInternal: true
-#         result:
-#           isObjectReturned: true
-#         #event:
-#         #  isObjectShared: true # Share the object after created.
+#       #- SkillProcess.StartShipProduction
+     id:
+       name: Id
+       type: AptosObjectID
+     properties:
+       Owner:
+         type: address # PlayerId
+       HealthPoints:
+         type: u32
+       Attack:
+         type: u32
+       Protection:
+         type: u32
+       Speed:
+         type: u32
+       BuildingExpenses:
+         type: ItemIdQuantityPairs
+       Inventory:
+         itemType: ItemIdQuantityPair
+         defaultLogic:
+           Move: "std::vector::empty()"
+     methods:
+       Create:
+         isInternal: true
+         result:
+           isObjectReturned: true
+         #event:
+         #  isObjectShared: true # Share the object after created.
 
 
 #   Roster:

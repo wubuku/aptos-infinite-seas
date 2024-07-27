@@ -8,8 +8,10 @@ module infinite_seas::pass_object {
 
     friend infinite_seas::player;
     friend infinite_seas::skill_process;
+    friend infinite_seas::ship;
 
     const EIncorrectUsage: u64 = 101;
+    const ENoneObjectAddress: u64 = 102;
 
     /// read-only 'hot potato' wrapper.
     struct PassObject<T> {
@@ -51,8 +53,18 @@ module infinite_seas::pass_object {
         borrow(pass_object)
     }
 
+    public(friend) fun borrow_mut<T>(pass_object: &mut PassObject<T>): &mut T {
+        &mut pass_object.value
+    }
+
     public fun object_address<T>(pass_object: &PassObject<T>): Option<address> {
         pass_object.object_address
+    }
+
+    /// Ensure that the object address is present, and return it.
+    public fun ensure_object_address<T>(pass_object: &PassObject<T>): address {
+        assert!(option::is_some(&pass_object.object_address), ENoneObjectAddress);
+        *option::borrow(&pass_object.object_address)
     }
 }
 
