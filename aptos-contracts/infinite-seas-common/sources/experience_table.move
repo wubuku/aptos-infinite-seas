@@ -167,6 +167,10 @@ module infinite_seas_common::experience_table {
         pass_object::new_with_address(experience_table, store_address, )
     }
 
+    public(friend) fun borrow_singleton_mut(experience_table_pass_obj: &mut pass_object::PassObject<ExperienceTable>): &mut ExperienceTable {
+        pass_object::borrow_mut(experience_table_pass_obj)
+    }
+
     public fun singleton_version(store_address: address, ): u64 acquires ExperienceTable {
         let experience_table = borrow_global<ExperienceTable>(store_address);
         experience_table.version
