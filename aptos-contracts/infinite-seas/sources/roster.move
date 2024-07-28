@@ -6,13 +6,16 @@
 module infinite_seas::roster {
     use aptos_framework::account;
     use aptos_framework::event;
-    use aptos_framework::object;
+    use aptos_framework::object::{Self, Object};
     use infinite_seas::genesis_account;
     use infinite_seas::pass_object;
+    use infinite_seas::ship::Ship;
     use infinite_seas_common::coordinates::Coordinates;
     use infinite_seas_common::roster_id::RosterId;
     use std::option::{Self, Option};
     friend infinite_seas::roster_create_logic;
+    friend infinite_seas::roster_create_environment_roster_logic;
+    friend infinite_seas::roster_add_ship_logic;
     friend infinite_seas::roster_aggregate;
 
     const EDataTooLong: u64 = 102;
@@ -21,6 +24,8 @@ module infinite_seas::roster {
 
     struct Events has key {
         roster_created_handle: event::EventHandle<RosterCreated>,
+        environment_roster_created_handle: event::EventHandle<EnvironmentRosterCreated>,
+        roster_ship_added_handle: event::EventHandle<RosterShipAdded>,
     }
 
     public fun initialize(account: &signer) {
@@ -29,6 +34,8 @@ module infinite_seas::roster {
         let res_account = genesis_account::resource_account_signer();
         move_to(&res_account, Events {
             roster_created_handle: account::new_event_handle<RosterCreated>(&res_account),
+            environment_roster_created_handle: account::new_event_handle<EnvironmentRosterCreated>(&res_account),
+            roster_ship_added_handle: account::new_event_handle<RosterShipAdded>(&res_account),
         });
 
     }
@@ -293,6 +300,97 @@ module infinite_seas::roster {
         }
     }
 
+    struct EnvironmentRosterCreated has store, drop {
+        id: option::Option<address>,
+        roster_id: RosterId,
+        coordinates: Coordinates,
+        ship_resource_quantity: u32,
+        ship_base_resource_quantity: u32,
+        base_experience: u32,
+    }
+
+    public fun environment_roster_created_id(environment_roster_created: &EnvironmentRosterCreated): option::Option<address> {
+        environment_roster_created.id
+    }
+
+    public(friend) fun set_environment_roster_created_id(environment_roster_created: &mut EnvironmentRosterCreated, id: address) {
+        environment_roster_created.id = option::some(id);
+    }
+
+    public fun environment_roster_created_roster_id(environment_roster_created: &EnvironmentRosterCreated): RosterId {
+        environment_roster_created.roster_id
+    }
+
+    public fun environment_roster_created_coordinates(environment_roster_created: &EnvironmentRosterCreated): Coordinates {
+        environment_roster_created.coordinates
+    }
+
+    public fun environment_roster_created_ship_resource_quantity(environment_roster_created: &EnvironmentRosterCreated): u32 {
+        environment_roster_created.ship_resource_quantity
+    }
+
+    public fun environment_roster_created_ship_base_resource_quantity(environment_roster_created: &EnvironmentRosterCreated): u32 {
+        environment_roster_created.ship_base_resource_quantity
+    }
+
+    public fun environment_roster_created_base_experience(environment_roster_created: &EnvironmentRosterCreated): u32 {
+        environment_roster_created.base_experience
+    }
+
+    public(friend) fun new_environment_roster_created(
+        roster_id: RosterId,
+        coordinates: Coordinates,
+        ship_resource_quantity: u32,
+        ship_base_resource_quantity: u32,
+        base_experience: u32,
+    ): EnvironmentRosterCreated {
+        EnvironmentRosterCreated {
+            id: option::none(),
+            roster_id,
+            coordinates,
+            ship_resource_quantity,
+            ship_base_resource_quantity,
+            base_experience,
+        }
+    }
+
+    struct RosterShipAdded has store, drop {
+        id: address,
+        version: u64,
+        ship: Object<Ship>,
+        position: Option<u64>,
+    }
+
+    public fun roster_ship_added_id(roster_ship_added: &RosterShipAdded): address {
+        roster_ship_added.id
+    }
+
+    public fun roster_ship_added_ship(roster_ship_added: &RosterShipAdded): Object<Ship> {
+        roster_ship_added.ship
+    }
+
+    public fun roster_ship_added_position(roster_ship_added: &RosterShipAdded): Option<u64> {
+        roster_ship_added.position
+    }
+
+    public(friend) fun set_roster_ship_added_position(roster_ship_added: &mut RosterShipAdded, position: Option<u64>) {
+        roster_ship_added.position = position;
+    }
+
+    public(friend) fun new_roster_ship_added(
+        id: address,
+        roster: &Roster,
+        ship: Object<Ship>,
+        position: Option<u64>,
+    ): RosterShipAdded {
+        RosterShipAdded {
+            id,
+            version: version(roster),
+            ship,
+            position,
+        }
+    }
+
 
     public(friend) fun update_version_and_add(obj_addr: address, roster: Roster) acquires ObjectController {
         roster.version = roster.version + 1;
@@ -348,6 +446,18 @@ module infinite_seas::roster {
         assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
         let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
         event::emit_event(&mut events.roster_created_handle, roster_created);
+    }
+
+    public(friend) fun emit_environment_roster_created(environment_roster_created: EnvironmentRosterCreated) acquires Events {
+        assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
+        let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
+        event::emit_event(&mut events.environment_roster_created_handle, environment_roster_created);
+    }
+
+    public(friend) fun emit_roster_ship_added(roster_ship_added: RosterShipAdded) acquires Events {
+        assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
+        let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
+        event::emit_event(&mut events.roster_ship_added_handle, roster_ship_added);
     }
 
 }

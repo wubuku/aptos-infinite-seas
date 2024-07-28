@@ -25,6 +25,8 @@ module infinite_seas::genesis_account {
     friend infinite_seas::roster;
     friend infinite_seas::roster_aggregate;
     friend infinite_seas::roster_create_logic;
+    friend infinite_seas::roster_create_environment_roster_logic;
+    friend infinite_seas::roster_add_ship_logic;
     friend infinite_seas::ship_battle;
     friend infinite_seas::ship_battle_aggregate;
     friend infinite_seas::ship_battle_initiate_battle_logic;

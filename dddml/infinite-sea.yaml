@@ -158,10 +158,10 @@
 #         - Roster.PutInShipInventory
 #         - Roster.TakeOutShipInventory
 #         - Roster.TransferShipInventory
-#     friends:
-#       - SkillProcess.CompleteShipProduction
-#       - Roster.CreateEnvironmentRoster
-#       #- SkillProcess.StartShipProduction
+     friends:
+       ##- SkillProcess.StartShipProduction
+       #- SkillProcess.CompleteShipProduction
+       - Roster.CreateEnvironmentRoster
      id:
        name: Id
        type: AptosObjectID
@@ -274,37 +274,39 @@
          #event:
          #  isObjectShared: true # Share the object after created.
 
-#       CreateEnvironmentRoster:
-#         isCreationCommand: true
-#         requiredPermission: "__Publisher__"
-#         metadata:
-#           ParametersIncludedInMutationFunction: [ "Clock" ]
-#         parameters:
-#           Coordinates:
-#             type: Coordinates
-#           ShipResourceQuantity:
-#             type: u32
-#           ShipBaseResourceQuantity:
-#             type: u32
-#           BaseExperience:
-#             type: u32
-#           Clock:
-#             referenceType: Clock
-#             isIgnoredInEvent: true
-#         event:
-#           name: EnvironmentRosterCreated
-#           isObjectShared: true
+       CreateEnvironmentRoster:
+         isCreationCommand: true
+         requiredPermission: "__Publisher__"
+         #metadata:
+         #  ParametersIncludedInMutationFunction: [ "Clock" ]
+         parameters:
+           RosterId:
+             type: RosterId
+           Coordinates:
+             type: Coordinates
+           ShipResourceQuantity:
+             type: u32
+           ShipBaseResourceQuantity:
+             type: u32
+           BaseExperience:
+             type: u32
+           #Clock:
+           #  referenceType: Clock
+           #  isIgnoredInEvent: true
+         event:
+           name: EnvironmentRosterCreated
+           #isObjectShared: true
 
-#       AddShip:
-#         isInternal: true
-#         parameters:
-#           Ship:
-#             type: Ship
-#           Position:
-#             type: u64
-#             optional: true
-#         event:
-#           name: RosterShipAdded
+       AddShip:
+         isInternal: true
+         parameters:
+           Ship:
+             type: Object<Ship>
+           Position:
+             type: u64
+             optional: true
+         event:
+           name: RosterShipAdded
 
 #       SetSail:
 #         #requiredPermission: Owner
@@ -598,153 +600,153 @@
 #             LoserNewLevel:
 #               type: u16
 
-# superObjects:
-#   SkillProcessTemplate:
-#     isTemplate: true
-#     methods:
-#       StartProduction:
-#         parameters:
-#           Player:
-#             referenceType: Player
-#             isMutableReference: true
-#             isIgnoredInEvent: true
-#           ItemProduction:
-#             referenceType: ItemProduction
-#             #eventPropertyName: ItemProductionId
-#             isIgnoredInEvent: true
-#           Clock:
-#             referenceType: Clock
-#             isIgnoredInEvent: true
-#           Energy:
-#             type: "Balance<ENERGY>"
-#             eventPropertyName: EnergyCost
-#         event:
-#           properties:
-#             ItemId:
-#               type: u32
-#             EnergyCost:
-#               type: u64
-#             StartedAt:
-#               type: u64
-#             CreationTime:
-#               type: u64
-#             ProductionMaterials:
-#               type: ItemIdQuantityPairs
+ superObjects:
+   SkillProcessTemplate:
+     isTemplate: true
+     methods:
+       StartProduction:
+         parameters:
+           Player:
+             referenceType: Player
+             isMutableReference: true
+             isIgnoredInEvent: true
+           ItemProduction:
+             referenceType: ItemProduction
+             #eventPropertyName: ItemProductionId
+             isIgnoredInEvent: true
+           Clock:
+             referenceType: Clock
+             isIgnoredInEvent: true
+           Energy:
+             type: "Balance<ENERGY>"
+             eventPropertyName: EnergyCost
+         event:
+           properties:
+             ItemId:
+               type: u32
+             EnergyCost:
+               type: u64
+             StartedAt:
+               type: u64
+             CreationTime:
+               type: u64
+             ProductionMaterials:
+               type: ItemIdQuantityPairs
 
-#       CompleteProduction:
-#         parameters:
-#           Player:
-#             referenceType: Player
-#             isMutableReference: true
-#             isIgnoredInEvent: true
-#           ItemProduction:
-#             referenceType: ItemProduction
-#             isIgnoredInEvent: true
-#           ExperienceTable:
-#             referenceType: ExperienceTable
-#             isIgnoredInEvent: true
-#           Clock:
-#             referenceType: Clock
-#             isIgnoredInEvent: true
-#         event:
-#           properties:
-#             ItemId:
-#               type: u32
-#             StartedAt:
-#               type: u64
-#             CreationTime:
-#               type: u64
-#             EndedAt:
-#               type: u64
-#             Successful:
-#               type: bool
-#             Quantity:
-#               type: u32
-#             Experience:
-#               type: u32
-#               description: "Increased experience value"
-#             NewLevel:
-#               type: u16
+       CompleteProduction:
+         parameters:
+           Player:
+             referenceType: Player
+             isMutableReference: true
+             isIgnoredInEvent: true
+           ItemProduction:
+             referenceType: ItemProduction
+             isIgnoredInEvent: true
+           ExperienceTable:
+             referenceType: ExperienceTable
+             isIgnoredInEvent: true
+           Clock:
+             referenceType: Clock
+             isIgnoredInEvent: true
+         event:
+           properties:
+             ItemId:
+               type: u32
+             StartedAt:
+               type: u64
+             CreationTime:
+               type: u64
+             EndedAt:
+               type: u64
+             Successful:
+               type: bool
+             Quantity:
+               type: u32
+             Experience:
+               type: u32
+               description: "Increased experience value"
+             NewLevel:
+               type: u16
 
 
-#       StartCreation:
-#         parameters:
-#           Player:
-#             referenceType: Player
-#             isMutableReference: true
-#             isIgnoredInEvent: true
-#           ItemCreation:
-#             referenceType: ItemCreation
-#             isIgnoredInEvent: true
-#           Clock:
-#             referenceType: Clock
-#             isIgnoredInEvent: true
-#           Energy:
-#             type: "Balance<ENERGY>"
-#             eventPropertyName: EnergyCost
-#         event:
-#           properties:
-#             ItemId: # ItemId to be created
-#               type: u32
-#             EnergyCost:
-#               type: u64
-#             ResourceCost:
-#               type: u32
-#             StartedAt:
-#               type: u64
-#             CreationTime:
-#               type: u64
+       StartCreation:
+         parameters:
+           Player:
+             referenceType: Player
+             isMutableReference: true
+             isIgnoredInEvent: true
+           ItemCreation:
+             referenceType: ItemCreation
+             isIgnoredInEvent: true
+           Clock:
+             referenceType: Clock
+             isIgnoredInEvent: true
+           Energy:
+             type: "Balance<ENERGY>"
+             eventPropertyName: EnergyCost
+         event:
+           properties:
+             ItemId: # ItemId to be created
+               type: u32
+             EnergyCost:
+               type: u64
+             ResourceCost:
+               type: u32
+             StartedAt:
+               type: u64
+             CreationTime:
+               type: u64
 
-#       CompleteCreation:
-#         parameters:
-#           Player:
-#             referenceType: Player
-#             isMutableReference: true
-#             isIgnoredInEvent: true
-#           ItemCreation:
-#             referenceType: ItemCreation
-#             isIgnoredInEvent: true
-#           ExperienceTable:
-#             referenceType: ExperienceTable
-#             isIgnoredInEvent: true
-#           Clock:
-#             referenceType: Clock
-#             isIgnoredInEvent: true
-#         event:
-#           properties:
-#             ItemId:
-#               type: u32
-#             StartedAt:
-#               type: u64
-#             CreationTime:
-#               type: u64
-#             EndedAt:
-#               type: u64
-#             Successful:
-#               type: bool
-#             Quantity:
-#               type: u32
-#             Experience:
-#               type: u32
-#               description: "Increased experience value"
-#             NewLevel:
-#               type: u16
+       CompleteCreation:
+         parameters:
+           Player:
+             referenceType: Player
+             isMutableReference: true
+             isIgnoredInEvent: true
+           ItemCreation:
+             referenceType: ItemCreation
+             isIgnoredInEvent: true
+           ExperienceTable:
+             referenceType: ExperienceTable
+             isIgnoredInEvent: true
+           Clock:
+             referenceType: Clock
+             isIgnoredInEvent: true
+         event:
+           properties:
+             ItemId:
+               type: u32
+             StartedAt:
+               type: u64
+             CreationTime:
+               type: u64
+             EndedAt:
+               type: u64
+             Successful:
+               type: bool
+             Quantity:
+               type: u32
+             Experience:
+               type: u32
+               description: "Increased experience value"
+             NewLevel:
+               type: u16
 
-#   RosterTemplate:
-#     isTemplate: true
-#     methods:
-#       InOutShipInventory:
-#         parameters:
-#           Player:
-#             referenceType: Player
-#             isMutableReference: true
-#             isIgnoredInEvent: true
-#           Clock:
-#             referenceType: Clock
-#             isIgnoredInEvent: true
-#           ShipId:
-#             type: address
-#           ItemIdQuantityPairs:
-#             type: ItemIdQuantityPairs
-#           UpdatedCoordinates:
-#             type: Coordinates
+   RosterTemplate:
+     isTemplate: true
+     methods:
+       InOutShipInventory:
+         parameters:
+           Player:
+             referenceType: Player
+             isMutableReference: true
+             isIgnoredInEvent: true
+           Clock:
+             referenceType: Clock
+             isIgnoredInEvent: true
+           ShipId:
+             type: address
+           ItemIdQuantityPairs:
+             type: ItemIdQuantityPairs
+           UpdatedCoordinates:
+             type: Coordinates

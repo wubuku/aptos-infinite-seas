@@ -10,6 +10,8 @@ module infinite_seas::ship_aggregate {
     use infinite_seas_common::item_id_quantity_pairs::ItemIdQuantityPairs;
     use std::signer;
 
+    friend infinite_seas::roster_create_environment_roster_logic;
+
     public(friend) fun create(
         account: &signer,
         owner: address,
