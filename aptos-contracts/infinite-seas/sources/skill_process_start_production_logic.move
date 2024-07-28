@@ -2,7 +2,6 @@ module infinite_seas::skill_process_start_production_logic {
     use aptos_framework::object;
     use aptos_framework::object::Object;
     use aptos_framework::timestamp;
-    use infinite_seas_common::infinite_seas_common_pass_object;
 
     use infinite_seas_common::item_id;
     use infinite_seas_common::item_id_quantity_pairs;
@@ -49,7 +48,8 @@ module infinite_seas::skill_process_start_production_logic {
             genesis_account::resource_account_address(),
             item_production_id,
         );
-        let item_production = infinite_seas_common_pass_object::borrow(&item_production_pass_obj);
+        //let item_production = infinite_seas_common_pass_object::borrow(&item_production_pass_obj);
+        let item_production = item_production::borrow(&item_production_pass_obj);
         let (_player_id, skill_type, item_id) = skill_process_util::assert_ids_are_consistent_for_starting_production(
             player_obj_addr, item_production, skill_process
         );

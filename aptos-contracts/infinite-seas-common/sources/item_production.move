@@ -341,7 +341,7 @@ module infinite_seas_common::item_production {
         private_add_item_production(store_address, item_production);
     }
 
-    public(friend) fun borrow(item_production_pass_obj: &pass_object::PassObject<ItemProduction>): &ItemProduction {
+    public fun borrow(item_production_pass_obj: &pass_object::PassObject<ItemProduction>): &ItemProduction {
         pass_object::borrow(item_production_pass_obj)
     }
 

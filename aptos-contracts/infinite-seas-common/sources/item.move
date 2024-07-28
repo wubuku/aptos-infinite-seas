@@ -234,7 +234,7 @@ module infinite_seas_common::item {
         private_add_item(store_address, item);
     }
 
-    public(friend) fun borrow(item_pass_obj: &pass_object::PassObject<Item>): &Item {
+    public fun borrow(item_pass_obj: &pass_object::PassObject<Item>): &Item {
         pass_object::borrow(item_pass_obj)
     }
 

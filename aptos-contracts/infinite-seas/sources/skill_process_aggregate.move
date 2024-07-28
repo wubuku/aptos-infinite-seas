@@ -8,6 +8,7 @@ module infinite_seas::skill_process_aggregate {
     use infinite_seas::genesis_account;
     use infinite_seas::player::Player;
     use infinite_seas::skill_process::{Self, SkillProcess};
+    use infinite_seas::skill_process_complete_production_logic;
     use infinite_seas::skill_process_create_logic;
     use infinite_seas::skill_process_start_production_logic;
     use infinite_seas_common::skill_process_id::{Self, SkillProcessId};
@@ -83,6 +84,36 @@ module infinite_seas::skill_process_aggregate {
         );
         skill_process::update_version_and_add(id, updated_skill_process);
         skill_process::emit_production_process_started(production_process_started);
+    }
+
+    public entry fun complete_production(
+        account: &signer,
+        skill_process_obj: Object<SkillProcess>,
+        player: Object<Player>,
+        item_production_id_skill_type: u8,
+        item_production_id_item_id: u32,
+    ) {
+        let item_production_id: SkillTypeItemIdPair = skill_type_item_id_pair::new(
+            item_production_id_skill_type,
+            item_production_id_item_id,
+        );
+        let id = object::object_address(&skill_process_obj);
+        let skill_process = skill_process::remove_skill_process(id);
+        let production_process_completed = skill_process_complete_production_logic::verify(
+            account,
+            player,
+            item_production_id,
+            id,
+            &skill_process,
+        );
+        let updated_skill_process = skill_process_complete_production_logic::mutate(
+            account,
+            &production_process_completed,
+            id,
+            skill_process,
+        );
+        skill_process::update_version_and_add(id, updated_skill_process);
+        skill_process::emit_production_process_completed(production_process_completed);
     }
 
 }

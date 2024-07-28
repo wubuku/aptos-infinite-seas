@@ -15,6 +15,7 @@ module infinite_seas::skill_process {
     use std::option::{Self, Option};
     friend infinite_seas::skill_process_create_logic;
     friend infinite_seas::skill_process_start_production_logic;
+    friend infinite_seas::skill_process_complete_production_logic;
     friend infinite_seas::skill_process_aggregate;
 
     const EDataTooLong: u64 = 102;
@@ -24,6 +25,7 @@ module infinite_seas::skill_process {
     struct Events has key {
         skill_process_created_handle: event::EventHandle<SkillProcessCreated>,
         production_process_started_handle: event::EventHandle<ProductionProcessStarted>,
+        production_process_completed_handle: event::EventHandle<ProductionProcessCompleted>,
     }
 
     public fun initialize(account: &signer) {
@@ -33,6 +35,7 @@ module infinite_seas::skill_process {
         move_to(&res_account, Events {
             skill_process_created_handle: account::new_event_handle<SkillProcessCreated>(&res_account),
             production_process_started_handle: account::new_event_handle<ProductionProcessStarted>(&res_account),
+            production_process_completed_handle: account::new_event_handle<ProductionProcessCompleted>(&res_account),
         });
 
     }
@@ -249,6 +252,88 @@ module infinite_seas::skill_process {
         }
     }
 
+    struct ProductionProcessCompleted has store, drop {
+        id: address,
+        version: u64,
+        player_id: Object<Player>,
+        item_id: u32,
+        started_at: u64,
+        creation_time: u64,
+        ended_at: u64,
+        successful: bool,
+        quantity: u32,
+        experience: u32,
+        new_level: u16,
+    }
+
+    public fun production_process_completed_id(production_process_completed: &ProductionProcessCompleted): address {
+        production_process_completed.id
+    }
+
+    public fun production_process_completed_player_id(production_process_completed: &ProductionProcessCompleted): Object<Player> {
+        production_process_completed.player_id
+    }
+
+    public fun production_process_completed_item_id(production_process_completed: &ProductionProcessCompleted): u32 {
+        production_process_completed.item_id
+    }
+
+    public fun production_process_completed_started_at(production_process_completed: &ProductionProcessCompleted): u64 {
+        production_process_completed.started_at
+    }
+
+    public fun production_process_completed_creation_time(production_process_completed: &ProductionProcessCompleted): u64 {
+        production_process_completed.creation_time
+    }
+
+    public fun production_process_completed_ended_at(production_process_completed: &ProductionProcessCompleted): u64 {
+        production_process_completed.ended_at
+    }
+
+    public fun production_process_completed_successful(production_process_completed: &ProductionProcessCompleted): bool {
+        production_process_completed.successful
+    }
+
+    public fun production_process_completed_quantity(production_process_completed: &ProductionProcessCompleted): u32 {
+        production_process_completed.quantity
+    }
+
+    public fun production_process_completed_experience(production_process_completed: &ProductionProcessCompleted): u32 {
+        production_process_completed.experience
+    }
+
+    public fun production_process_completed_new_level(production_process_completed: &ProductionProcessCompleted): u16 {
+        production_process_completed.new_level
+    }
+
+    public(friend) fun new_production_process_completed(
+        id: address,
+        skill_process: &SkillProcess,
+        player_id: Object<Player>,
+        item_id: u32,
+        started_at: u64,
+        creation_time: u64,
+        ended_at: u64,
+        successful: bool,
+        quantity: u32,
+        experience: u32,
+        new_level: u16,
+    ): ProductionProcessCompleted {
+        ProductionProcessCompleted {
+            id,
+            version: version(skill_process),
+            player_id,
+            item_id,
+            started_at,
+            creation_time,
+            ended_at,
+            successful,
+            quantity,
+            experience,
+            new_level,
+        }
+    }
+
 
     public(friend) fun update_version_and_add(obj_addr: address, skill_process: SkillProcess) acquires ObjectController {
         skill_process.version = skill_process.version + 1;
@@ -310,6 +395,12 @@ module infinite_seas::skill_process {
         assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
         let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
         event::emit_event(&mut events.production_process_started_handle, production_process_started);
+    }
+
+    public(friend) fun emit_production_process_completed(production_process_completed: ProductionProcessCompleted) acquires Events {
+        assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
+        let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
+        event::emit_event(&mut events.production_process_completed_handle, production_process_completed);
     }
 
 }

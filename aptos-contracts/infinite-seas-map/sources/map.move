@@ -283,7 +283,7 @@ module infinite_seas_map::map {
         map.version = map.version + 1;
     }
 
-    public(friend) fun borrow_singleton(map_pass_obj: &pass_object::PassObject<Map>): &Map {
+    public fun borrow_singleton(map_pass_obj: &pass_object::PassObject<Map>): &Map {
         pass_object::borrow(map_pass_obj)
     }
 

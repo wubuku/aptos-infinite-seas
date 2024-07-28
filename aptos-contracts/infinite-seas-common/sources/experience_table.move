@@ -221,7 +221,7 @@ module infinite_seas_common::experience_table {
         experience_table.levels = levels;
     }
 
-    public(friend) fun borrow_singleton(experience_table_pass_obj: &pass_object::PassObject<ExperienceTable>): &ExperienceTable {
+    public fun borrow_singleton(experience_table_pass_obj: &pass_object::PassObject<ExperienceTable>): &ExperienceTable {
         pass_object::borrow(experience_table_pass_obj)
     }
 
