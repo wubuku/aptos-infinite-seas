@@ -9,7 +9,7 @@ module infinite_seas::ship_battle_aggregate {
     use infinite_seas::roster::Roster;
     use infinite_seas::ship_battle::{Self, ShipBattle};
     use infinite_seas::ship_battle_initiate_battle_logic;
-    use infinite_seas_common::coordinates::{Self, Coordinates};
+    use infinite_seas_common::coordinates::Coordinates;
     use std::signer;
 
     public fun initiate_battle(
@@ -17,19 +17,9 @@ module infinite_seas::ship_battle_aggregate {
         player: Object<Player>,
         initiator: Object<Roster>,
         responder: Object<Roster>,
-        initiator_coordinates_x: u32,
-        initiator_coordinates_y: u32,
-        responder_coordinates_x: u32,
-        responder_coordinates_y: u32,
+        initiator_coordinates: Coordinates,
+        responder_coordinates: Coordinates,
     ): Object<ship_battle::ShipBattle> {
-        let initiator_coordinates: Coordinates = coordinates::new(
-            initiator_coordinates_x,
-            initiator_coordinates_y,
-        );
-        let responder_coordinates: Coordinates = coordinates::new(
-            responder_coordinates_x,
-            responder_coordinates_y,
-        );
         let ship_battle_initiated = ship_battle_initiate_battle_logic::verify(
             account,
             player,
