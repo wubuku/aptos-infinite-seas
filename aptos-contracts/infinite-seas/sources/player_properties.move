@@ -5,11 +5,12 @@ module infinite_seas::player_properties {
     use infinite_seas_common::item_id_quantity_pair::ItemIdQuantityPair;
     use infinite_seas_common::sorted_vector_util;
 
+    use infinite_seas::pass_object;
     use infinite_seas::player;
     use infinite_seas::player::Player;
 
     // friend infinite_seas::skill_process_start_creation_logic;
-    // friend infinite_seas::skill_process_start_production_logic;
+    friend infinite_seas::skill_process_start_production_logic;
     // friend infinite_seas::skill_process_start_ship_production_logic;
     // friend infinite_seas::skill_process_complete_creation_logic;
     // friend infinite_seas::skill_process_complete_production_logic;
@@ -64,5 +65,9 @@ module infinite_seas::player_properties {
 
     public(friend) fun set_level(player: &mut Player, level: u16) {
         player::set_level(player, level);
+    }
+
+    public(friend) fun borrow_mut_player(player_pass_obj: &mut pass_object::PassObject<Player>): &mut Player {
+        player::borrow_mut(player_pass_obj)
     }
 }

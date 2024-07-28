@@ -304,6 +304,10 @@ module infinite_seas::player {
         pass_object::new_with_address(player, obj_addr)
     }
 
+    public(friend) fun borrow_mut(player_pass_obj: &mut pass_object::PassObject<Player>): &mut Player {
+        pass_object::borrow_mut(player_pass_obj)
+    }
+
     public fun return_player(player_pass_obj: pass_object::PassObject<Player>) acquires ObjectController {
         let (player, obj_addr) = pass_object::extract_value_and_address(player_pass_obj);
         let extend_ref = &borrow_global<ObjectController>(obj_addr).extend_ref;

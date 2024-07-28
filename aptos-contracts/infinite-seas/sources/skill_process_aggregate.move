@@ -6,9 +6,12 @@
 module infinite_seas::skill_process_aggregate {
     use aptos_framework::object::{Self, Object};
     use infinite_seas::genesis_account;
+    use infinite_seas::player::Player;
     use infinite_seas::skill_process::{Self, SkillProcess};
     use infinite_seas::skill_process_create_logic;
+    use infinite_seas::skill_process_start_production_logic;
     use infinite_seas_common::skill_process_id::{Self, SkillProcessId};
+    use infinite_seas_common::skill_type_item_id_pair::{Self, SkillTypeItemIdPair};
 
     friend infinite_seas::player_claim_island_logic;
 
@@ -48,6 +51,38 @@ module infinite_seas::skill_process_aggregate {
         );
         skill_process::set_skill_process_created_id(&mut skill_process_created, id);
         skill_process::emit_skill_process_created(skill_process_created);
+    }
+
+    public entry fun start_production(
+        account: &signer,
+        skill_process_obj: Object<SkillProcess>,
+        batch_size: u32,
+        player: Object<Player>,
+        item_production_id_skill_type: u8,
+        item_production_id_item_id: u32,
+    ) {
+        let item_production_id: SkillTypeItemIdPair = skill_type_item_id_pair::new(
+            item_production_id_skill_type,
+            item_production_id_item_id,
+        );
+        let id = object::object_address(&skill_process_obj);
+        let skill_process = skill_process::remove_skill_process(id);
+        let production_process_started = skill_process_start_production_logic::verify(
+            account,
+            batch_size,
+            player,
+            item_production_id,
+            id,
+            &skill_process,
+        );
+        let updated_skill_process = skill_process_start_production_logic::mutate(
+            account,
+            &production_process_started,
+            id,
+            skill_process,
+        );
+        skill_process::update_version_and_add(id, updated_skill_process);
+        skill_process::emit_production_process_started(production_process_started);
     }
 
 }

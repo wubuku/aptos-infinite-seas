@@ -6,13 +6,15 @@
 module infinite_seas::skill_process {
     use aptos_framework::account;
     use aptos_framework::event;
-    use aptos_framework::object;
+    use aptos_framework::object::{Self, Object};
     use infinite_seas::genesis_account;
     use infinite_seas::pass_object;
+    use infinite_seas::player::Player;
     use infinite_seas_common::item_id_quantity_pairs::ItemIdQuantityPairs;
     use infinite_seas_common::skill_process_id::SkillProcessId;
     use std::option::{Self, Option};
     friend infinite_seas::skill_process_create_logic;
+    friend infinite_seas::skill_process_start_production_logic;
     friend infinite_seas::skill_process_aggregate;
 
     const EDataTooLong: u64 = 102;
@@ -21,6 +23,7 @@ module infinite_seas::skill_process {
 
     struct Events has key {
         skill_process_created_handle: event::EventHandle<SkillProcessCreated>,
+        production_process_started_handle: event::EventHandle<ProductionProcessStarted>,
     }
 
     public fun initialize(account: &signer) {
@@ -29,6 +32,7 @@ module infinite_seas::skill_process {
         let res_account = genesis_account::resource_account_signer();
         move_to(&res_account, Events {
             skill_process_created_handle: account::new_event_handle<SkillProcessCreated>(&res_account),
+            production_process_started_handle: account::new_event_handle<ProductionProcessStarted>(&res_account),
         });
 
     }
@@ -177,6 +181,74 @@ module infinite_seas::skill_process {
         }
     }
 
+    struct ProductionProcessStarted has store, drop {
+        id: address,
+        version: u64,
+        batch_size: u32,
+        player_id: Object<Player>,
+        item_id: u32,
+        energy_cost: u64,
+        started_at: u64,
+        creation_time: u64,
+        production_materials: ItemIdQuantityPairs,
+    }
+
+    public fun production_process_started_id(production_process_started: &ProductionProcessStarted): address {
+        production_process_started.id
+    }
+
+    public fun production_process_started_batch_size(production_process_started: &ProductionProcessStarted): u32 {
+        production_process_started.batch_size
+    }
+
+    public fun production_process_started_player_id(production_process_started: &ProductionProcessStarted): Object<Player> {
+        production_process_started.player_id
+    }
+
+    public fun production_process_started_item_id(production_process_started: &ProductionProcessStarted): u32 {
+        production_process_started.item_id
+    }
+
+    public fun production_process_started_energy_cost(production_process_started: &ProductionProcessStarted): u64 {
+        production_process_started.energy_cost
+    }
+
+    public fun production_process_started_started_at(production_process_started: &ProductionProcessStarted): u64 {
+        production_process_started.started_at
+    }
+
+    public fun production_process_started_creation_time(production_process_started: &ProductionProcessStarted): u64 {
+        production_process_started.creation_time
+    }
+
+    public fun production_process_started_production_materials(production_process_started: &ProductionProcessStarted): ItemIdQuantityPairs {
+        production_process_started.production_materials
+    }
+
+    public(friend) fun new_production_process_started(
+        id: address,
+        skill_process: &SkillProcess,
+        batch_size: u32,
+        player_id: Object<Player>,
+        item_id: u32,
+        energy_cost: u64,
+        started_at: u64,
+        creation_time: u64,
+        production_materials: ItemIdQuantityPairs,
+    ): ProductionProcessStarted {
+        ProductionProcessStarted {
+            id,
+            version: version(skill_process),
+            batch_size,
+            player_id,
+            item_id,
+            energy_cost,
+            started_at,
+            creation_time,
+            production_materials,
+        }
+    }
+
 
     public(friend) fun update_version_and_add(obj_addr: address, skill_process: SkillProcess) acquires ObjectController {
         skill_process.version = skill_process.version + 1;
@@ -228,6 +300,12 @@ module infinite_seas::skill_process {
         assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
         let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
         event::emit_event(&mut events.skill_process_created_handle, skill_process_created);
+    }
+
+    public(friend) fun emit_production_process_started(production_process_started: ProductionProcessStarted) acquires Events {
+        assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
+        let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
+        event::emit_event(&mut events.production_process_started_handle, production_process_started);
     }
 
 }
