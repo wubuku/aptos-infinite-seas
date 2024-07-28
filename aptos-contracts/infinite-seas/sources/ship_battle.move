@@ -353,6 +353,10 @@ module infinite_seas::ship_battle {
         private_add_ship_battle(&object_signer, ship_battle);
     }
 
+    public(friend) fun borrow_mut(ship_battle_pass_obj: &mut pass_object::PassObject<ShipBattle>): &mut ShipBattle {
+        pass_object::borrow_mut(ship_battle_pass_obj)
+    }
+
     public(friend) fun drop_ship_battle(ship_battle: ShipBattle) {
         let ShipBattle {
             version: _version,

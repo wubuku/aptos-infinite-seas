@@ -234,6 +234,14 @@ module infinite_seas_common::item {
         private_add_item(store_address, item);
     }
 
+    public(friend) fun borrow(item_pass_obj: &pass_object::PassObject<Item>): &Item {
+        pass_object::borrow(item_pass_obj)
+    }
+
+    public(friend) fun borrow_mut(item_pass_obj: &mut pass_object::PassObject<Item>): &mut Item {
+        pass_object::borrow_mut(item_pass_obj)
+    }
+
     public(friend) fun drop_item(item: Item) {
         let Item {
             version: _version,

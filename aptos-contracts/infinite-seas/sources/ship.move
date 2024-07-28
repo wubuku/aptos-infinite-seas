@@ -262,6 +262,10 @@ module infinite_seas::ship {
         private_add_ship(&object_signer, ship);
     }
 
+    public(friend) fun borrow_mut(ship_pass_obj: &mut pass_object::PassObject<Ship>): &mut Ship {
+        pass_object::borrow_mut(ship_pass_obj)
+    }
+
     public(friend) fun drop_ship(ship: Ship) {
         let Ship {
             version: _version,

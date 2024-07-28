@@ -424,6 +424,10 @@ module infinite_seas::roster {
         private_add_roster(&object_signer, roster);
     }
 
+    public(friend) fun borrow_mut(roster_pass_obj: &mut pass_object::PassObject<Roster>): &mut Roster {
+        pass_object::borrow_mut(roster_pass_obj)
+    }
+
     public(friend) fun drop_roster(roster: Roster) {
         let Roster {
             version: _version,

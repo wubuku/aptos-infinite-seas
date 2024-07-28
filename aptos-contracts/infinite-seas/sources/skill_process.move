@@ -282,6 +282,10 @@ module infinite_seas::skill_process {
         private_add_skill_process(&object_signer, skill_process);
     }
 
+    public(friend) fun borrow_mut(skill_process_pass_obj: &mut pass_object::PassObject<SkillProcess>): &mut SkillProcess {
+        pass_object::borrow_mut(skill_process_pass_obj)
+    }
+
     public(friend) fun drop_skill_process(skill_process: SkillProcess) {
         let SkillProcess {
             version: _version,

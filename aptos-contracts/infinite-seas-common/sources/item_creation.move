@@ -340,6 +340,14 @@ module infinite_seas_common::item_creation {
         private_add_item_creation(store_address, item_creation);
     }
 
+    public(friend) fun borrow(item_creation_pass_obj: &pass_object::PassObject<ItemCreation>): &ItemCreation {
+        pass_object::borrow(item_creation_pass_obj)
+    }
+
+    public(friend) fun borrow_mut(item_creation_pass_obj: &mut pass_object::PassObject<ItemCreation>): &mut ItemCreation {
+        pass_object::borrow_mut(item_creation_pass_obj)
+    }
+
     public(friend) fun drop_item_creation(item_creation: ItemCreation) {
         let ItemCreation {
             version: _version,
