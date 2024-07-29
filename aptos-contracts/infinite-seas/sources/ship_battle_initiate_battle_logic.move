@@ -3,6 +3,7 @@ module infinite_seas::ship_battle_initiate_battle_logic {
     use aptos_framework::object::{Self, Object};
     use aptos_framework::timestamp;
 
+    use infinite_seas_common::battle_status;
     use infinite_seas_common::coordinates::Coordinates;
     use infinite_seas_common::roster_status;
 
@@ -14,6 +15,7 @@ module infinite_seas::ship_battle_initiate_battle_logic {
     use infinite_seas::roster::Roster;
     use infinite_seas::roster_util;
     use infinite_seas::ship_battle;
+    use infinite_seas::ship_battle_util;
 
     friend infinite_seas::ship_battle_aggregate;
 
@@ -77,15 +79,15 @@ module infinite_seas::ship_battle_initiate_battle_logic {
         };
 
         // and then assert if they are close enough to each other
-        // TODO assert!(ship_battle_util::are_rosters_close_enough(initiator, responder), ENotCloseEnoughToBattle);
-        // let (attacker_ship_id, defender_ship_id, roster_indicator) = ship_battle_util::determine_attacker_and_defender(
-        //     initiator, responder, FIRST_ROUND_NUMBER
-        // );
-        // let first_round_mover = if (roster_indicator == 1) {
-        //     ship_battle_util::initiator()
-        // } else {
-        //     ship_battle_util::responder()
-        // };
+        assert!(ship_battle_util::are_rosters_close_enough(initiator, responder), ENotCloseEnoughToBattle);
+        let (attacker_ship_id, defender_ship_id, roster_indicator) = ship_battle_util::determine_attacker_and_defender(
+            initiator_obj_addr, initiator, responder_obj_addr, responder, FIRST_ROUND_NUMBER
+        );
+        let first_round_mover = if (roster_indicator == 1) {
+            ship_battle_util::initiator()
+        } else {
+            ship_battle_util::responder()
+        };
         player::return_player(player_pass_obj);
         roster::return_roster(initiator_pass_obj);
         roster::return_roster(responder_pass_obj);
@@ -94,22 +96,22 @@ module infinite_seas::ship_battle_initiate_battle_logic {
             initiator_coordinates,
             responder_coordinates,
             timestamp::now_seconds(),
-            option::none(), //todo option::some(first_round_mover),
-            option::none(), //todo option::some(attacker_ship_id),
-            option::none(), //todo option::some(defender_ship_id),
+            option::some(first_round_mover),
+            option::some(attacker_ship_id),
+            option::some(defender_ship_id),
         )
     }
 
     public(friend) fun mutate(
         _account: &signer,
         ship_battle_initiated: &ship_battle::ShipBattleInitiated,
-        id: address,
+        ship_battle_id: address,
     ): ship_battle::ShipBattle {
-        let player_id = ship_battle::ship_battle_initiated_player_id(ship_battle_initiated);
-        let initiator_id = ship_battle::ship_battle_initiated_initiator_id(ship_battle_initiated);
-        let responder_id = ship_battle::ship_battle_initiated_responder_id(ship_battle_initiated);
-        let initiator_coordinates = ship_battle::ship_battle_initiated_initiator_coordinates(ship_battle_initiated);
-        let responder_coordinates = ship_battle::ship_battle_initiated_responder_coordinates(ship_battle_initiated);
+        //let player_obj_addr = ship_battle::ship_battle_initiated_player_id(ship_battle_initiated);
+        let initiator_obj_addr = ship_battle::ship_battle_initiated_initiator_id(ship_battle_initiated);
+        let responder_obj_addr = ship_battle::ship_battle_initiated_responder_id(ship_battle_initiated);
+        //let initiator_coordinates = ship_battle::ship_battle_initiated_initiator_coordinates(ship_battle_initiated);
+        //let responder_coordinates = ship_battle::ship_battle_initiated_responder_coordinates(ship_battle_initiated);
         let started_at = ship_battle::ship_battle_initiated_started_at(ship_battle_initiated);
         let first_round_mover = ship_battle::ship_battle_initiated_first_round_mover(ship_battle_initiated);
         let first_round_attacker_ship = ship_battle::ship_battle_initiated_first_round_attacker_ship(
@@ -119,14 +121,27 @@ module infinite_seas::ship_battle_initiate_battle_logic {
             ship_battle_initiated
         );
 
-        ship_battle::new_ship_battle(
-            initiator_id,
-            responder_id,
-            0, //todo
-            0, //todo
-            first_round_mover,
-            first_round_attacker_ship,
-            first_round_defender_ship,
-        )
+        let battle = ship_battle::new_ship_battle(
+            initiator_obj_addr, responder_obj_addr,
+            battle_status::in_progress(),
+            started_at,
+            first_round_mover, first_round_attacker_ship, first_round_defender_ship,
+        );
+        ship_battle::set_round_number(&mut battle, FIRST_ROUND_NUMBER);
+
+        // update status and battle_id fields in the rosters
+        let initiator_pass_obj = roster::get_roster(initiator_obj_addr);
+        let responder_pass_obj = roster::get_roster(responder_obj_addr);
+
+        let initiator = roster::borrow_mut(&mut initiator_pass_obj);
+        let responder = roster::borrow_mut(&mut responder_pass_obj);
+        roster::set_status(initiator, roster_status::in_battle());
+        roster::set_ship_battle_id(initiator, option::some(ship_battle_id));
+        roster::set_status(responder, roster_status::in_battle());
+        roster::set_ship_battle_id(responder, option::some(ship_battle_id));
+        roster::return_roster(initiator_pass_obj);
+        roster::return_roster(responder_pass_obj);
+
+        battle
     }
 }

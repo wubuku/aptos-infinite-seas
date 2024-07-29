@@ -207,12 +207,12 @@ aggregates:
       CRUD_IT_NO_DELETE: true
       ShouldIssuePublisherObject: true
       IS_MOVE_SCHEMA_VERSIONED: true
-    #       DataAccessFriends:
-    #         # Make some methods can access ("write") Roster's data model.
-    #         # This should only be done occasionally!
-    #         - ShipBattle.InitiateBattle
-    #         - ShipBattle.MakeMove
-    #         - ShipBattle.TakeLoot
+      DataAccessFriends:
+        # Make some methods can access ("write") Roster's data model.
+        # This should only be done occasionally!
+        - ShipBattle.InitiateBattle
+        #TODO - ShipBattle.MakeMove
+        #TODO - ShipBattle.TakeLoot
     friends:
       - Player.Create
       - Player.ClaimIsland

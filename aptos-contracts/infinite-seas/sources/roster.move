@@ -20,6 +20,7 @@ module infinite_seas::roster {
     friend infinite_seas::roster_set_sail_logic;
     friend infinite_seas::roster_adjust_ships_position_logic;
     friend infinite_seas::roster_aggregate;
+
     friend infinite_seas::ship_battle_initiate_battle_logic;
 
     const EDataTooLong: u64 = 102;
