@@ -9,6 +9,7 @@ module infinite_seas::roster_aggregate {
     use infinite_seas::player::Player;
     use infinite_seas::roster::{Self, Roster};
     use infinite_seas::roster_add_ship_logic;
+    use infinite_seas::roster_adjust_ships_position_logic;
     use infinite_seas::roster_create_environment_roster_logic;
     use infinite_seas::roster_create_logic;
     use infinite_seas::roster_set_sail_logic;
@@ -180,6 +181,33 @@ module infinite_seas::roster_aggregate {
         );
         roster::update_version_and_add(id, updated_roster);
         roster::emit_roster_set_sail(roster_set_sail);
+    }
+
+    public entry fun adjust_ships_position(
+        account: &signer,
+        roster_obj: Object<Roster>,
+        player: Object<Player>,
+        positions: vector<u64>,
+        ship_ids: vector<address>,
+    ) {
+        let id = object::object_address(&roster_obj);
+        let roster = roster::remove_roster(id);
+        let roster_ships_position_adjusted = roster_adjust_ships_position_logic::verify(
+            account,
+            player,
+            positions,
+            ship_ids,
+            id,
+            &roster,
+        );
+        let updated_roster = roster_adjust_ships_position_logic::mutate(
+            account,
+            &roster_ships_position_adjusted,
+            id,
+            roster,
+        );
+        roster::update_version_and_add(id, updated_roster);
+        roster::emit_roster_ships_position_adjusted(roster_ships_position_adjusted);
     }
 
     fun vector_to_option<V : drop>(v: vector<V>): Option<V> {

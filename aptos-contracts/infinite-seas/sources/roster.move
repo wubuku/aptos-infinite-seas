@@ -18,6 +18,7 @@ module infinite_seas::roster {
     friend infinite_seas::roster_create_environment_roster_logic;
     friend infinite_seas::roster_add_ship_logic;
     friend infinite_seas::roster_set_sail_logic;
+    friend infinite_seas::roster_adjust_ships_position_logic;
     friend infinite_seas::roster_aggregate;
 
     const EDataTooLong: u64 = 102;
@@ -29,6 +30,7 @@ module infinite_seas::roster {
         environment_roster_created_handle: event::EventHandle<EnvironmentRosterCreated>,
         roster_ship_added_handle: event::EventHandle<RosterShipAdded>,
         roster_set_sail_handle: event::EventHandle<RosterSetSail>,
+        roster_ships_position_adjusted_handle: event::EventHandle<RosterShipsPositionAdjusted>,
     }
 
     public fun initialize(account: &signer) {
@@ -40,6 +42,7 @@ module infinite_seas::roster {
             environment_roster_created_handle: account::new_event_handle<EnvironmentRosterCreated>(&res_account),
             roster_ship_added_handle: account::new_event_handle<RosterShipAdded>(&res_account),
             roster_set_sail_handle: account::new_event_handle<RosterSetSail>(&res_account),
+            roster_ships_position_adjusted_handle: account::new_event_handle<RosterShipsPositionAdjusted>(&res_account),
         });
 
     }
@@ -456,6 +459,46 @@ module infinite_seas::roster {
         }
     }
 
+    struct RosterShipsPositionAdjusted has store, drop {
+        id: address,
+        version: u64,
+        player_id: Object<Player>,
+        positions: vector<u64>,
+        ship_ids: vector<address>,
+    }
+
+    public fun roster_ships_position_adjusted_id(roster_ships_position_adjusted: &RosterShipsPositionAdjusted): address {
+        roster_ships_position_adjusted.id
+    }
+
+    public fun roster_ships_position_adjusted_player_id(roster_ships_position_adjusted: &RosterShipsPositionAdjusted): Object<Player> {
+        roster_ships_position_adjusted.player_id
+    }
+
+    public fun roster_ships_position_adjusted_positions(roster_ships_position_adjusted: &RosterShipsPositionAdjusted): vector<u64> {
+        roster_ships_position_adjusted.positions
+    }
+
+    public fun roster_ships_position_adjusted_ship_ids(roster_ships_position_adjusted: &RosterShipsPositionAdjusted): vector<address> {
+        roster_ships_position_adjusted.ship_ids
+    }
+
+    public(friend) fun new_roster_ships_position_adjusted(
+        id: address,
+        roster: &Roster,
+        player_id: Object<Player>,
+        positions: vector<u64>,
+        ship_ids: vector<address>,
+    ): RosterShipsPositionAdjusted {
+        RosterShipsPositionAdjusted {
+            id,
+            version: version(roster),
+            player_id,
+            positions,
+            ship_ids,
+        }
+    }
+
 
     public(friend) fun update_version_and_add(obj_addr: address, roster: Roster) acquires ObjectController {
         roster.version = roster.version + 1;
@@ -533,6 +576,12 @@ module infinite_seas::roster {
         assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
         let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
         event::emit_event(&mut events.roster_set_sail_handle, roster_set_sail);
+    }
+
+    public(friend) fun emit_roster_ships_position_adjusted(roster_ships_position_adjusted: RosterShipsPositionAdjusted) acquires Events {
+        assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
+        let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
+        event::emit_event(&mut events.roster_ships_position_adjusted_handle, roster_ships_position_adjusted);
     }
 
 }
