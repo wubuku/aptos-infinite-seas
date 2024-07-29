@@ -11,6 +11,8 @@ module infinite_seas::skill_process_aggregate {
     use infinite_seas::skill_process_complete_production_logic;
     use infinite_seas::skill_process_create_logic;
     use infinite_seas::skill_process_start_production_logic;
+    use infinite_seas::skill_process_start_ship_production_logic;
+    use infinite_seas_common::item_id_quantity_pairs::{Self, ItemIdQuantityPairs};
     use infinite_seas_common::skill_process_id::{Self, SkillProcessId};
     use infinite_seas_common::skill_type_item_id_pair::{Self, SkillTypeItemIdPair};
 
@@ -114,6 +116,43 @@ module infinite_seas::skill_process_aggregate {
         );
         skill_process::update_version_and_add(id, updated_skill_process);
         skill_process::emit_production_process_completed(production_process_completed);
+    }
+
+    public entry fun start_ship_production(
+        account: &signer,
+        skill_process_obj: Object<SkillProcess>,
+        production_materials_item_id_list: vector<u32>,
+        production_materials_item_quantity_list: vector<u32>,
+        player: Object<Player>,
+        item_production_id_skill_type: u8,
+        item_production_id_item_id: u32,
+    ) {
+        let production_materials: ItemIdQuantityPairs = item_id_quantity_pairs::new(
+            production_materials_item_id_list,
+            production_materials_item_quantity_list,
+        );
+        let item_production_id: SkillTypeItemIdPair = skill_type_item_id_pair::new(
+            item_production_id_skill_type,
+            item_production_id_item_id,
+        );
+        let id = object::object_address(&skill_process_obj);
+        let skill_process = skill_process::remove_skill_process(id);
+        let ship_production_process_started = skill_process_start_ship_production_logic::verify(
+            account,
+            production_materials,
+            player,
+            item_production_id,
+            id,
+            &skill_process,
+        );
+        let updated_skill_process = skill_process_start_ship_production_logic::mutate(
+            account,
+            &ship_production_process_started,
+            id,
+            skill_process,
+        );
+        skill_process::update_version_and_add(id, updated_skill_process);
+        skill_process::emit_ship_production_process_started(ship_production_process_started);
     }
 
 }

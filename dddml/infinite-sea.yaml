@@ -112,13 +112,13 @@ aggregates:
         event:
           name: ProductionProcessCompleted
 
-  #       StartShipProduction:
-  #         inheritsFrom: SkillProcessTemplate.StartProduction
-  #         parameters:
-  #           ProductionMaterials:
-  #             type: ItemIdQuantityPairs
-  #         event:
-  #           name: ShipProductionProcessStarted
+      StartShipProduction:
+        inheritsFrom: SkillProcessTemplate.StartProduction
+        parameters:
+          ProductionMaterials:
+            type: ItemIdQuantityPairs
+        event:
+          name: ShipProductionProcessStarted
 
   #       CompleteShipProduction:
   #         inheritsFrom: SkillProcessTemplate.CompleteProduction
