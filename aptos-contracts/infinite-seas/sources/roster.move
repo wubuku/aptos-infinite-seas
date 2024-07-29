@@ -9,6 +9,7 @@ module infinite_seas::roster {
     use aptos_framework::object::{Self, Object};
     use infinite_seas::genesis_account;
     use infinite_seas::pass_object;
+    use infinite_seas::player::Player;
     use infinite_seas::ship::Ship;
     use infinite_seas_common::coordinates::Coordinates;
     use infinite_seas_common::roster_id::RosterId;
@@ -16,6 +17,7 @@ module infinite_seas::roster {
     friend infinite_seas::roster_create_logic;
     friend infinite_seas::roster_create_environment_roster_logic;
     friend infinite_seas::roster_add_ship_logic;
+    friend infinite_seas::roster_set_sail_logic;
     friend infinite_seas::roster_aggregate;
 
     const EDataTooLong: u64 = 102;
@@ -26,6 +28,7 @@ module infinite_seas::roster {
         roster_created_handle: event::EventHandle<RosterCreated>,
         environment_roster_created_handle: event::EventHandle<EnvironmentRosterCreated>,
         roster_ship_added_handle: event::EventHandle<RosterShipAdded>,
+        roster_set_sail_handle: event::EventHandle<RosterSetSail>,
     }
 
     public fun initialize(account: &signer) {
@@ -36,6 +39,7 @@ module infinite_seas::roster {
             roster_created_handle: account::new_event_handle<RosterCreated>(&res_account),
             environment_roster_created_handle: account::new_event_handle<EnvironmentRosterCreated>(&res_account),
             roster_ship_added_handle: account::new_event_handle<RosterShipAdded>(&res_account),
+            roster_set_sail_handle: account::new_event_handle<RosterSetSail>(&res_account),
         });
 
     }
@@ -391,6 +395,67 @@ module infinite_seas::roster {
         }
     }
 
+    struct RosterSetSail has store, drop {
+        id: address,
+        version: u64,
+        player_id: Object<Player>,
+        target_coordinates: Coordinates,
+        sail_duration: u64,
+        set_sail_at: u64,
+        updated_coordinates: Coordinates,
+        energy_cost: u64,
+    }
+
+    public fun roster_set_sail_id(roster_set_sail: &RosterSetSail): address {
+        roster_set_sail.id
+    }
+
+    public fun roster_set_sail_player_id(roster_set_sail: &RosterSetSail): Object<Player> {
+        roster_set_sail.player_id
+    }
+
+    public fun roster_set_sail_target_coordinates(roster_set_sail: &RosterSetSail): Coordinates {
+        roster_set_sail.target_coordinates
+    }
+
+    public fun roster_set_sail_sail_duration(roster_set_sail: &RosterSetSail): u64 {
+        roster_set_sail.sail_duration
+    }
+
+    public fun roster_set_sail_set_sail_at(roster_set_sail: &RosterSetSail): u64 {
+        roster_set_sail.set_sail_at
+    }
+
+    public fun roster_set_sail_updated_coordinates(roster_set_sail: &RosterSetSail): Coordinates {
+        roster_set_sail.updated_coordinates
+    }
+
+    public fun roster_set_sail_energy_cost(roster_set_sail: &RosterSetSail): u64 {
+        roster_set_sail.energy_cost
+    }
+
+    public(friend) fun new_roster_set_sail(
+        id: address,
+        roster: &Roster,
+        player_id: Object<Player>,
+        target_coordinates: Coordinates,
+        sail_duration: u64,
+        set_sail_at: u64,
+        updated_coordinates: Coordinates,
+        energy_cost: u64,
+    ): RosterSetSail {
+        RosterSetSail {
+            id,
+            version: version(roster),
+            player_id,
+            target_coordinates,
+            sail_duration,
+            set_sail_at,
+            updated_coordinates,
+            energy_cost,
+        }
+    }
+
 
     public(friend) fun update_version_and_add(obj_addr: address, roster: Roster) acquires ObjectController {
         roster.version = roster.version + 1;
@@ -462,6 +527,12 @@ module infinite_seas::roster {
         assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
         let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
         event::emit_event(&mut events.roster_ship_added_handle, roster_ship_added);
+    }
+
+    public(friend) fun emit_roster_set_sail(roster_set_sail: RosterSetSail) acquires Events {
+        assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
+        let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
+        event::emit_event(&mut events.roster_set_sail_handle, roster_set_sail);
     }
 
 }

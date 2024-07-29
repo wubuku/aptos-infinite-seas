@@ -1,5 +1,10 @@
 module infinite_seas_common::speed_util {
 
+    use aptos_std::debug;
+
+    use infinite_seas_common::coordinates::Coordinates;
+    use infinite_seas_common::direct_route_util;
+
     const STANDARD_SPEED_NUMERATOR: u32 = 5892;
     const STANDARD_SPEED_DENOMINATOR: u32 = 1000;
 
@@ -15,5 +20,17 @@ module infinite_seas_common::speed_util {
             numerator = numerator + SPEED_NUMERATOR_DELTA * (speed_property - 5);
         };
         (numerator, denominator)
+    }
+
+    public fun calculate_total_time(origin: Coordinates, destination: Coordinates, speed_property: u32): u64 {
+        let distance = direct_route_util::get_distance(origin, destination);
+        debug::print(&distance);
+        let (speed_numerator, speed_denominator) = speed_property_to_coordinate_units_per_second(
+            speed_property
+        );
+        debug::print(&speed_numerator);
+        debug::print(&speed_denominator);
+        let total_time = distance * (speed_denominator as u64) / (speed_numerator as u64);
+        total_time
     }
 }

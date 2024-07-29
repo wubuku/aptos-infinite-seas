@@ -6,10 +6,12 @@
 module infinite_seas::roster_aggregate {
     use aptos_framework::object::{Self, Object};
     use infinite_seas::genesis_account;
+    use infinite_seas::player::Player;
     use infinite_seas::roster::{Self, Roster};
     use infinite_seas::roster_add_ship_logic;
     use infinite_seas::roster_create_environment_roster_logic;
     use infinite_seas::roster_create_logic;
+    use infinite_seas::roster_set_sail_logic;
     use infinite_seas::ship::Ship;
     use infinite_seas_common::coordinates::{Self, Coordinates};
     use infinite_seas_common::roster_id::{Self, RosterId};
@@ -138,6 +140,45 @@ module infinite_seas::roster_aggregate {
         );
         roster::update_version_and_add(id, updated_roster);
         roster::emit_roster_ship_added(roster_ship_added);
+    }
+
+    public entry fun set_sail(
+        account: &signer,
+        roster_obj: Object<Roster>,
+        player: Object<Player>,
+        target_coordinates_x: u32,
+        target_coordinates_y: u32,
+        sail_duration: u64,
+        updated_coordinates_x: u32,
+        updated_coordinates_y: u32,
+    ) {
+        let target_coordinates: Coordinates = coordinates::new(
+            target_coordinates_x,
+            target_coordinates_y,
+        );
+        let updated_coordinates: Coordinates = coordinates::new(
+            updated_coordinates_x,
+            updated_coordinates_y,
+        );
+        let id = object::object_address(&roster_obj);
+        let roster = roster::remove_roster(id);
+        let roster_set_sail = roster_set_sail_logic::verify(
+            account,
+            player,
+            target_coordinates,
+            sail_duration,
+            updated_coordinates,
+            id,
+            &roster,
+        );
+        let updated_roster = roster_set_sail_logic::mutate(
+            account,
+            &roster_set_sail,
+            id,
+            roster,
+        );
+        roster::update_version_and_add(id, updated_roster);
+        roster::emit_roster_set_sail(roster_set_sail);
     }
 
     fun vector_to_option<V : drop>(v: vector<V>): Option<V> {

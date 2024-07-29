@@ -308,33 +308,33 @@ aggregates:
         event:
           name: RosterShipAdded
 
-  #       SetSail:
-  #         #requiredPermission: Owner
-  #         parameters:
-  #           Player:
-  #             type: Object<Player> #referenceType: Player
-  #             eventPropertyName: PlayerId #isIgnoredInEvent: true
-  #           TargetCoordinates:
-  #             type: Coordinates
-  #           #Clock:
-  #           #  referenceType: Clock
-  #           #  isIgnoredInEvent: true
-  #           Energy:
-  #             type: "Balance<ENERGY>"
-  #             eventPropertyName: EnergyCost
-  #           SailDuration:
-  #             type: u64
-  #           UpdatedCoordinates:
-  #             type: Coordinates
-  #         event:
-  #           name: RosterSetSail
-  #           properties:
-  #             SetSailAt:
-  #               type: u64
-  #             UpdatedCoordinates:
-  #               type: Coordinates
-  #             EnergyCost:
-  #               type: u64
+      SetSail:
+        #requiredPermission: "__ObjectOwner__"
+        parameters:
+          Player:
+            type: Object<Player> #referenceType: Player
+            eventPropertyName: PlayerId #isIgnoredInEvent: true
+          TargetCoordinates:
+            type: Coordinates
+          #Clock:
+          #  referenceType: Clock
+          #  isIgnoredInEvent: true
+          #Energy:
+          #  type: "Balance<ENERGY>"
+          #  eventPropertyName: EnergyCost
+          SailDuration:
+            type: u64
+          UpdatedCoordinates:
+            type: Coordinates
+        event:
+          name: RosterSetSail
+          properties:
+            SetSailAt:
+              type: u64
+            UpdatedCoordinates:
+              type: Coordinates
+            EnergyCost:
+              type: u64
 
   #       UpdateLocation:
   #         parameters:

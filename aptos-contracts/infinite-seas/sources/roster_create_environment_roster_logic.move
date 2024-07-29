@@ -3,7 +3,6 @@ module infinite_seas::roster_create_environment_roster_logic {
     use std::option;
     use std::vector;
     use aptos_framework::object;
-    use infinite_seas::roster_util;
 
     use infinite_seas_common::coordinates::Coordinates;
     use infinite_seas_common::item_id;
@@ -14,7 +13,11 @@ module infinite_seas::roster_create_environment_roster_logic {
     use infinite_seas_common::ship_util;
     use infinite_seas_common::ts_random_util;
 
+    use infinite_seas::genesis_account;
     use infinite_seas::roster;
+    use infinite_seas::roster::Roster;
+    use infinite_seas::roster_util;
+    use infinite_seas::ship::Ship;
     use infinite_seas::ship_aggregate;
 
     friend infinite_seas::roster_aggregate;
@@ -117,8 +120,14 @@ module infinite_seas::roster_create_environment_roster_logic {
             let ship_ids = roster::borrow_mut_ship_ids(&mut roster);
             roster_util::add_ship_id(ship_ids, ship_id, option::some((position as u64)));
 
-            //TODO let ships = roster::borrow_mut_ships(&mut roster);
-            //object_table::add(ships, ship_id, ship);
+            let ship_obj = object::address_to_object<Ship>(ship_id);
+            //
+            // Transfer the ship ownership to the roster
+            //
+            let roster_obj = object::address_to_object<Roster>(id);
+            object::transfer_to_object(&genesis_account::resource_account_signer(), ship_obj, roster_obj);
+            // let ships = roster::borrow_mut_ships(&mut roster);
+            // object_table::add(ships, ship_id, ship);
 
             total_roster_speed = total_roster_speed + ship_speed;
 
