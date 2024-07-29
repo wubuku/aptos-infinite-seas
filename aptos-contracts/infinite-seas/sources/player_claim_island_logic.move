@@ -4,6 +4,8 @@ module infinite_seas::player_claim_island_logic {
     use aptos_framework::timestamp;
 
     use infinite_seas_common::coordinates::Coordinates;
+    use infinite_seas_common::roster_id;
+    use infinite_seas_common::roster_status;
     use infinite_seas_common::skill_type;
     use infinite_seas_common::sorted_vector_util;
     use infinite_seas_map::infinite_seas_map_pass_object;
@@ -13,6 +15,8 @@ module infinite_seas::player_claim_island_logic {
 
     use infinite_seas::genesis_account;
     use infinite_seas::player;
+    use infinite_seas::roster_aggregate;
+    use infinite_seas::skill_process_aggregate;
 
     friend infinite_seas::player_aggregate;
 
@@ -66,12 +70,13 @@ module infinite_seas::player_claim_island_logic {
         let roster_sequence_number: u32 = 0;
         while (roster_sequence_number < 5) {
             // 0-4
-            //
-            //TODO let r = roster_aggregate::create(player_id, roster_sequence_number, roster_status::at_anchor(), 0,
-            //     coordinates, 0, option::none(), option::none(),
-            //     option::none(), roster_table, ctx
-            // );
-            // roster::share_object(r);
+            let roster_id = roster_id::new(player_id, roster_sequence_number);
+            let r = roster_aggregate::create(_account,
+                roster_id,
+                roster_status::at_anchor(), 0,
+                coordinates, 0, option::none(), option::none(),
+                option::none(),
+            );
             roster_sequence_number = roster_sequence_number + 1;
         };
 
@@ -83,12 +88,12 @@ module infinite_seas::player_claim_island_logic {
         let l = vector::length(&skill_types);
         while (i < l) {
             let skill_type = *vector::borrow(&skill_types, i);
-            //TODO let max_seq_number = infinite_seas::skill_process_util::skill_type_max_sequence_number(skill_type);
+            let max_seq_number = infinite_seas::skill_process_util::skill_type_max_sequence_number(skill_type);
             let seq_number = 0;
-            // while (seq_number <= max_seq_number) {
-            //     //TODO skill_process_aggregate::create(skill_type, player_id, seq_number, player, skill_process_table, ctx);
-            //     seq_number = seq_number + 1;
-            // };
+            while (seq_number <= max_seq_number) {
+                skill_process_aggregate::create(_account, skill_type, player_id, seq_number);
+                seq_number = seq_number + 1;
+            };
             i = i + 1;
         };
 
