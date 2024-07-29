@@ -159,8 +159,7 @@ aggregates:
     #         - Roster.TakeOutShipInventory
     #         - Roster.TransferShipInventory
     friends:
-      ##- SkillProcess.StartShipProduction
-      #- SkillProcess.CompleteShipProduction
+      - SkillProcess.CompleteShipProduction
       - Roster.CreateEnvironmentRoster
     id:
       name: Id
@@ -217,7 +216,7 @@ aggregates:
     friends:
       - Player.Create
       - Player.ClaimIsland
-    #       - SkillProcess.CompleteShipProduction
+      - SkillProcess.CompleteShipProduction
     #       - ShipBattle.InitiateBattle
     properties:
       RosterId:
