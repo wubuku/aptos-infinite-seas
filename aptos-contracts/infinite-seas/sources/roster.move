@@ -19,6 +19,7 @@ module infinite_seas::roster {
     friend infinite_seas::roster_add_ship_logic;
     friend infinite_seas::roster_set_sail_logic;
     friend infinite_seas::roster_adjust_ships_position_logic;
+    friend infinite_seas::roster_transfer_ship_logic;
     friend infinite_seas::roster_aggregate;
 
     friend infinite_seas::ship_battle_initiate_battle_logic;
@@ -33,6 +34,7 @@ module infinite_seas::roster {
         roster_ship_added_handle: event::EventHandle<RosterShipAdded>,
         roster_set_sail_handle: event::EventHandle<RosterSetSail>,
         roster_ships_position_adjusted_handle: event::EventHandle<RosterShipsPositionAdjusted>,
+        roster_ship_transferred_handle: event::EventHandle<RosterShipTransferred>,
     }
 
     public fun initialize(account: &signer) {
@@ -45,6 +47,7 @@ module infinite_seas::roster {
             roster_ship_added_handle: account::new_event_handle<RosterShipAdded>(&res_account),
             roster_set_sail_handle: account::new_event_handle<RosterSetSail>(&res_account),
             roster_ships_position_adjusted_handle: account::new_event_handle<RosterShipsPositionAdjusted>(&res_account),
+            roster_ship_transferred_handle: account::new_event_handle<RosterShipTransferred>(&res_account),
         });
 
     }
@@ -501,6 +504,57 @@ module infinite_seas::roster {
         }
     }
 
+    struct RosterShipTransferred has store, drop {
+        id: address,
+        version: u64,
+        player_id: Object<Player>,
+        ship_id: address,
+        to_roster_object_address: Object<Roster>,
+        to_position: Option<u64>,
+    }
+
+    public fun roster_ship_transferred_id(roster_ship_transferred: &RosterShipTransferred): address {
+        roster_ship_transferred.id
+    }
+
+    public fun roster_ship_transferred_player_id(roster_ship_transferred: &RosterShipTransferred): Object<Player> {
+        roster_ship_transferred.player_id
+    }
+
+    public fun roster_ship_transferred_ship_id(roster_ship_transferred: &RosterShipTransferred): address {
+        roster_ship_transferred.ship_id
+    }
+
+    public fun roster_ship_transferred_to_roster_object_address(roster_ship_transferred: &RosterShipTransferred): Object<Roster> {
+        roster_ship_transferred.to_roster_object_address
+    }
+
+    public fun roster_ship_transferred_to_position(roster_ship_transferred: &RosterShipTransferred): Option<u64> {
+        roster_ship_transferred.to_position
+    }
+
+    public(friend) fun set_roster_ship_transferred_to_position(roster_ship_transferred: &mut RosterShipTransferred, to_position: Option<u64>) {
+        roster_ship_transferred.to_position = to_position;
+    }
+
+    public(friend) fun new_roster_ship_transferred(
+        id: address,
+        roster: &Roster,
+        player_id: Object<Player>,
+        ship_id: address,
+        to_roster_object_address: Object<Roster>,
+        to_position: Option<u64>,
+    ): RosterShipTransferred {
+        RosterShipTransferred {
+            id,
+            version: version(roster),
+            player_id,
+            ship_id,
+            to_roster_object_address,
+            to_position,
+        }
+    }
+
 
     public(friend) fun update_version_and_add(obj_addr: address, roster: Roster) acquires ObjectController {
         roster.version = roster.version + 1;
@@ -584,6 +638,12 @@ module infinite_seas::roster {
         assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
         let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
         event::emit_event(&mut events.roster_ships_position_adjusted_handle, roster_ships_position_adjusted);
+    }
+
+    public(friend) fun emit_roster_ship_transferred(roster_ship_transferred: RosterShipTransferred) acquires Events {
+        assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
+        let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
+        event::emit_event(&mut events.roster_ship_transferred_handle, roster_ship_transferred);
     }
 
 }

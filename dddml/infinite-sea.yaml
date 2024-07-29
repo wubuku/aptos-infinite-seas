@@ -366,23 +366,23 @@ aggregates:
         event:
           name: RosterShipsPositionAdjusted
 
-  #       TransferShip:
-  #         parameters:
-  #           Player:
-  #             type: Object<Player> #referenceType: Player
-  #             eventPropertyName: PlayerId #isIgnoredInEvent: true
-  #           ShipId:
-  #             type: address
-  #           #FromRoster: # from current roster
-  #           ToRoster:
-  #             referenceType: Roster
-  #             isMutableReference: true
-  #             eventPropertyName: ToRosterId
-  #           ToPosition:
-  #             type: u64
-  #             optional: true
-  #         event:
-  #           name: RosterShipTransferred
+      TransferShip:
+        parameters:
+          Player:
+            type: Object<Player> #referenceType: Player
+            eventPropertyName: PlayerId #isIgnoredInEvent: true
+          ShipId:
+            type: address
+          #FromRoster: # from current roster
+          ToRoster:
+            type: Object<Roster> #referenceType: Roster
+            #isMutableReference: true
+            eventPropertyName: ToRosterObjectAddress
+          ToPosition:
+            type: u64
+            optional: true
+        event:
+          name: RosterShipTransferred
 
   #       TransferShipInventory:
   #         parameters:
