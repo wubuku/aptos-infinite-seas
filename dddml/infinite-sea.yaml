@@ -120,17 +120,17 @@ aggregates:
         event:
           name: ShipProductionProcessStarted
 
-  #       CompleteShipProduction:
-  #         inheritsFrom: SkillProcessTemplate.CompleteProduction
-  #         parameters:
-  #           UnassignedShips:
-  #             referenceType: Roster
-  #             isMutableReference: true
-  #             isIgnoredInEvent: true
-  #         event:
-  #           name: ShipProductionProcessCompleted
-  #         #result:
-  #         #  type: Ship
+      CompleteShipProduction:
+        inheritsFrom: SkillProcessTemplate.CompleteProduction
+        parameters:
+          UnassignedShips:
+            type: Object<Roster> #referenceType: Roster
+            #isMutableReference: true
+            eventPropertyName: RosterObjectAddress #isIgnoredInEvent: true
+        event:
+          name: ShipProductionProcessCompleted
+        #result:
+        #  type: Ship
 
   #       StartCreation:
   #         inheritsFrom: SkillProcessTemplate.StartCreation

@@ -10,6 +10,7 @@ module infinite_seas::skill_process {
     use infinite_seas::genesis_account;
     use infinite_seas::pass_object;
     use infinite_seas::player::Player;
+    use infinite_seas::roster::Roster;
     use infinite_seas_common::item_id_quantity_pairs::ItemIdQuantityPairs;
     use infinite_seas_common::skill_process_id::SkillProcessId;
     use std::option::{Self, Option};
@@ -17,6 +18,7 @@ module infinite_seas::skill_process {
     friend infinite_seas::skill_process_start_production_logic;
     friend infinite_seas::skill_process_complete_production_logic;
     friend infinite_seas::skill_process_start_ship_production_logic;
+    friend infinite_seas::skill_process_complete_ship_production_logic;
     friend infinite_seas::skill_process_aggregate;
 
     const EDataTooLong: u64 = 102;
@@ -28,6 +30,7 @@ module infinite_seas::skill_process {
         production_process_started_handle: event::EventHandle<ProductionProcessStarted>,
         production_process_completed_handle: event::EventHandle<ProductionProcessCompleted>,
         ship_production_process_started_handle: event::EventHandle<ShipProductionProcessStarted>,
+        ship_production_process_completed_handle: event::EventHandle<ShipProductionProcessCompleted>,
     }
 
     public fun initialize(account: &signer) {
@@ -39,6 +42,7 @@ module infinite_seas::skill_process {
             production_process_started_handle: account::new_event_handle<ProductionProcessStarted>(&res_account),
             production_process_completed_handle: account::new_event_handle<ProductionProcessCompleted>(&res_account),
             ship_production_process_started_handle: account::new_event_handle<ShipProductionProcessStarted>(&res_account),
+            ship_production_process_completed_handle: account::new_event_handle<ShipProductionProcessCompleted>(&res_account),
         });
 
     }
@@ -398,6 +402,95 @@ module infinite_seas::skill_process {
         }
     }
 
+    struct ShipProductionProcessCompleted has store, drop {
+        id: address,
+        version: u64,
+        roster_object_address: Object<Roster>,
+        player_id: Object<Player>,
+        item_id: u32,
+        started_at: u64,
+        creation_time: u64,
+        ended_at: u64,
+        successful: bool,
+        quantity: u32,
+        experience: u32,
+        new_level: u16,
+    }
+
+    public fun ship_production_process_completed_id(ship_production_process_completed: &ShipProductionProcessCompleted): address {
+        ship_production_process_completed.id
+    }
+
+    public fun ship_production_process_completed_roster_object_address(ship_production_process_completed: &ShipProductionProcessCompleted): Object<Roster> {
+        ship_production_process_completed.roster_object_address
+    }
+
+    public fun ship_production_process_completed_player_id(ship_production_process_completed: &ShipProductionProcessCompleted): Object<Player> {
+        ship_production_process_completed.player_id
+    }
+
+    public fun ship_production_process_completed_item_id(ship_production_process_completed: &ShipProductionProcessCompleted): u32 {
+        ship_production_process_completed.item_id
+    }
+
+    public fun ship_production_process_completed_started_at(ship_production_process_completed: &ShipProductionProcessCompleted): u64 {
+        ship_production_process_completed.started_at
+    }
+
+    public fun ship_production_process_completed_creation_time(ship_production_process_completed: &ShipProductionProcessCompleted): u64 {
+        ship_production_process_completed.creation_time
+    }
+
+    public fun ship_production_process_completed_ended_at(ship_production_process_completed: &ShipProductionProcessCompleted): u64 {
+        ship_production_process_completed.ended_at
+    }
+
+    public fun ship_production_process_completed_successful(ship_production_process_completed: &ShipProductionProcessCompleted): bool {
+        ship_production_process_completed.successful
+    }
+
+    public fun ship_production_process_completed_quantity(ship_production_process_completed: &ShipProductionProcessCompleted): u32 {
+        ship_production_process_completed.quantity
+    }
+
+    public fun ship_production_process_completed_experience(ship_production_process_completed: &ShipProductionProcessCompleted): u32 {
+        ship_production_process_completed.experience
+    }
+
+    public fun ship_production_process_completed_new_level(ship_production_process_completed: &ShipProductionProcessCompleted): u16 {
+        ship_production_process_completed.new_level
+    }
+
+    public(friend) fun new_ship_production_process_completed(
+        id: address,
+        skill_process: &SkillProcess,
+        roster_object_address: Object<Roster>,
+        player_id: Object<Player>,
+        item_id: u32,
+        started_at: u64,
+        creation_time: u64,
+        ended_at: u64,
+        successful: bool,
+        quantity: u32,
+        experience: u32,
+        new_level: u16,
+    ): ShipProductionProcessCompleted {
+        ShipProductionProcessCompleted {
+            id,
+            version: version(skill_process),
+            roster_object_address,
+            player_id,
+            item_id,
+            started_at,
+            creation_time,
+            ended_at,
+            successful,
+            quantity,
+            experience,
+            new_level,
+        }
+    }
+
 
     public(friend) fun update_version_and_add(obj_addr: address, skill_process: SkillProcess) acquires ObjectController {
         skill_process.version = skill_process.version + 1;
@@ -471,6 +564,12 @@ module infinite_seas::skill_process {
         assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
         let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
         event::emit_event(&mut events.ship_production_process_started_handle, ship_production_process_started);
+    }
+
+    public(friend) fun emit_ship_production_process_completed(ship_production_process_completed: ShipProductionProcessCompleted) acquires Events {
+        assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
+        let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
+        event::emit_event(&mut events.ship_production_process_completed_handle, ship_production_process_completed);
     }
 
 }

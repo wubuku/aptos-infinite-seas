@@ -22,6 +22,7 @@ module infinite_seas::genesis_account {
     friend infinite_seas::skill_process_start_production_logic;
     friend infinite_seas::skill_process_complete_production_logic;
     friend infinite_seas::skill_process_start_ship_production_logic;
+    friend infinite_seas::skill_process_complete_ship_production_logic;
     friend infinite_seas::ship;
     friend infinite_seas::ship_aggregate;
     friend infinite_seas::ship_create_logic;
