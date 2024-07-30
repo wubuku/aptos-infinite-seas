@@ -2,6 +2,7 @@ module infinite_seas::roster_transfer_ship_logic {
     use std::option::{Self, Option};
     use std::vector;
     use aptos_framework::object::{Self, Object};
+    use infinite_seas::ship;
 
     use infinite_seas_common::ship_util;
 
@@ -82,8 +83,7 @@ module infinite_seas::roster_transfer_ship_logic {
 
         //let to_ships = roster::borrow_mut_ships(to_roster);
         //object_table::add(to_ships, ship_id, ship);
-
-        //TODO object::transfer()
+        ship::transfer_ship(ship_id, to_roster_object_addr);
 
         let speed = roster_util::calculate_roster_speed(to_roster);
         roster::set_speed(to_roster, speed);

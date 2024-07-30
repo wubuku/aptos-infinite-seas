@@ -15,6 +15,10 @@ module infinite_seas::ship {
     friend infinite_seas::ship_create_logic;
     friend infinite_seas::ship_aggregate;
 
+    friend infinite_seas::roster_add_ship_logic;
+    friend infinite_seas::roster_create_environment_roster_logic;
+    friend infinite_seas::roster_transfer_ship_logic;
+
     const EDataTooLong: u64 = 102;
     const EInappropriateVersion: u64 = 103;
     const ENotInitialized: u64 = 110;
@@ -248,6 +252,12 @@ module infinite_seas::ship {
             obj_addr
         );
         object::delete(delete_ref)
+    }
+
+    public(friend) fun transfer_ship(obj_addr: address, to: address) acquires ObjectController {
+        let transfer_ref = &borrow_global<ObjectController>(obj_addr).transfer_ref;
+        let linear_transfer_ref = object::generate_linear_transfer_ref(transfer_ref);
+        object::transfer_with_ref(linear_transfer_ref, to)
     }
 
     public fun get_ship(obj_addr: address): pass_object::PassObject<Ship> acquires Ship {

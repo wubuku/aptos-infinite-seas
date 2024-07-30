@@ -512,6 +512,12 @@ module infinite_seas::skill_process {
         move_to(object_signer, skill_process);
     }
 
+    public(friend) fun transfer_skill_process(obj_addr: address, to: address) acquires ObjectController {
+        let transfer_ref = &borrow_global<ObjectController>(obj_addr).transfer_ref;
+        let linear_transfer_ref = object::generate_linear_transfer_ref(transfer_ref);
+        object::transfer_with_ref(linear_transfer_ref, to)
+    }
+
     public fun get_skill_process(obj_addr: address): pass_object::PassObject<SkillProcess> acquires SkillProcess {
         let skill_process = remove_skill_process(obj_addr);
         pass_object::new_with_address(skill_process, obj_addr)

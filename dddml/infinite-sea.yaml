@@ -151,13 +151,16 @@ aggregates:
       Preprocessors: [ "MOVE_CRUD_IT" ]
       CRUD_IT_NO_UPDATE: true
       CRUD_IT_NO_DELETE: true
-    #       ShouldIssuePublisherObject: true
-    #       DataAccessFriends:
-    #         - ShipBattle.MakeMove
-    #         - ShipBattle.TakeLoot
-    #         - Roster.PutInShipInventory
-    #         - Roster.TakeOutShipInventory
-    #         - Roster.TransferShipInventory
+      #ShouldIssuePublisherObject: true
+      DataAccessFriends:
+        #- ShipBattle.MakeMove
+        #- ShipBattle.TakeLoot
+        - Roster.AddShip
+        - Roster.CreateEnvironmentRoster
+        - Roster.TransferShip
+        #- Roster.PutInShipInventory
+        #- Roster.TakeOutShipInventory
+        #- Roster.TransferShipInventory
     friends:
       - SkillProcess.CompleteShipProduction
       - Roster.CreateEnvironmentRoster
@@ -217,7 +220,7 @@ aggregates:
       - Player.Create
       - Player.ClaimIsland
       - SkillProcess.CompleteShipProduction
-    #       - ShipBattle.InitiateBattle
+      #- ShipBattle.InitiateBattle
     properties:
       RosterId:
         type: RosterId

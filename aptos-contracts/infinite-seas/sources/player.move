@@ -299,6 +299,12 @@ module infinite_seas::player {
         move_to(object_signer, player);
     }
 
+    public(friend) fun transfer_player(obj_addr: address, to: address) acquires ObjectController {
+        let transfer_ref = &borrow_global<ObjectController>(obj_addr).transfer_ref;
+        let linear_transfer_ref = object::generate_linear_transfer_ref(transfer_ref);
+        object::transfer_with_ref(linear_transfer_ref, to)
+    }
+
     public fun get_player(obj_addr: address): pass_object::PassObject<Player> acquires Player {
         let player = remove_player(obj_addr);
         pass_object::new_with_address(player, obj_addr)

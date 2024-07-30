@@ -576,6 +576,12 @@ module infinite_seas::roster {
         move_to(object_signer, roster);
     }
 
+    public(friend) fun transfer_roster(obj_addr: address, to: address) acquires ObjectController {
+        let transfer_ref = &borrow_global<ObjectController>(obj_addr).transfer_ref;
+        let linear_transfer_ref = object::generate_linear_transfer_ref(transfer_ref);
+        object::transfer_with_ref(linear_transfer_ref, to)
+    }
+
     public fun get_roster(obj_addr: address): pass_object::PassObject<Roster> acquires Roster {
         let roster = remove_roster(obj_addr);
         pass_object::new_with_address(roster, obj_addr)

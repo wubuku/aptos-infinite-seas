@@ -341,6 +341,12 @@ module infinite_seas::ship_battle {
         object::delete(delete_ref)
     }
 
+    public(friend) fun transfer_ship_battle(obj_addr: address, to: address) acquires ObjectController {
+        let transfer_ref = &borrow_global<ObjectController>(obj_addr).transfer_ref;
+        let linear_transfer_ref = object::generate_linear_transfer_ref(transfer_ref);
+        object::transfer_with_ref(linear_transfer_ref, to)
+    }
+
     public fun get_ship_battle(obj_addr: address): pass_object::PassObject<ShipBattle> acquires ShipBattle {
         let ship_battle = remove_ship_battle(obj_addr);
         pass_object::new_with_address(ship_battle, obj_addr)
