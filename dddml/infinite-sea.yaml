@@ -159,8 +159,8 @@ aggregates:
         - Roster.AddShip
         - Roster.CreateEnvironmentRoster
         - Roster.TransferShip
-        #- Roster.PutInShipInventory
-        #- Roster.TakeOutShipInventory
+        - Roster.PutInShipInventory
+        - Roster.TakeOutShipInventory
         #- Roster.TransferShipInventory
     friends:
       - SkillProcess.CompleteShipProduction
@@ -389,31 +389,35 @@ aggregates:
         event:
           name: RosterShipTransferred
 
-  #       TransferShipInventory:
-  #         parameters:
-  #           Player:
-  #             type: Object<Player> #referenceType: Player
-  #             eventPropertyName: PlayerId #isIgnoredInEvent: true
-  #           FromShipId:
-  #             type: address
-  #           ToShipId:
-  #             type: address
-  #           ItemIdQuantityPairs:
-  #             type: ItemIdQuantityPairs
-  #         event:
-  #           name: RosterShipInventoryTransferred
+      #       TransferShipInventory:
+      #         parameters:
+      #           Player:
+      #             type: Object<Player> #referenceType: Player
+      #             eventPropertyName: PlayerId #isIgnoredInEvent: true
+      #           FromShipId:
+      #             type: address
+      #           ToShipId:
+      #             type: address
+      #           ItemIdQuantityPairs:
+      #             type: ItemIdQuantityPairs
+      #         event:
+      #           name: RosterShipInventoryTransferred
 
-  #       TakeOutShipInventory:
-  #         inheritsFrom: RosterTemplate.InOutShipInventory
-  #         #parameters:
-  #         event:
-  #           name: RosterShipInventoryTakenOut
+      TakeOutShipInventory:
+        metadata:
+          ObjectMutableInVerificationFunction: true
+        inheritsFrom: RosterTemplate.InOutShipInventory
+        #parameters:
+        event:
+          name: RosterShipInventoryTakenOut
 
-  #       PutInShipInventory:
-  #         inheritsFrom: RosterTemplate.InOutShipInventory
-  #         #parameters:
-  #         event:
-  #           name: RosterShipInventoryPutIn
+      PutInShipInventory:
+        metadata:
+          ObjectMutableInVerificationFunction: true
+        inheritsFrom: RosterTemplate.InOutShipInventory
+        #parameters:
+        event:
+          name: RosterShipInventoryPutIn
 
 
   ShipBattle:

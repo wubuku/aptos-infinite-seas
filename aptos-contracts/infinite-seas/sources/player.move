@@ -19,7 +19,10 @@ module infinite_seas::player {
     friend infinite_seas::player_gather_island_resources_logic;
     friend infinite_seas::player_aggregate;
 
+    friend infinite_seas::roster_put_in_ship_inventory_logic;
+    friend infinite_seas::roster_take_out_ship_inventory_logic;
     friend infinite_seas::player_properties;
+
     const EDataTooLong: u64 = 102;
     const EInappropriateVersion: u64 = 103;
     const ENotInitialized: u64 = 110;
