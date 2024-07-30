@@ -46,15 +46,6 @@ module infinite_seas::roster_create_environment_roster_logic {
         environment_roster_created: &roster::EnvironmentRosterCreated,
         id: address,
     ): roster::Roster {
-        let coordinates = roster::environment_roster_created_coordinates(environment_roster_created);
-        let ship_resource_quantity = roster::environment_roster_created_ship_resource_quantity(
-            environment_roster_created
-        );
-        let ship_base_resource_quantity = roster::environment_roster_created_ship_base_resource_quantity(
-            environment_roster_created
-        );
-        let base_experience = roster::environment_roster_created_base_experience(environment_roster_created);
-
         let roster_id = roster::environment_roster_created_roster_id(environment_roster_created);
         let coordinates = roster::environment_roster_created_coordinates(environment_roster_created);
         let ship_resource_quantity = roster::environment_roster_created_ship_resource_quantity(

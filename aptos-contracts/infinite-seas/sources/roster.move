@@ -21,6 +21,7 @@ module infinite_seas::roster {
     friend infinite_seas::roster_set_sail_logic;
     friend infinite_seas::roster_adjust_ships_position_logic;
     friend infinite_seas::roster_transfer_ship_logic;
+    friend infinite_seas::roster_transfer_ship_inventory_logic;
     friend infinite_seas::roster_take_out_ship_inventory_logic;
     friend infinite_seas::roster_put_in_ship_inventory_logic;
     friend infinite_seas::roster_aggregate;
@@ -38,6 +39,7 @@ module infinite_seas::roster {
         roster_set_sail_handle: event::EventHandle<RosterSetSail>,
         roster_ships_position_adjusted_handle: event::EventHandle<RosterShipsPositionAdjusted>,
         roster_ship_transferred_handle: event::EventHandle<RosterShipTransferred>,
+        roster_ship_inventory_transferred_handle: event::EventHandle<RosterShipInventoryTransferred>,
         roster_ship_inventory_taken_out_handle: event::EventHandle<RosterShipInventoryTakenOut>,
         roster_ship_inventory_put_in_handle: event::EventHandle<RosterShipInventoryPutIn>,
     }
@@ -53,6 +55,7 @@ module infinite_seas::roster {
             roster_set_sail_handle: account::new_event_handle<RosterSetSail>(&res_account),
             roster_ships_position_adjusted_handle: account::new_event_handle<RosterShipsPositionAdjusted>(&res_account),
             roster_ship_transferred_handle: account::new_event_handle<RosterShipTransferred>(&res_account),
+            roster_ship_inventory_transferred_handle: account::new_event_handle<RosterShipInventoryTransferred>(&res_account),
             roster_ship_inventory_taken_out_handle: account::new_event_handle<RosterShipInventoryTakenOut>(&res_account),
             roster_ship_inventory_put_in_handle: account::new_event_handle<RosterShipInventoryPutIn>(&res_account),
         });
@@ -559,6 +562,53 @@ module infinite_seas::roster {
         }
     }
 
+    struct RosterShipInventoryTransferred has store, drop {
+        id: address,
+        version: u64,
+        player_id: Object<Player>,
+        from_ship_id: address,
+        to_ship_id: address,
+        item_id_quantity_pairs: ItemIdQuantityPairs,
+    }
+
+    public fun roster_ship_inventory_transferred_id(roster_ship_inventory_transferred: &RosterShipInventoryTransferred): address {
+        roster_ship_inventory_transferred.id
+    }
+
+    public fun roster_ship_inventory_transferred_player_id(roster_ship_inventory_transferred: &RosterShipInventoryTransferred): Object<Player> {
+        roster_ship_inventory_transferred.player_id
+    }
+
+    public fun roster_ship_inventory_transferred_from_ship_id(roster_ship_inventory_transferred: &RosterShipInventoryTransferred): address {
+        roster_ship_inventory_transferred.from_ship_id
+    }
+
+    public fun roster_ship_inventory_transferred_to_ship_id(roster_ship_inventory_transferred: &RosterShipInventoryTransferred): address {
+        roster_ship_inventory_transferred.to_ship_id
+    }
+
+    public fun roster_ship_inventory_transferred_item_id_quantity_pairs(roster_ship_inventory_transferred: &RosterShipInventoryTransferred): ItemIdQuantityPairs {
+        roster_ship_inventory_transferred.item_id_quantity_pairs
+    }
+
+    public(friend) fun new_roster_ship_inventory_transferred(
+        id: address,
+        roster: &Roster,
+        player_id: Object<Player>,
+        from_ship_id: address,
+        to_ship_id: address,
+        item_id_quantity_pairs: ItemIdQuantityPairs,
+    ): RosterShipInventoryTransferred {
+        RosterShipInventoryTransferred {
+            id,
+            version: version(roster),
+            player_id,
+            from_ship_id,
+            to_ship_id,
+            item_id_quantity_pairs,
+        }
+    }
+
     struct RosterShipInventoryTakenOut has store, drop {
         id: address,
         version: u64,
@@ -742,6 +792,12 @@ module infinite_seas::roster {
         assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
         let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
         event::emit_event(&mut events.roster_ship_transferred_handle, roster_ship_transferred);
+    }
+
+    public(friend) fun emit_roster_ship_inventory_transferred(roster_ship_inventory_transferred: RosterShipInventoryTransferred) acquires Events {
+        assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
+        let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
+        event::emit_event(&mut events.roster_ship_inventory_transferred_handle, roster_ship_inventory_transferred);
     }
 
     public(friend) fun emit_roster_ship_inventory_taken_out(roster_ship_inventory_taken_out: RosterShipInventoryTakenOut) acquires Events {

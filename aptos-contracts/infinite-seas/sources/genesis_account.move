@@ -34,6 +34,7 @@ module infinite_seas::genesis_account {
     friend infinite_seas::roster_set_sail_logic;
     friend infinite_seas::roster_adjust_ships_position_logic;
     friend infinite_seas::roster_transfer_ship_logic;
+    friend infinite_seas::roster_transfer_ship_inventory_logic;
     friend infinite_seas::roster_take_out_ship_inventory_logic;
     friend infinite_seas::roster_put_in_ship_inventory_logic;
     friend infinite_seas::ship_battle;

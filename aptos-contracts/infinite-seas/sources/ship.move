@@ -20,6 +20,7 @@ module infinite_seas::ship {
     friend infinite_seas::roster_transfer_ship_logic;
     friend infinite_seas::roster_put_in_ship_inventory_logic;
     friend infinite_seas::roster_take_out_ship_inventory_logic;
+    friend infinite_seas::roster_transfer_ship_inventory_logic;
 
     const EDataTooLong: u64 = 102;
     const EInappropriateVersion: u64 = 103;

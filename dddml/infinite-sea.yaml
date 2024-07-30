@@ -161,7 +161,7 @@ aggregates:
         - Roster.TransferShip
         - Roster.PutInShipInventory
         - Roster.TakeOutShipInventory
-        #- Roster.TransferShipInventory
+        - Roster.TransferShipInventory
     friends:
       - SkillProcess.CompleteShipProduction
       - Roster.CreateEnvironmentRoster
@@ -389,19 +389,19 @@ aggregates:
         event:
           name: RosterShipTransferred
 
-      #       TransferShipInventory:
-      #         parameters:
-      #           Player:
-      #             type: Object<Player> #referenceType: Player
-      #             eventPropertyName: PlayerId #isIgnoredInEvent: true
-      #           FromShipId:
-      #             type: address
-      #           ToShipId:
-      #             type: address
-      #           ItemIdQuantityPairs:
-      #             type: ItemIdQuantityPairs
-      #         event:
-      #           name: RosterShipInventoryTransferred
+      TransferShipInventory:
+        parameters:
+          Player:
+            type: Object<Player> #referenceType: Player
+            eventPropertyName: PlayerId #isIgnoredInEvent: true
+          FromShipId:
+            type: address
+          ToShipId:
+            type: address
+          ItemIdQuantityPairs:
+            type: ItemIdQuantityPairs
+        event:
+          name: RosterShipInventoryTransferred
 
       TakeOutShipInventory:
         metadata:

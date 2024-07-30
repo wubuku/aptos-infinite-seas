@@ -15,6 +15,7 @@ module infinite_seas::roster_aggregate {
     use infinite_seas::roster_put_in_ship_inventory_logic;
     use infinite_seas::roster_set_sail_logic;
     use infinite_seas::roster_take_out_ship_inventory_logic;
+    use infinite_seas::roster_transfer_ship_inventory_logic;
     use infinite_seas::roster_transfer_ship_logic;
     use infinite_seas::ship::Ship;
     use infinite_seas_common::coordinates::{Self, Coordinates};
@@ -235,6 +236,40 @@ module infinite_seas::roster_aggregate {
         );
         roster::update_version_and_add(id, updated_roster);
         roster::emit_roster_ship_transferred(roster_ship_transferred);
+    }
+
+    public entry fun transfer_ship_inventory(
+        account: &signer,
+        roster_obj: Object<Roster>,
+        player: Object<Player>,
+        from_ship_id: address,
+        to_ship_id: address,
+        item_id_quantity_pairs_item_id_list: vector<u32>,
+        item_id_quantity_pairs_item_quantity_list: vector<u32>,
+    ) {
+        let item_id_quantity_pairs: ItemIdQuantityPairs = item_id_quantity_pairs::new(
+            item_id_quantity_pairs_item_id_list,
+            item_id_quantity_pairs_item_quantity_list,
+        );
+        let id = object::object_address(&roster_obj);
+        let roster = roster::remove_roster(id);
+        let roster_ship_inventory_transferred = roster_transfer_ship_inventory_logic::verify(
+            account,
+            player,
+            from_ship_id,
+            to_ship_id,
+            item_id_quantity_pairs,
+            id,
+            &roster,
+        );
+        let updated_roster = roster_transfer_ship_inventory_logic::mutate(
+            account,
+            &roster_ship_inventory_transferred,
+            id,
+            roster,
+        );
+        roster::update_version_and_add(id, updated_roster);
+        roster::emit_roster_ship_inventory_transferred(roster_ship_inventory_transferred);
     }
 
     public entry fun take_out_ship_inventory(
