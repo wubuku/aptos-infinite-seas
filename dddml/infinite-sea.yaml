@@ -370,14 +370,14 @@ aggregates:
         parameters:
           Player:
             type: Object<Player> #referenceType: Player
-            eventPropertyName: PlayerId #isIgnoredInEvent: true
+            eventPropertyName: PlayerId # The player object address
           ShipId:
             type: address
           #FromRoster: # from current roster
           ToRoster:
             type: Object<Roster> #referenceType: Roster
             #isMutableReference: true
-            eventPropertyName: ToRosterObjectAddress
+            eventPropertyName: ToRoster # The object address of "ToRoster"
           ToPosition:
             type: u64
             optional: true

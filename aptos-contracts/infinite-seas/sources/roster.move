@@ -509,7 +509,7 @@ module infinite_seas::roster {
         version: u64,
         player_id: Object<Player>,
         ship_id: address,
-        to_roster_object_address: Object<Roster>,
+        to_roster: Object<Roster>,
         to_position: Option<u64>,
     }
 
@@ -525,8 +525,8 @@ module infinite_seas::roster {
         roster_ship_transferred.ship_id
     }
 
-    public fun roster_ship_transferred_to_roster_object_address(roster_ship_transferred: &RosterShipTransferred): Object<Roster> {
-        roster_ship_transferred.to_roster_object_address
+    public fun roster_ship_transferred_to_roster(roster_ship_transferred: &RosterShipTransferred): Object<Roster> {
+        roster_ship_transferred.to_roster
     }
 
     public fun roster_ship_transferred_to_position(roster_ship_transferred: &RosterShipTransferred): Option<u64> {
@@ -542,7 +542,7 @@ module infinite_seas::roster {
         roster: &Roster,
         player_id: Object<Player>,
         ship_id: address,
-        to_roster_object_address: Object<Roster>,
+        to_roster: Object<Roster>,
         to_position: Option<u64>,
     ): RosterShipTransferred {
         RosterShipTransferred {
@@ -550,7 +550,7 @@ module infinite_seas::roster {
             version: version(roster),
             player_id,
             ship_id,
-            to_roster_object_address,
+            to_roster,
             to_position,
         }
     }

@@ -36,7 +36,7 @@ module infinite_seas::roster_add_ship_logic {
         // Transfer the ship ownership to the roster
         //
         let roster_obj = object::address_to_object<Roster>(id);
-        object::transfer_to_object(&genesis_account::resource_account_signer(), ship_obj, roster_obj);
+        //TODO object::transfer_to_object(&genesis_account::resource_account_signer(), ship_obj, roster_obj);
         // let ships = roster::borrow_mut_ships(roster);
         // object_table::add(ships, ship_id, ship);
 

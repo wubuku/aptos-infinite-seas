@@ -53,7 +53,7 @@ module infinite_seas::roster_transfer_ship_logic {
     ): roster::Roster {
         //let player_id = roster::roster_ship_transferred_player_id(roster_ship_transferred);
         let ship_id = roster::roster_ship_transferred_ship_id(roster_ship_transferred);
-        let to_roster_object = roster::roster_ship_transferred_to_roster_object_address(roster_ship_transferred);
+        let to_roster_object = roster::roster_ship_transferred_to_roster(roster_ship_transferred);
         let to_position = roster::roster_ship_transferred_to_position(roster_ship_transferred);
 
         let from_roster = roster;
