@@ -53,7 +53,6 @@ module infinite_seas::ship_battle {
     struct ObjectController has key {
         extend_ref: object::ExtendRef,
         delete_ref: object::DeleteRef,
-        transfer_ref: object::TransferRef,
     }
 
 
@@ -61,14 +60,12 @@ module infinite_seas::ship_battle {
         object_signer: &signer,
         extend_ref: object::ExtendRef,
         delete_ref: object::DeleteRef,
-        transfer_ref: object::TransferRef,
     ) {
         move_to(
             object_signer,
             ObjectController {
                 extend_ref,
                 delete_ref,
-                transfer_ref
             }
         )
     }
@@ -334,17 +331,10 @@ module infinite_seas::ship_battle {
         let ObjectController {
             extend_ref: _extend_ref,
             delete_ref,
-            transfer_ref: _transfer_ref,
         } = move_from<ObjectController>(
             obj_addr
         );
         object::delete(delete_ref)
-    }
-
-    public(friend) fun transfer_ship_battle(obj_addr: address, to: address) acquires ObjectController {
-        let transfer_ref = &borrow_global<ObjectController>(obj_addr).transfer_ref;
-        let linear_transfer_ref = object::generate_linear_transfer_ref(transfer_ref);
-        object::transfer_with_ref(linear_transfer_ref, to)
     }
 
     public fun get_ship_battle(obj_addr: address): pass_object::PassObject<ShipBattle> acquires ShipBattle {

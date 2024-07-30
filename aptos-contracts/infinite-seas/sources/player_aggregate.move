@@ -31,8 +31,6 @@ module infinite_seas::player_aggregate {
         let constructor_ref = object::create_named_object(&genesis_account::resource_account_signer(), std::bcs::to_bytes(&owner));
         let object_signer = object::generate_signer(&constructor_ref);
         let extend_ref = object::generate_extend_ref(&constructor_ref);
-        let transfer_ref = object::generate_transfer_ref(&constructor_ref);
-        object::disable_ungated_transfer(&transfer_ref);
         let id = object::address_from_constructor_ref(&constructor_ref);
         let player = player_create_logic::mutate(
             account,
@@ -43,7 +41,6 @@ module infinite_seas::player_aggregate {
         player::add_player(&object_signer, player);
         player::save_object_controller(&object_signer,
             extend_ref,
-            transfer_ref,
         );
         player::set_player_created_id(&mut player_created, id);
         player::emit_player_created(player_created);

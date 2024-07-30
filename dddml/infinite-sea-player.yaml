@@ -1,6 +1,7 @@
 aggregates:
   Player:
     metadata:
+      IsNonTransferableAptosObject: true
       ShouldIssuePublisherObject: true
       MOVE_AGGREGATE_MODULE_ATTRIBUTES: "#[allow(unused_mut_parameter, unused_use)]"
       DataAccessFriends:

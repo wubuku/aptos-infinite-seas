@@ -40,8 +40,6 @@ module infinite_seas::skill_process_aggregate {
         let constructor_ref = object::create_named_object(&genesis_account::resource_account_signer(), std::bcs::to_bytes(&skill_process_id));
         let object_signer = object::generate_signer(&constructor_ref);
         let extend_ref = object::generate_extend_ref(&constructor_ref);
-        let transfer_ref = object::generate_transfer_ref(&constructor_ref);
-        object::disable_ungated_transfer(&transfer_ref);
         let id = object::address_from_constructor_ref(&constructor_ref);
         let skill_process = skill_process_create_logic::mutate(
             account,
@@ -52,7 +50,6 @@ module infinite_seas::skill_process_aggregate {
         skill_process::add_skill_process(&object_signer, skill_process);
         skill_process::save_object_controller(&object_signer,
             extend_ref,
-            transfer_ref,
         );
         skill_process::set_skill_process_created_id(&mut skill_process_created, id);
         skill_process::emit_skill_process_created(skill_process_created);

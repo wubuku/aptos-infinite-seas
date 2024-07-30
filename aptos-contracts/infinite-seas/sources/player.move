@@ -64,20 +64,17 @@ module infinite_seas::player {
     #[resource_group_member(group = aptos_framework::object::ObjectGroup)]
     struct ObjectController has key {
         extend_ref: object::ExtendRef,
-        transfer_ref: object::TransferRef,
     }
 
 
     public(friend) fun save_object_controller(
         object_signer: &signer,
         extend_ref: object::ExtendRef,
-        transfer_ref: object::TransferRef,
     ) {
         move_to(
             object_signer,
             ObjectController {
                 extend_ref,
-                transfer_ref
             }
         )
     }
@@ -297,12 +294,6 @@ module infinite_seas::player {
 
     fun private_add_player(object_signer: &signer, player: Player) {
         move_to(object_signer, player);
-    }
-
-    public(friend) fun transfer_player(obj_addr: address, to: address) acquires ObjectController {
-        let transfer_ref = &borrow_global<ObjectController>(obj_addr).transfer_ref;
-        let linear_transfer_ref = object::generate_linear_transfer_ref(transfer_ref);
-        object::transfer_with_ref(linear_transfer_ref, to)
     }
 
     public fun get_player(obj_addr: address): pass_object::PassObject<Player> acquires Player {

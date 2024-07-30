@@ -33,8 +33,6 @@ module infinite_seas::ship_battle_aggregate {
         let object_signer = object::generate_signer(&constructor_ref);
         let extend_ref = object::generate_extend_ref(&constructor_ref);
         let delete_ref = object::generate_delete_ref(&constructor_ref);
-        let transfer_ref = object::generate_transfer_ref(&constructor_ref);
-        object::disable_ungated_transfer(&transfer_ref);
         let id = object::address_from_constructor_ref(&constructor_ref);
         let ship_battle = ship_battle_initiate_battle_logic::mutate(
             account,
@@ -45,7 +43,6 @@ module infinite_seas::ship_battle_aggregate {
         ship_battle::save_object_controller(&object_signer,
             extend_ref,
             delete_ref,
-            transfer_ref,
         );
         ship_battle::set_ship_battle_initiated_id(&mut ship_battle_initiated, id);
         ship_battle::emit_ship_battle_initiated(ship_battle_initiated);

@@ -1,6 +1,7 @@
 aggregates:
   SkillProcess:
     metadata:
+      IsNonTransferableAptosObject: true
       Preprocessors: [ "MOVE_CRUD_IT" ]
       CRUD_IT_NO_UPDATE: true
       CRUD_IT_NO_DELETE: true
@@ -194,16 +195,8 @@ aggregates:
 
 
   Roster:
-    id:
-      name: Id
-      type: AptosObjectID
-      generator:
-        class: AptosObject
-        isNamedObject: true
-        creatorType: ResourceAccount
-        seed:
-          "__Property__": "RosterId"
     metadata:
+      IsNonTransferableAptosObject: true
       #HasStoreAbility: true
       Preprocessors: [ "MOVE_CRUD_IT" ]
       CRUD_IT_NO_UPDATE: true
@@ -221,6 +214,15 @@ aggregates:
       - Player.ClaimIsland
       - SkillProcess.CompleteShipProduction
       #- ShipBattle.InitiateBattle
+    id:
+      name: Id
+      type: AptosObjectID
+      generator:
+        class: AptosObject
+        isNamedObject: true
+        creatorType: ResourceAccount
+        seed:
+          "__Property__": "RosterId"
     properties:
       RosterId:
         type: RosterId
@@ -415,6 +417,8 @@ aggregates:
 
 
   ShipBattle:
+    metadata:
+      IsNonTransferableAptosObject: true
     id:
       name: Id
       type: AptosObjectID
