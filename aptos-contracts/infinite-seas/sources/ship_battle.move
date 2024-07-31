@@ -12,6 +12,7 @@ module infinite_seas::ship_battle {
     use infinite_seas_common::coordinates::Coordinates;
     use std::option::{Self, Option};
     friend infinite_seas::ship_battle_initiate_battle_logic;
+    friend infinite_seas::ship_battle_make_move_logic;
     friend infinite_seas::ship_battle_aggregate;
 
     const EDataTooLong: u64 = 102;
@@ -20,6 +21,7 @@ module infinite_seas::ship_battle {
 
     struct Events has key {
         ship_battle_initiated_handle: event::EventHandle<ShipBattleInitiated>,
+        ship_battle_move_made_handle: event::EventHandle<ShipBattleMoveMade>,
     }
 
     public fun initialize(account: &signer) {
@@ -28,6 +30,7 @@ module infinite_seas::ship_battle {
         let res_account = genesis_account::resource_account_signer();
         move_to(&res_account, Events {
             ship_battle_initiated_handle: account::new_event_handle<ShipBattleInitiated>(&res_account),
+            ship_battle_move_made_handle: account::new_event_handle<ShipBattleMoveMade>(&res_account),
         });
 
     }
@@ -306,6 +309,139 @@ module infinite_seas::ship_battle {
         }
     }
 
+    struct ShipBattleMoveMade has store, drop {
+        id: address,
+        version: u64,
+        player_id: address,
+        initiator_id: address,
+        responder_id: address,
+        attacker_command: u8,
+        defender_command: u8,
+        round_number: u32,
+        defender_damage_taken: u32,
+        attacker_damage_taken: u32,
+        is_battle_ended: bool,
+        winner: Option<u8>,
+        next_round_started_at: u64,
+        next_round_mover: Option<u8>,
+        next_round_attacker_ship: Option<address>,
+        next_round_defender_ship: Option<address>,
+    }
+
+    public fun ship_battle_move_made_id(ship_battle_move_made: &ShipBattleMoveMade): address {
+        ship_battle_move_made.id
+    }
+
+    public fun ship_battle_move_made_player_id(ship_battle_move_made: &ShipBattleMoveMade): address {
+        ship_battle_move_made.player_id
+    }
+
+    public fun ship_battle_move_made_initiator_id(ship_battle_move_made: &ShipBattleMoveMade): address {
+        ship_battle_move_made.initiator_id
+    }
+
+    public fun ship_battle_move_made_responder_id(ship_battle_move_made: &ShipBattleMoveMade): address {
+        ship_battle_move_made.responder_id
+    }
+
+    public fun ship_battle_move_made_attacker_command(ship_battle_move_made: &ShipBattleMoveMade): u8 {
+        ship_battle_move_made.attacker_command
+    }
+
+    public fun ship_battle_move_made_defender_command(ship_battle_move_made: &ShipBattleMoveMade): u8 {
+        ship_battle_move_made.defender_command
+    }
+
+    public fun ship_battle_move_made_round_number(ship_battle_move_made: &ShipBattleMoveMade): u32 {
+        ship_battle_move_made.round_number
+    }
+
+    public fun ship_battle_move_made_defender_damage_taken(ship_battle_move_made: &ShipBattleMoveMade): u32 {
+        ship_battle_move_made.defender_damage_taken
+    }
+
+    public fun ship_battle_move_made_attacker_damage_taken(ship_battle_move_made: &ShipBattleMoveMade): u32 {
+        ship_battle_move_made.attacker_damage_taken
+    }
+
+    public fun ship_battle_move_made_is_battle_ended(ship_battle_move_made: &ShipBattleMoveMade): bool {
+        ship_battle_move_made.is_battle_ended
+    }
+
+    public fun ship_battle_move_made_winner(ship_battle_move_made: &ShipBattleMoveMade): Option<u8> {
+        ship_battle_move_made.winner
+    }
+
+    public(friend) fun set_ship_battle_move_made_winner(ship_battle_move_made: &mut ShipBattleMoveMade, winner: Option<u8>) {
+        ship_battle_move_made.winner = winner;
+    }
+
+    public fun ship_battle_move_made_next_round_started_at(ship_battle_move_made: &ShipBattleMoveMade): u64 {
+        ship_battle_move_made.next_round_started_at
+    }
+
+    public fun ship_battle_move_made_next_round_mover(ship_battle_move_made: &ShipBattleMoveMade): Option<u8> {
+        ship_battle_move_made.next_round_mover
+    }
+
+    public(friend) fun set_ship_battle_move_made_next_round_mover(ship_battle_move_made: &mut ShipBattleMoveMade, next_round_mover: Option<u8>) {
+        ship_battle_move_made.next_round_mover = next_round_mover;
+    }
+
+    public fun ship_battle_move_made_next_round_attacker_ship(ship_battle_move_made: &ShipBattleMoveMade): Option<address> {
+        ship_battle_move_made.next_round_attacker_ship
+    }
+
+    public(friend) fun set_ship_battle_move_made_next_round_attacker_ship(ship_battle_move_made: &mut ShipBattleMoveMade, next_round_attacker_ship: Option<address>) {
+        ship_battle_move_made.next_round_attacker_ship = next_round_attacker_ship;
+    }
+
+    public fun ship_battle_move_made_next_round_defender_ship(ship_battle_move_made: &ShipBattleMoveMade): Option<address> {
+        ship_battle_move_made.next_round_defender_ship
+    }
+
+    public(friend) fun set_ship_battle_move_made_next_round_defender_ship(ship_battle_move_made: &mut ShipBattleMoveMade, next_round_defender_ship: Option<address>) {
+        ship_battle_move_made.next_round_defender_ship = next_round_defender_ship;
+    }
+
+    public(friend) fun new_ship_battle_move_made(
+        id: address,
+        ship_battle: &ShipBattle,
+        player_id: address,
+        initiator_id: address,
+        responder_id: address,
+        attacker_command: u8,
+        defender_command: u8,
+        round_number: u32,
+        defender_damage_taken: u32,
+        attacker_damage_taken: u32,
+        is_battle_ended: bool,
+        winner: Option<u8>,
+        next_round_started_at: u64,
+        next_round_mover: Option<u8>,
+        next_round_attacker_ship: Option<address>,
+        next_round_defender_ship: Option<address>,
+    ): ShipBattleMoveMade {
+        ShipBattleMoveMade {
+            id,
+            version: version(ship_battle),
+            player_id,
+            initiator_id,
+            responder_id,
+            attacker_command,
+            defender_command,
+            round_number,
+            defender_damage_taken,
+            attacker_damage_taken,
+            is_battle_ended,
+            winner,
+            next_round_started_at,
+            next_round_mover,
+            next_round_attacker_ship,
+            next_round_defender_ship,
+        }
+    }
+
 
     public(friend) fun update_version_and_add(obj_addr: address, ship_battle: ShipBattle) acquires ObjectController {
         ship_battle.version = ship_battle.version + 1;
@@ -375,6 +511,12 @@ module infinite_seas::ship_battle {
         assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
         let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
         event::emit_event(&mut events.ship_battle_initiated_handle, ship_battle_initiated);
+    }
+
+    public(friend) fun emit_ship_battle_move_made(ship_battle_move_made: ShipBattleMoveMade) acquires Events {
+        assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
+        let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
+        event::emit_event(&mut events.ship_battle_move_made_handle, ship_battle_move_made);
     }
 
 }

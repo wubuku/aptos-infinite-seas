@@ -9,6 +9,7 @@ module infinite_seas::ship_battle_aggregate {
     use infinite_seas::roster::Roster;
     use infinite_seas::ship_battle::{Self, ShipBattle};
     use infinite_seas::ship_battle_initiate_battle_logic;
+    use infinite_seas::ship_battle_make_move_logic;
     use infinite_seas_common::coordinates::Coordinates;
     use std::signer;
 
@@ -47,6 +48,35 @@ module infinite_seas::ship_battle_aggregate {
         ship_battle::set_ship_battle_initiated_id(&mut ship_battle_initiated, id);
         ship_battle::emit_ship_battle_initiated(ship_battle_initiated);
         object::address_to_object(id)
+    }
+
+    public entry fun make_move(
+        account: &signer,
+        ship_battle_obj: Object<ShipBattle>,
+        player: Object<Player>,
+        initiator: Object<Roster>,
+        responder: Object<Roster>,
+        attacker_command: u8,
+    ) {
+        let id = object::object_address(&ship_battle_obj);
+        let ship_battle = ship_battle::remove_ship_battle(id);
+        let ship_battle_move_made = ship_battle_make_move_logic::verify(
+            account,
+            player,
+            initiator,
+            responder,
+            attacker_command,
+            id,
+            &ship_battle,
+        );
+        let updated_ship_battle = ship_battle_make_move_logic::mutate(
+            account,
+            &mut ship_battle_move_made,
+            id,
+            ship_battle,
+        );
+        ship_battle::update_version_and_add(id, updated_ship_battle);
+        ship_battle::emit_ship_battle_move_made(ship_battle_move_made);
     }
 
 }

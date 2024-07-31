@@ -16,7 +16,7 @@ module infinite_seas::ship_battle_util {
     use infinite_seas::ship_battle::{Self, ShipBattle};
 
     friend infinite_seas::ship_battle_initiate_battle_logic;
-    // friend infinite_seas::ship_battle_make_move_logic;
+    friend infinite_seas::ship_battle_make_move_logic;
 
     const EInitiatorBattleIdMismatch: u64 = 10;
     const EResponderBattleIdMismatch: u64 = 11;

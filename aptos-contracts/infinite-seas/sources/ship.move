@@ -15,6 +15,7 @@ module infinite_seas::ship {
     friend infinite_seas::ship_create_logic;
     friend infinite_seas::ship_aggregate;
 
+    friend infinite_seas::ship_battle_make_move_logic;
     friend infinite_seas::roster_add_ship_logic;
     friend infinite_seas::roster_create_environment_roster_logic;
     friend infinite_seas::roster_transfer_ship_logic;

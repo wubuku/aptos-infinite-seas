@@ -154,7 +154,7 @@ aggregates:
       CRUD_IT_NO_DELETE: true
       #ShouldIssuePublisherObject: true
       DataAccessFriends:
-        #- ShipBattle.MakeMove
+        - ShipBattle.MakeMove
         #- ShipBattle.TakeLoot
         - Roster.AddShip
         - Roster.CreateEnvironmentRoster
@@ -207,7 +207,7 @@ aggregates:
         # Make some methods can access ("write") Roster's data model.
         # This should only be done occasionally!
         - ShipBattle.InitiateBattle
-        #TODO - ShipBattle.MakeMove
+        - ShipBattle.MakeMove
         #TODO - ShipBattle.TakeLoot
     friends:
       - Player.Create
@@ -517,52 +517,58 @@ aggregates:
               type: address
               optional: true
 
-#       MakeMove:
-#         parameters:
-#           Player:
-#             type: Object<Player> #referenceType: Player
-#             eventPropertyName: PlayerId #isIgnoredInEvent: true
-#           Initiator:
-#             referenceType: Roster
-#             isMutableReference: true
-#             isIgnoredInEvent: true
-#           Responder:
-#             referenceType: Roster
-#             isMutableReference: true
-#             isIgnoredInEvent: true
-#           #Clock:
-#           #  referenceType: Clock
-#           #  isIgnoredInEvent: true
-#           AttackerCommand:
-#             type: ShipBattleCommand
-#         event:
-#           name: ShipBattleMoveMade
-#           properties:
-#             DefenderCommand:
-#               type: ShipBattleCommand
-#             RoundNumber:
-#               type: u32
-#             DefenderDamageTaken:
-#               type: u32
-#             AttackerDamageTaken:
-#               type: u32
-#             IsBattleEnded:
-#               type: bool
-#             Winner:
-#               type: u8
-#               optional: true
-#               description: "1: Initiator, 0: Responder"
-#             NextRoundStartedAt:
-#               type: u64
-#             NextRoundMover:
-#               type: u8
-#               optional: true
-#             NextRoundAttackerShip:
-#               type: address
-#               optional: true
-#             NextRoundDefenderShip:
-#               type: address
-#               optional: true
+      MakeMove:
+        parameters:
+          Player:
+            type: Object<Player> #referenceType: Player
+            eventPropertyName: PlayerId #isIgnoredInEvent: true
+          Initiator:
+            type: Object<Roster> #referenceType: Roster
+            #isMutableReference: true
+            eventPropertyName: InitiatorId #isIgnoredInEvent: true
+          Responder:
+            type: Object<Roster> #referenceType: Roster
+            #isMutableReference: true
+            eventPropertyName: ResponderId #isIgnoredInEvent: true
+          #Clock:
+          #  referenceType: Clock
+          #  isIgnoredInEvent: true
+          AttackerCommand:
+            type: ShipBattleCommand
+        event:
+          name: ShipBattleMoveMade
+          properties:
+            InitiatorId:
+              type: address
+            ResponderId:
+              type: address
+            PlayerId:
+              type: address
+            DefenderCommand:
+              type: ShipBattleCommand
+            RoundNumber:
+              type: u32
+            DefenderDamageTaken:
+              type: u32
+            AttackerDamageTaken:
+              type: u32
+            IsBattleEnded:
+              type: bool
+            Winner:
+              type: u8
+              optional: true
+              description: "1: Initiator, 0: Responder"
+            NextRoundStartedAt:
+              type: u64
+            NextRoundMover:
+              type: u8
+              optional: true
+            NextRoundAttackerShip:
+              type: address
+              optional: true
+            NextRoundDefenderShip:
+              type: address
+              optional: true
 
 #       TakeLoot:
 #         parameters:

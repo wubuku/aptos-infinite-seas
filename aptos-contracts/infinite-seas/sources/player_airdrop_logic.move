@@ -28,8 +28,6 @@ module infinite_seas::player_airdrop_logic {
     ): player::Player {
         let item_id = player::player_airdropped_item_id(player_airdropped);
         let quantity = player::player_airdropped_quantity(player_airdropped);
-        let item_id = player::player_airdropped_item_id(player_airdropped);
-        let quantity = player::player_airdropped_quantity(player_airdropped);
         let inv = player::borrow_mut_inventory(&mut player);
         sorted_vector_util::insert_or_add_item_id_quantity_pair(inv, item_id_quantity_pair::new(item_id, quantity));
         player
