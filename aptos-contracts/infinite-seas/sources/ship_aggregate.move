@@ -10,7 +10,6 @@ module infinite_seas::ship_aggregate {
     use infinite_seas_common::item_id_quantity_pairs::ItemIdQuantityPairs;
     use std::signer;
 
-    friend infinite_seas::skill_process_complete_ship_production_logic;
     friend infinite_seas::roster_create_environment_roster_logic;
 
     public(friend) fun create(

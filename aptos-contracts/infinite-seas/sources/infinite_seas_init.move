@@ -9,18 +9,17 @@ module infinite_seas::infinite_seas_init {
     use infinite_seas::roster;
     use infinite_seas::ship;
     use infinite_seas::ship_battle;
-    use infinite_seas::skill_process;
 
     public entry fun initialize(account: &signer) {
         genesis_account::initialize(account);
         player::initialize(account);
-        skill_process::initialize(account);
         ship::initialize(account);
         roster::initialize(account);
         ship_battle::initialize(account);
         let store_account = genesis_account::resource_account_signer_for_genesis_account(account);
         infinite_seas_common::infinite_seas_common_init::initialize(&store_account);
         infinite_seas_map::infinite_seas_map_init::initialize(&store_account);
+        infinite_seas_production::infinite_seas_production_init::initialize(&store_account);
     }
 
 }

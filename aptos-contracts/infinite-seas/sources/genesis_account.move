@@ -16,15 +16,6 @@ module infinite_seas::genesis_account {
     friend infinite_seas::player_claim_island_logic;
     friend infinite_seas::player_airdrop_logic;
     friend infinite_seas::player_gather_island_resources_logic;
-    friend infinite_seas::skill_process;
-    friend infinite_seas::skill_process_aggregate;
-    friend infinite_seas::skill_process_create_logic;
-    friend infinite_seas::skill_process_start_production_logic;
-    friend infinite_seas::skill_process_complete_production_logic;
-    friend infinite_seas::skill_process_start_ship_production_logic;
-    friend infinite_seas::skill_process_complete_ship_production_logic;
-    friend infinite_seas::skill_process_start_creation_logic;
-    friend infinite_seas::skill_process_complete_creation_logic;
     friend infinite_seas::ship;
     friend infinite_seas::ship_aggregate;
     friend infinite_seas::ship_create_logic;

@@ -1,11 +1,11 @@
-module infinite_seas::skill_process_util {
+module infinite_seas_production::skill_process_util {
     use infinite_seas_common::item_creation::{Self, ItemCreation};
     use infinite_seas_common::item_production::{Self, ItemProduction};
     use infinite_seas_common::skill_process_id;
     use infinite_seas_common::skill_type;
     use infinite_seas_common::skill_type_item_id_pair;
 
-    use infinite_seas::skill_process::{Self, SkillProcess};
+    use infinite_seas_production::skill_process::{Self, SkillProcess};
 
     const EInvalidPlayerId: u64 = 11;
     const EIncorrectSkillType: u64 = 12;

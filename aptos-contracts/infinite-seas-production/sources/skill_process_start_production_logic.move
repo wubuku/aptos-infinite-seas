@@ -1,6 +1,5 @@
-module infinite_seas::skill_process_start_production_logic {
-    use aptos_framework::object;
-    use aptos_framework::object::Object;
+module infinite_seas_production::skill_process_start_production_logic {
+    use std::signer;
     use aptos_framework::timestamp;
 
     use infinite_seas_common::item_id;
@@ -9,15 +8,10 @@ module infinite_seas::skill_process_start_production_logic {
     use infinite_seas_common::skill_type_item_id_pair::SkillTypeItemIdPair;
     use infinite_seas_common::sorted_vector_util;
 
-    use infinite_seas::genesis_account;
-    use infinite_seas::pass_object;
-    use infinite_seas::player;
-    use infinite_seas::player::Player;
-    use infinite_seas::player_properties;
-    use infinite_seas::skill_process;
-    use infinite_seas::skill_process_util;
+    use infinite_seas_production::skill_process;
+    use infinite_seas_production::skill_process_util;
 
-    friend infinite_seas::skill_process_aggregate;
+    friend infinite_seas_production::skill_process_aggregate;
 
     const EProcessAlreadyStarted: u64 = 10;
     //const EInvalidPlayerId: u64 = 11;
@@ -30,35 +24,38 @@ module infinite_seas::skill_process_start_production_logic {
 
     public(friend) fun verify(
         account: &signer,
+        store_account: &signer,
         batch_size: u32,
-        player_obj: Object<Player>,
+        player_id: address, //player_obj: Object<Player>,
+        player_level: u16,
         item_production_id: SkillTypeItemIdPair,
         id: address,
         skill_process: &skill_process::SkillProcess,
     ): skill_process::ProductionProcessStarted {
-        let player_obj_addr = object::object_address(&player_obj);
-        let player_pass_obj = player::get_player(player_obj_addr);
-        let player = pass_object::borrow(&player_pass_obj);
-        assert!(std::signer::address_of(account) == player::owner(player), ESenderHasNoPermission);
+        let store_address = signer::address_of(store_account);
+        // let player_obj_addr = object::object_address(&player_obj);
+        // let player_pass_obj = player::get_player(player_obj_addr);
+        // let player = pass_object::borrow(&player_pass_obj);
+        // assert!(std::signer::address_of(account) == player::owner(player), ESenderHasNoPermission);
         assert!(
             skill_process::item_id(skill_process) == item_id::unused_item() || skill_process::completed(skill_process),
             EProcessAlreadyStarted
         );
         let item_production_pass_obj = item_production::get_item_production(
-            genesis_account::resource_account_address(),
+            store_address,
             item_production_id,
         );
         //let item_production = infinite_seas_common_pass_object::borrow(&item_production_pass_obj);
         let item_production = item_production::borrow(&item_production_pass_obj);
         let (_player_id, skill_type, item_id) = skill_process_util::assert_ids_are_consistent_for_starting_production(
-            player_obj_addr, item_production, skill_process
+            player_id, item_production, skill_process
         );
         //assert!(skill_process_util::is_non_mutex_skill(skill_type), EIsMutexSkillType);
         assert!(!item_id::should_produce_individuals(item_id), EItemProduceIndividuals);
 
         let requirements_level = item_production::requirements_level(item_production);
-        assert!(player::level(player) >= requirements_level, ELowerThanRequiredLevel);
-        player::return_player(player_pass_obj);
+        assert!(player_level >= requirements_level, ELowerThanRequiredLevel);
+        //player::return_player(player_pass_obj);
 
         let base_creation_time = item_production::base_creation_time(item_production);
         let energy_cost = 0; //TODO = balance::value(energy);
@@ -72,7 +69,7 @@ module infinite_seas::skill_process_start_production_logic {
             id,
             skill_process,
             batch_size,
-            player_obj,
+            player_id,
             item_id,
             energy_cost,
             timestamp::now_seconds(), //clock::timestamp_ms(clock) / 1000,
@@ -83,6 +80,7 @@ module infinite_seas::skill_process_start_production_logic {
 
     public(friend) fun mutate(
         _account: &signer,
+        store_account: &signer,
         production_process_started: &skill_process::ProductionProcessStarted,
         id: address,
         skill_process: skill_process::SkillProcess,
@@ -107,10 +105,10 @@ module infinite_seas::skill_process_start_production_logic {
         //TODO let energy_vault = skill_process::borrow_mut_energy_vault(skill_process);
         //TODO balance::join(energy_vault, energy);
 
-        let player_pass_obj = player::get_player(object::object_address(&player_id));
-        let player = player_properties::borrow_mut_player(&mut player_pass_obj);
-        player_properties::deduct_inventory(player, item_id_quantity_pairs::items(&production_materials));
-        player::return_player(player_pass_obj);
+        // let player_pass_obj = player::get_player(object::object_address(&player_id));
+        // let player = player_properties::borrow_mut_player(&mut player_pass_obj);
+        // player_properties::deduct_inventory(player, item_id_quantity_pairs::items(&production_materials));
+        // player::return_player(player_pass_obj);
         skill_process
     }
 }

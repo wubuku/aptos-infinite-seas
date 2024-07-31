@@ -91,7 +91,7 @@ module infinite_seas::player_claim_island_logic {
             let max_seq_number = infinite_seas::skill_process_util::skill_type_max_sequence_number(skill_type);
             let seq_number = 0;
             while (seq_number <= max_seq_number) {
-                skill_process_aggregate::create(_account, skill_type, player_id, seq_number);
+                //TODO: skill_process_aggregate::create(_account, skill_type, player_id, seq_number);
                 seq_number = seq_number + 1;
             };
             i = i + 1;
