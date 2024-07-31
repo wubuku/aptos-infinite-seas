@@ -7,7 +7,7 @@ aggregates:
       DataAccessFriends:
         - Roster.PutInShipInventory
         - Roster.TakeOutShipInventory
-        #- ShipBattle.TakeLoot
+        - ShipBattle.TakeLoot
         - "infinite_seas::player_properties"
       # Generate scheduled method that pulls on-chain states of all instances
       GENERATE_PULLING_ALL_ON_CHAIN_INSTANCE_STATES: true

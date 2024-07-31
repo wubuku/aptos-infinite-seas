@@ -28,6 +28,7 @@ module infinite_seas::roster {
 
     friend infinite_seas::ship_battle_initiate_battle_logic;
     friend infinite_seas::ship_battle_make_move_logic;
+    friend infinite_seas::ship_battle_take_loot_logic;
 
     const EDataTooLong: u64 = 102;
     const EInappropriateVersion: u64 = 103;

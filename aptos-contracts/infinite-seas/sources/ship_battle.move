@@ -10,9 +10,11 @@ module infinite_seas::ship_battle {
     use infinite_seas::genesis_account;
     use infinite_seas::pass_object;
     use infinite_seas_common::coordinates::Coordinates;
+    use infinite_seas_common::item_id_quantity_pair::ItemIdQuantityPair;
     use std::option::{Self, Option};
     friend infinite_seas::ship_battle_initiate_battle_logic;
     friend infinite_seas::ship_battle_make_move_logic;
+    friend infinite_seas::ship_battle_take_loot_logic;
     friend infinite_seas::ship_battle_aggregate;
 
     const EDataTooLong: u64 = 102;
@@ -22,6 +24,7 @@ module infinite_seas::ship_battle {
     struct Events has key {
         ship_battle_initiated_handle: event::EventHandle<ShipBattleInitiated>,
         ship_battle_move_made_handle: event::EventHandle<ShipBattleMoveMade>,
+        ship_battle_loot_taken_handle: event::EventHandle<ShipBattleLootTaken>,
     }
 
     public fun initialize(account: &signer) {
@@ -31,6 +34,7 @@ module infinite_seas::ship_battle {
         move_to(&res_account, Events {
             ship_battle_initiated_handle: account::new_event_handle<ShipBattleInitiated>(&res_account),
             ship_battle_move_made_handle: account::new_event_handle<ShipBattleMoveMade>(&res_account),
+            ship_battle_loot_taken_handle: account::new_event_handle<ShipBattleLootTaken>(&res_account),
         });
 
     }
@@ -442,6 +446,102 @@ module infinite_seas::ship_battle {
         }
     }
 
+    struct ShipBattleLootTaken has store, drop {
+        id: address,
+        version: u64,
+        player_id: address,
+        loser_player_id: address,
+        initiator_id: address,
+        responder_id: address,
+        choice: u8,
+        loot: vector<ItemIdQuantityPair>,
+        looted_at: u64,
+        increased_experience: u32,
+        new_level: u16,
+        loser_increased_experience: u32,
+        loser_new_level: u16,
+    }
+
+    public fun ship_battle_loot_taken_id(ship_battle_loot_taken: &ShipBattleLootTaken): address {
+        ship_battle_loot_taken.id
+    }
+
+    public fun ship_battle_loot_taken_player_id(ship_battle_loot_taken: &ShipBattleLootTaken): address {
+        ship_battle_loot_taken.player_id
+    }
+
+    public fun ship_battle_loot_taken_loser_player_id(ship_battle_loot_taken: &ShipBattleLootTaken): address {
+        ship_battle_loot_taken.loser_player_id
+    }
+
+    public fun ship_battle_loot_taken_initiator_id(ship_battle_loot_taken: &ShipBattleLootTaken): address {
+        ship_battle_loot_taken.initiator_id
+    }
+
+    public fun ship_battle_loot_taken_responder_id(ship_battle_loot_taken: &ShipBattleLootTaken): address {
+        ship_battle_loot_taken.responder_id
+    }
+
+    public fun ship_battle_loot_taken_choice(ship_battle_loot_taken: &ShipBattleLootTaken): u8 {
+        ship_battle_loot_taken.choice
+    }
+
+    public fun ship_battle_loot_taken_loot(ship_battle_loot_taken: &ShipBattleLootTaken): vector<ItemIdQuantityPair> {
+        ship_battle_loot_taken.loot
+    }
+
+    public fun ship_battle_loot_taken_looted_at(ship_battle_loot_taken: &ShipBattleLootTaken): u64 {
+        ship_battle_loot_taken.looted_at
+    }
+
+    public fun ship_battle_loot_taken_increased_experience(ship_battle_loot_taken: &ShipBattleLootTaken): u32 {
+        ship_battle_loot_taken.increased_experience
+    }
+
+    public fun ship_battle_loot_taken_new_level(ship_battle_loot_taken: &ShipBattleLootTaken): u16 {
+        ship_battle_loot_taken.new_level
+    }
+
+    public fun ship_battle_loot_taken_loser_increased_experience(ship_battle_loot_taken: &ShipBattleLootTaken): u32 {
+        ship_battle_loot_taken.loser_increased_experience
+    }
+
+    public fun ship_battle_loot_taken_loser_new_level(ship_battle_loot_taken: &ShipBattleLootTaken): u16 {
+        ship_battle_loot_taken.loser_new_level
+    }
+
+    public(friend) fun new_ship_battle_loot_taken(
+        id: address,
+        ship_battle: &ShipBattle,
+        player_id: address,
+        loser_player_id: address,
+        initiator_id: address,
+        responder_id: address,
+        choice: u8,
+        loot: vector<ItemIdQuantityPair>,
+        looted_at: u64,
+        increased_experience: u32,
+        new_level: u16,
+        loser_increased_experience: u32,
+        loser_new_level: u16,
+    ): ShipBattleLootTaken {
+        ShipBattleLootTaken {
+            id,
+            version: version(ship_battle),
+            player_id,
+            loser_player_id,
+            initiator_id,
+            responder_id,
+            choice,
+            loot,
+            looted_at,
+            increased_experience,
+            new_level,
+            loser_increased_experience,
+            loser_new_level,
+        }
+    }
+
 
     public(friend) fun update_version_and_add(obj_addr: address, ship_battle: ShipBattle) acquires ObjectController {
         ship_battle.version = ship_battle.version + 1;
@@ -517,6 +617,12 @@ module infinite_seas::ship_battle {
         assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
         let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
         event::emit_event(&mut events.ship_battle_move_made_handle, ship_battle_move_made);
+    }
+
+    public(friend) fun emit_ship_battle_loot_taken(ship_battle_loot_taken: ShipBattleLootTaken) acquires Events {
+        assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
+        let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
+        event::emit_event(&mut events.ship_battle_loot_taken_handle, ship_battle_loot_taken);
     }
 
 }

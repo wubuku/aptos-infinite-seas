@@ -155,7 +155,7 @@ aggregates:
       #ShouldIssuePublisherObject: true
       DataAccessFriends:
         - ShipBattle.MakeMove
-        #- ShipBattle.TakeLoot
+        - ShipBattle.TakeLoot
         - Roster.AddShip
         - Roster.CreateEnvironmentRoster
         - Roster.TransferShip
@@ -208,7 +208,7 @@ aggregates:
         # This should only be done occasionally!
         - ShipBattle.InitiateBattle
         - ShipBattle.MakeMove
-        #TODO - ShipBattle.TakeLoot
+        - ShipBattle.TakeLoot
     friends:
       - Player.Create
       - Player.ClaimIsland
@@ -570,51 +570,59 @@ aggregates:
               type: address
               optional: true
 
-#       TakeLoot:
-#         parameters:
-#           Player:
-#             type: Object<Player> #referenceType: Player
-#             #isMutableReference: true
-#             eventPropertyName: PlayerId #isIgnoredInEvent: true
-#           LoserPlayer:
-#             type: Object<Player> #referenceType: Player
-#             #isMutableReference: true
-#             eventPropertyName: PlayerId #isIgnoredInEvent: true
-#           Initiator:
-#             referenceType: Roster
-#             isMutableReference: true
-#             isIgnoredInEvent: true
-#           Responder:
-#             referenceType: Roster
-#             isMutableReference: true
-#             isIgnoredInEvent: true
-#           #ExperienceTable:
-#           #  referenceType: ExperienceTable
-#           #  isIgnoredInEvent: true
-#           #Clock:
-#           #  referenceType: Clock
-#           #  isIgnoredInEvent: true
-#           #Winner:
-#           #  type: u8 # 1: Initiator, 0: Responder
-#           Choice:
-#             type: u8
-#             description: "1: Take all, 0: Leave it"
-#         event:
-#           name: ShipBattleLootTaken
-#           properties:
-#             Loot:
-#               itemType: ItemIdQuantityPair
-#             LootedAt:
-#               type: u64
-#               description: "The time when the loot is taken"
-#             IncreasedExperience:
-#               type: u32
-#             NewLevel:
-#               type: u16
-#             LoserIncreasedExperience:
-#               type: u32
-#             LoserNewLevel:
-#               type: u16
+      TakeLoot:
+        parameters:
+          Player:
+            type: Object<Player> #referenceType: Player
+            #isMutableReference: true
+            eventPropertyName: PlayerId #isIgnoredInEvent: true
+          LoserPlayer:
+            type: Object<Player> #referenceType: Player
+            #isMutableReference: true
+            eventPropertyName: LoserPlayerId #isIgnoredInEvent: true
+          Initiator:
+            type: Object<Roster> #referenceType: Roster
+            #isMutableReference: true
+            eventPropertyName: InitiatorId #isIgnoredInEvent: true
+          Responder:
+            type: Object<Roster> #referenceType: Roster
+            #isMutableReference: true
+            eventPropertyName: ResponderId #isIgnoredInEvent: true
+          #ExperienceTable:
+          #  referenceType: ExperienceTable
+          #  isIgnoredInEvent: true
+          #Clock:
+          #  referenceType: Clock
+          #  isIgnoredInEvent: true
+          #Winner:
+          #  type: u8 # 1: Initiator, 0: Responder
+          Choice:
+            type: u8
+            description: "1: Take all, 0: Leave it"
+        event:
+          name: ShipBattleLootTaken
+          properties:
+            InitiatorId:
+              type: address
+            ResponderId:
+              type: address
+            PlayerId:
+              type: address
+            LoserPlayerId:
+              type: address
+            Loot:
+              itemType: ItemIdQuantityPair
+            LootedAt:
+              type: u64
+              description: "The time when the loot is taken"
+            IncreasedExperience:
+              type: u32
+            NewLevel:
+              type: u16
+            LoserIncreasedExperience:
+              type: u32
+            LoserNewLevel:
+              type: u16
 
 superObjects:
   SkillProcessTemplate:
