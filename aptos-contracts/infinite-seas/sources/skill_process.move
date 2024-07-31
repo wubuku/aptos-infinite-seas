@@ -19,6 +19,8 @@ module infinite_seas::skill_process {
     friend infinite_seas::skill_process_complete_production_logic;
     friend infinite_seas::skill_process_start_ship_production_logic;
     friend infinite_seas::skill_process_complete_ship_production_logic;
+    friend infinite_seas::skill_process_start_creation_logic;
+    friend infinite_seas::skill_process_complete_creation_logic;
     friend infinite_seas::skill_process_aggregate;
 
     const EDataTooLong: u64 = 102;
@@ -31,6 +33,8 @@ module infinite_seas::skill_process {
         production_process_completed_handle: event::EventHandle<ProductionProcessCompleted>,
         ship_production_process_started_handle: event::EventHandle<ShipProductionProcessStarted>,
         ship_production_process_completed_handle: event::EventHandle<ShipProductionProcessCompleted>,
+        creation_process_started_handle: event::EventHandle<CreationProcessStarted>,
+        creation_process_completed_handle: event::EventHandle<CreationProcessCompleted>,
     }
 
     public fun initialize(account: &signer) {
@@ -43,6 +47,8 @@ module infinite_seas::skill_process {
             production_process_completed_handle: account::new_event_handle<ProductionProcessCompleted>(&res_account),
             ship_production_process_started_handle: account::new_event_handle<ShipProductionProcessStarted>(&res_account),
             ship_production_process_completed_handle: account::new_event_handle<ShipProductionProcessCompleted>(&res_account),
+            creation_process_started_handle: account::new_event_handle<CreationProcessStarted>(&res_account),
+            creation_process_completed_handle: account::new_event_handle<CreationProcessCompleted>(&res_account),
         });
 
     }
@@ -488,6 +494,156 @@ module infinite_seas::skill_process {
         }
     }
 
+    struct CreationProcessStarted has store, drop {
+        id: address,
+        version: u64,
+        batch_size: u32,
+        player_id: Object<Player>,
+        item_id: u32,
+        energy_cost: u64,
+        resource_cost: u32,
+        started_at: u64,
+        creation_time: u64,
+    }
+
+    public fun creation_process_started_id(creation_process_started: &CreationProcessStarted): address {
+        creation_process_started.id
+    }
+
+    public fun creation_process_started_batch_size(creation_process_started: &CreationProcessStarted): u32 {
+        creation_process_started.batch_size
+    }
+
+    public fun creation_process_started_player_id(creation_process_started: &CreationProcessStarted): Object<Player> {
+        creation_process_started.player_id
+    }
+
+    public fun creation_process_started_item_id(creation_process_started: &CreationProcessStarted): u32 {
+        creation_process_started.item_id
+    }
+
+    public fun creation_process_started_energy_cost(creation_process_started: &CreationProcessStarted): u64 {
+        creation_process_started.energy_cost
+    }
+
+    public fun creation_process_started_resource_cost(creation_process_started: &CreationProcessStarted): u32 {
+        creation_process_started.resource_cost
+    }
+
+    public fun creation_process_started_started_at(creation_process_started: &CreationProcessStarted): u64 {
+        creation_process_started.started_at
+    }
+
+    public fun creation_process_started_creation_time(creation_process_started: &CreationProcessStarted): u64 {
+        creation_process_started.creation_time
+    }
+
+    public(friend) fun new_creation_process_started(
+        id: address,
+        skill_process: &SkillProcess,
+        batch_size: u32,
+        player_id: Object<Player>,
+        item_id: u32,
+        energy_cost: u64,
+        resource_cost: u32,
+        started_at: u64,
+        creation_time: u64,
+    ): CreationProcessStarted {
+        CreationProcessStarted {
+            id,
+            version: version(skill_process),
+            batch_size,
+            player_id,
+            item_id,
+            energy_cost,
+            resource_cost,
+            started_at,
+            creation_time,
+        }
+    }
+
+    struct CreationProcessCompleted has store, drop {
+        id: address,
+        version: u64,
+        player_id: Object<Player>,
+        item_id: u32,
+        started_at: u64,
+        creation_time: u64,
+        ended_at: u64,
+        successful: bool,
+        quantity: u32,
+        experience: u32,
+        new_level: u16,
+    }
+
+    public fun creation_process_completed_id(creation_process_completed: &CreationProcessCompleted): address {
+        creation_process_completed.id
+    }
+
+    public fun creation_process_completed_player_id(creation_process_completed: &CreationProcessCompleted): Object<Player> {
+        creation_process_completed.player_id
+    }
+
+    public fun creation_process_completed_item_id(creation_process_completed: &CreationProcessCompleted): u32 {
+        creation_process_completed.item_id
+    }
+
+    public fun creation_process_completed_started_at(creation_process_completed: &CreationProcessCompleted): u64 {
+        creation_process_completed.started_at
+    }
+
+    public fun creation_process_completed_creation_time(creation_process_completed: &CreationProcessCompleted): u64 {
+        creation_process_completed.creation_time
+    }
+
+    public fun creation_process_completed_ended_at(creation_process_completed: &CreationProcessCompleted): u64 {
+        creation_process_completed.ended_at
+    }
+
+    public fun creation_process_completed_successful(creation_process_completed: &CreationProcessCompleted): bool {
+        creation_process_completed.successful
+    }
+
+    public fun creation_process_completed_quantity(creation_process_completed: &CreationProcessCompleted): u32 {
+        creation_process_completed.quantity
+    }
+
+    public fun creation_process_completed_experience(creation_process_completed: &CreationProcessCompleted): u32 {
+        creation_process_completed.experience
+    }
+
+    public fun creation_process_completed_new_level(creation_process_completed: &CreationProcessCompleted): u16 {
+        creation_process_completed.new_level
+    }
+
+    public(friend) fun new_creation_process_completed(
+        id: address,
+        skill_process: &SkillProcess,
+        player_id: Object<Player>,
+        item_id: u32,
+        started_at: u64,
+        creation_time: u64,
+        ended_at: u64,
+        successful: bool,
+        quantity: u32,
+        experience: u32,
+        new_level: u16,
+    ): CreationProcessCompleted {
+        CreationProcessCompleted {
+            id,
+            version: version(skill_process),
+            player_id,
+            item_id,
+            started_at,
+            creation_time,
+            ended_at,
+            successful,
+            quantity,
+            experience,
+            new_level,
+        }
+    }
+
 
     public(friend) fun update_version_and_add(obj_addr: address, skill_process: SkillProcess) acquires ObjectController {
         skill_process.version = skill_process.version + 1;
@@ -567,6 +723,18 @@ module infinite_seas::skill_process {
         assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
         let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
         event::emit_event(&mut events.ship_production_process_completed_handle, ship_production_process_completed);
+    }
+
+    public(friend) fun emit_creation_process_started(creation_process_started: CreationProcessStarted) acquires Events {
+        assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
+        let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
+        event::emit_event(&mut events.creation_process_started_handle, creation_process_started);
+    }
+
+    public(friend) fun emit_creation_process_completed(creation_process_completed: CreationProcessCompleted) acquires Events {
+        assert!(exists<Events>(genesis_account::resource_account_address()), ENotInitialized);
+        let events = borrow_global_mut<Events>(genesis_account::resource_account_address());
+        event::emit_event(&mut events.creation_process_completed_handle, creation_process_completed);
     }
 
 }

@@ -59,7 +59,7 @@ module infinite_seas::skill_process_complete_ship_production_logic {
         //let item_production = infinite_seas_common_pass_object::borrow(&item_production_pass_obj);
         let item_production = item_production::borrow(&item_production_pass_obj);
 
-        let (player_id, skill_type, item_id) = skill_process_util::assert_ids_are_consistent_for_completing_production(
+        let (player_id, _skill_type, item_id) = skill_process_util::assert_ids_are_consistent_for_completing_production(
             player_obj_addr, item_production, skill_process
         );
         assert!(item_id != item_id::unused_item() && !skill_process::completed(skill_process), EProcessNotStarted);

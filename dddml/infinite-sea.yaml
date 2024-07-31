@@ -133,18 +133,18 @@ aggregates:
         #result:
         #  type: Ship
 
-  #       StartCreation:
-  #         inheritsFrom: SkillProcessTemplate.StartCreation
-  #         parameters:
-  #           BatchSize:
-  #             type: u32
-  #         event:
-  #           name: CreationProcessStarted
+      StartCreation:
+        inheritsFrom: SkillProcessTemplate.StartCreation
+        parameters:
+          BatchSize:
+            type: u32
+        event:
+          name: CreationProcessStarted
 
-  #       CompleteCreation:
-  #         inheritsFrom: SkillProcessTemplate.CompleteCreation
-  #         event:
-  #           name: CreationProcessCompleted
+      CompleteCreation:
+        inheritsFrom: SkillProcessTemplate.CompleteCreation
+        event:
+          name: CreationProcessCompleted
 
   Ship:
     metadata:
