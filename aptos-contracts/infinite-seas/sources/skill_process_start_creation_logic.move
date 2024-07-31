@@ -4,12 +4,15 @@ module infinite_seas::skill_process_start_creation_logic {
 
     use infinite_seas_common::item_creation;
     use infinite_seas_common::item_id;
+    use infinite_seas_common::item_id_quantity_pair;
+    use infinite_seas_common::skill_process_id;
     use infinite_seas_common::skill_type_item_id_pair::SkillTypeItemIdPair;
 
     use infinite_seas::genesis_account;
     use infinite_seas::pass_object;
     use infinite_seas::player;
     use infinite_seas::player::Player;
+    use infinite_seas::player_properties;
     use infinite_seas::skill_process;
     use infinite_seas::skill_process_util;
 
@@ -80,14 +83,35 @@ module infinite_seas::skill_process_start_creation_logic {
         id: address,
         skill_process: skill_process::SkillProcess,
     ): skill_process::SkillProcess {
-        let batch_size = skill_process::creation_process_started_batch_size(creation_process_started);
         let player_id = skill_process::creation_process_started_player_id(creation_process_started);
         let item_id = skill_process::creation_process_started_item_id(creation_process_started);
-        let energy_cost = skill_process::creation_process_started_energy_cost(creation_process_started);
+        //let energy_cost = skill_process::creation_process_started_energy_cost(creation_process_started);
         let resource_cost = skill_process::creation_process_started_resource_cost(creation_process_started);
         let started_at = skill_process::creation_process_started_started_at(creation_process_started);
         let creation_time = skill_process::creation_process_started_creation_time(creation_process_started);
-        // TODO ...
+        let skill_process_id = skill_process::skill_process_id(&skill_process);
+        let skill_type = skill_process_id::skill_type(&skill_process_id);
+        let resource_type = item_id::resource_type_required_for_skill(skill_type);
+        let batch_size = skill_process::creation_process_started_batch_size(creation_process_started);
+
+        // skill_process_mutex_aggregate::lock(skill_process_mutex, skill_type, ctx);
+
+        skill_process::set_item_id(&mut skill_process, item_id);
+        skill_process::set_started_at(&mut skill_process, started_at);
+        skill_process::set_creation_time(&mut skill_process, creation_time);
+        skill_process::set_completed(&mut skill_process, false);
+        skill_process::set_ended_at(&mut skill_process, 0);
+        skill_process::set_batch_size(&mut skill_process, batch_size);
+
+        //todo let energy_vault = skill_process::borrow_mut_energy_vault(skill_process);
+        //balance::join(energy_vault, energy);
+
+        let required_resource_items = vector[item_id_quantity_pair::new(resource_type, resource_cost)];
+
+        let player_pass_obj = player::get_player(object::object_address(&player_id));
+        let player = player_properties::borrow_mut_player(&mut player_pass_obj);
+        player_properties::deduct_inventory(player, required_resource_items);
+        player::return_player(player_pass_obj);
 
         skill_process
     }

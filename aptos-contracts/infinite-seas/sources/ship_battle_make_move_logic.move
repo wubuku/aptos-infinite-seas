@@ -205,7 +205,7 @@ module infinite_seas::ship_battle_make_move_logic {
         let next_round_defender_ship = ship_battle::ship_battle_move_made_next_round_defender_ship(
             ship_battle_move_made
         );
-        // TODO...
+        // TODO ship battle make-move mutate...
         //
         ship_battle
     }

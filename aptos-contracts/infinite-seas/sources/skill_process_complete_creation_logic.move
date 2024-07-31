@@ -5,6 +5,7 @@ module infinite_seas::skill_process_complete_creation_logic {
     use infinite_seas_common::experience_table;
     use infinite_seas_common::item_creation;
     use infinite_seas_common::item_id;
+    use infinite_seas_common::item_id_quantity_pair;
     use infinite_seas_common::skill_type_item_id_pair::SkillTypeItemIdPair;
 
     use infinite_seas::experience_table_util;
@@ -12,6 +13,7 @@ module infinite_seas::skill_process_complete_creation_logic {
     use infinite_seas::pass_object;
     use infinite_seas::player;
     use infinite_seas::player::Player;
+    use infinite_seas::player_properties;
     use infinite_seas::skill_process;
     use infinite_seas::skill_process_util;
 
@@ -89,16 +91,30 @@ module infinite_seas::skill_process_complete_creation_logic {
         skill_process: skill_process::SkillProcess,
     ): skill_process::SkillProcess {
         let player_id = skill_process::creation_process_completed_player_id(creation_process_completed);
+
         let item_id = skill_process::creation_process_completed_item_id(creation_process_completed);
-        let started_at = skill_process::creation_process_completed_started_at(creation_process_completed);
-        let creation_time = skill_process::creation_process_completed_creation_time(creation_process_completed);
+        //let started_at = skill_process::creation_process_completed_started_at(creation_process_completed);
+        //let creation_time = skill_process::creation_process_completed_creation_time(creation_process_completed);
         let ended_at = skill_process::creation_process_completed_ended_at(creation_process_completed);
         let successful = skill_process::creation_process_completed_successful(creation_process_completed);
         let quantity = skill_process::creation_process_completed_quantity(creation_process_completed);
         let experience = skill_process::creation_process_completed_experience(creation_process_completed);
         let new_level = skill_process::creation_process_completed_new_level(creation_process_completed);
-        // TODO ...
+        let skill_process_id = skill_process::skill_process_id(&mut skill_process);
+        // let skill_type = skill_process_id::skill_type(&skill_process_id);
 
+        // skill_process_mutex_aggregate::unlock(skill_process_mutex, skill_type, ctx);
+
+        skill_process::set_completed(&mut skill_process, true);
+        skill_process::set_ended_at(&mut skill_process, ended_at);
+
+        let player_pass_obj = player::get_player(object::object_address(&player_id));
+        let player = player_properties::borrow_mut_player(&mut player_pass_obj);
+        if (successful) {
+            let items = vector[item_id_quantity_pair::new(item_id, quantity)];
+            player_properties::increase_experience_and_inventory_and_set_level(player, experience, items, new_level);
+        };
+        player::return_player(player_pass_obj);
         skill_process
     }
 }
