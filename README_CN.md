@@ -1,11 +1,11 @@
 # README
 
-English | [中文版](./README_CN.md)
+[English](./README.md) | 中文版
 
 
-## Programming
+## 编写代码
 
-### Writing DDDML model files
+### 编写 DDDML 模型文件
 
 The model files are located in the directory `. /dddml`.
 
@@ -14,7 +14,7 @@ The model files are located in the directory `. /dddml`.
 > About DDDML, here is an introductory article: ["Introducing DDDML: The Key to Low-Code Development for Decentralized Applications"](https://github.com/wubuku/Dapp-LCDP-Demo/blob/main/IntroducingDDDML.md).
 
 
-### Generating code
+### 从模型文件生成代码
 
 In repository root directory, run:
 
@@ -43,7 +43,30 @@ wubuku/dddappp-aptos:master \
 > docker rmi wubuku/dddappp-aptos:master
 > ```
 
-### Implementing business logic
+### 实现操作业务逻辑
 
 [TBD]
+
+## 测试应用
+
+
+### 部署合约
+
+在目录 `aptos-contracts/infinite-seas-common` 下，执行：
+
+```shell
+aptos move publish --named-addresses infinite_seas_map=default,infinite_seas_common=default,infinite_seas=default --included-artifacts none --skip-fetch-latest-git-deps --assume-yes
+```
+
+在目录 `aptos-contracts/infinite-seas-map` 下，执行：
+
+```shell
+aptos move publish --named-addresses infinite_seas_map=default,infinite_seas_common=default,infinite_seas=default --included-artifacts none --skip-fetch-latest-git-deps --assume-yes
+```
+
+在目录 `aptos-contracts/infinite-seas` 下，执行：
+
+```shell
+aptos move publish --named-addresses infinite_seas_map=default,infinite_seas_common=default,infinite_seas=default --included-artifacts none --skip-fetch-latest-git-deps --assume-yes
+```
 

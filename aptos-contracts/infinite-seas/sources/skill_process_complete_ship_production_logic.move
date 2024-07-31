@@ -12,7 +12,7 @@ module infinite_seas::skill_process_complete_ship_production_logic {
     use infinite_seas_common::ship_util;
     use infinite_seas_common::skill_type_item_id_pair::SkillTypeItemIdPair;
 
-    use infinite_seas::experience_table_util;
+    use infinite_seas_common::experience_table_util;
     use infinite_seas::genesis_account;
     use infinite_seas::pass_object;
     use infinite_seas::player;
@@ -88,7 +88,12 @@ module infinite_seas::skill_process_complete_ship_production_logic {
         let experience_table_pass_obj = experience_table::get_singleton_experience_table(
             store_addr);
         let experience_table = experience_table::borrow_singleton(&experience_table_pass_obj);
-        let new_level = experience_table_util::calculate_new_level(player, experience_table, increased_experience);
+        let new_level = experience_table_util::calculate_new_level(
+            player::level(player),
+            player::experience(player),
+            experience_table,
+            increased_experience
+        );
 
         player::return_player(player_pass_obj);
         item_production::return_item_production(item_production_pass_obj);
