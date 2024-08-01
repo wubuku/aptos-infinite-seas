@@ -31,7 +31,7 @@ module infinite_seas_production::skill_process_complete_ship_production_logic {
 
     public(friend) fun verify(
         account: &signer,
-        store_account: &signer,
+        store_address: address, //store_account: &signer,
         unassigned_ships_roster_obj_addr: address,
         player_id: address, //player_obj: Object<Player>,
         player_level: u16,
@@ -40,7 +40,7 @@ module infinite_seas_production::skill_process_complete_ship_production_logic {
         id: address,
         skill_process: &skill_process::SkillProcess,
     ): skill_process::ShipProductionProcessCompleted {
-        let store_address = signer::address_of(store_account);
+        // let store_address = signer::address_of(store_account);
         // let player_obj_addr = object::object_address(&player_obj);
         // let player_pass_obj = player::get_player(player_obj_addr);
         // let player = pass_object::borrow(&player_pass_obj);
@@ -77,20 +77,20 @@ module infinite_seas_production::skill_process_complete_ship_production_logic {
         let successful = true; //todo always successful for now
         let quantity = item_production::base_quantity(item_production);
         let increased_experience = item_production::base_experience(item_production);
-        let experience_table_pass_obj = experience_table::get_singleton_experience_table(
-            store_address);
-        let experience_table = experience_table::borrow_singleton(&experience_table_pass_obj);
+        // let experience_table_pass_obj = experience_table::get_singleton_experience_table(
+        //     store_address);
+        // let experience_table = experience_table::borrow_singleton(&experience_table_pass_obj);
         let new_level = experience_table_util::calculate_new_level(
             player_level, //player::level(player),
             player_experience, //player::experience(player),
-            experience_table,
+            &experience_table::singleton_levels(store_address),
             increased_experience
         );
 
         // player::return_player(player_pass_obj);
         item_production::return_item_production(item_production_pass_obj);
-        experience_table::return_singleton_experience_table(store_account,
-            experience_table_pass_obj);
+        // experience_table::return_singleton_experience_table(store_account,
+        //     experience_table_pass_obj);
 
         skill_process::new_ship_production_process_completed(id,
             skill_process,
@@ -109,7 +109,7 @@ module infinite_seas_production::skill_process_complete_ship_production_logic {
 
     public(friend) fun mutate(
         _account: &signer,
-        store_account: &signer,
+        //store_account: &signer,
         ship_production_process_completed: &skill_process::ShipProductionProcessCompleted,
         id: address,
         skill_process: skill_process::SkillProcess,

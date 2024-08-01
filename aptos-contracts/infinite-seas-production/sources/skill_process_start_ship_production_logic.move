@@ -27,7 +27,7 @@ module infinite_seas_production::skill_process_start_ship_production_logic {
 
     public(friend) fun verify(
         account: &signer,
-        store_account: &signer,
+        store_address: address, //store_account: &signer,
         production_materials: ItemIdQuantityPairs,
         player_id: address, //player_obj: Object<Player>,
         player_level: u16,
@@ -35,7 +35,7 @@ module infinite_seas_production::skill_process_start_ship_production_logic {
         id: address,
         skill_process: &skill_process::SkillProcess,
     ): skill_process::ShipProductionProcessStarted {
-        let store_address = signer::address_of(store_account);
+        //let store_address = signer::address_of(store_account);
         // let player_obj_addr = object::object_address(&player_obj);
         // let player_pass_obj = player::get_player(player_obj_addr);
         // let player = pass_object::borrow(&player_pass_obj);
@@ -100,7 +100,7 @@ module infinite_seas_production::skill_process_start_ship_production_logic {
 
     public(friend) fun mutate(
         _account: &signer,
-        store_account: &signer,
+        //store_account: &signer,
         ship_production_process_started: &skill_process::ShipProductionProcessStarted,
         id: address,
         skill_process: skill_process::SkillProcess,
