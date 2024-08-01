@@ -109,6 +109,14 @@ aggregates:
           #IsExternalStoreAccountSignerRequired: true
         event:
           name: ProductionProcessCompleted
+        result:
+          tupleItems:
+            - name: ExperienceGained
+              type: u32
+            - name: NewLevel
+              type: u16
+            - name: ItemOutput
+              type: ItemIdQuantityPairs
 
       StartShipProduction:
         inheritsFrom: SkillProcessTemplate.StartProduction
@@ -133,8 +141,17 @@ aggregates:
             eventPropertyName: UnassignedShipsObjectAddress #isIgnoredInEvent: true
         event:
           name: ShipProductionProcessCompleted
+        result:
+          tupleItems:
+            - name: ExperienceGained
+              type: u32
+            - name: NewLevel
+              type: u16
+            - name: BuildingExpenses
+              type: ItemIdQuantityPairs
         #result:
         #  type: Ship
+
 
       StartCreation:
         inheritsFrom: SkillProcessTemplate.StartCreation
@@ -154,6 +171,14 @@ aggregates:
         inheritsFrom: SkillProcessTemplate.CompleteCreation
         event:
           name: CreationProcessCompleted
+        result:
+          tupleItems:
+            - name: ExperienceGained
+              type: u32
+            - name: NewLevel
+              type: u16
+            - name: ItemOutput
+              type: ItemIdQuantityPairs
 
 
 superObjects:

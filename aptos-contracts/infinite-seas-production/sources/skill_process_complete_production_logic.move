@@ -1,10 +1,14 @@
 module infinite_seas_production::skill_process_complete_production_logic {
-    use std::signer;
+    use std::vector;
     use aptos_framework::timestamp;
 
     use infinite_seas_common::experience_table;
     use infinite_seas_common::experience_table_util;
     use infinite_seas_common::item_id;
+    use infinite_seas_common::item_id_quantity_pair;
+    use infinite_seas_common::item_id_quantity_pair::ItemIdQuantityPair;
+    use infinite_seas_common::item_id_quantity_pairs;
+    use infinite_seas_common::item_id_quantity_pairs::ItemIdQuantityPairs;
     use infinite_seas_common::item_production;
     use infinite_seas_common::skill_type_item_id_pair::SkillTypeItemIdPair;
 
@@ -96,7 +100,7 @@ module infinite_seas_production::skill_process_complete_production_logic {
         production_process_completed: &skill_process::ProductionProcessCompleted,
         id: address,
         skill_process: skill_process::SkillProcess,
-    ): skill_process::SkillProcess {
+    ): (skill_process::SkillProcess, u32, u16, ItemIdQuantityPairs) {
         let player_id = skill_process::production_process_completed_player_id(production_process_completed);
 
         let item_id = skill_process::production_process_completed_item_id(production_process_completed);
@@ -121,6 +125,13 @@ module infinite_seas_production::skill_process_complete_production_logic {
         //     player_properties::increase_experience_and_inventory_and_set_level(player, experience, items, new_level);
         // };
         // player::return_player(player_pass_obj);
-        skill_process
+        let items =
+            if (successful) {
+                vector[item_id_quantity_pair::new(item_id, quantity)]
+                //player_properties::increase_experience_and_inventory_and_set_level(player, experience, items, new_level);
+            } else {
+                vector::empty<ItemIdQuantityPair>()
+            };
+        (skill_process, experience, new_level, item_id_quantity_pairs::new_by_vector(items))
     }
 }

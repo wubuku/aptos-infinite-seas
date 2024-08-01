@@ -1,12 +1,12 @@
 module infinite_seas_production::skill_process_complete_ship_production_logic {
     use std::option;
-    use std::signer;
     use aptos_framework::timestamp;
 
     use infinite_seas_common::experience_table;
     use infinite_seas_common::experience_table_util;
     use infinite_seas_common::item_id;
     use infinite_seas_common::item_id_quantity_pairs;
+    use infinite_seas_common::item_id_quantity_pairs::ItemIdQuantityPairs;
     use infinite_seas_common::item_production;
     use infinite_seas_common::skill_type_item_id_pair::SkillTypeItemIdPair;
 
@@ -113,7 +113,7 @@ module infinite_seas_production::skill_process_complete_ship_production_logic {
         ship_production_process_completed: &skill_process::ShipProductionProcessCompleted,
         id: address,
         skill_process: skill_process::SkillProcess,
-    ): skill_process::SkillProcess {
+    ): (skill_process::SkillProcess, u32, u16, ItemIdQuantityPairs) {
         let unassigned_ships_roster_obj_addr = skill_process::ship_production_process_completed_unassigned_ships_object_address(
             ship_production_process_completed
         );
@@ -153,6 +153,6 @@ module infinite_seas_production::skill_process_complete_ship_production_logic {
         // roster_aggregate::add_ship(_account, unassigned_ships_roster_obj_addr, ship, option::none());
         //
         // player::return_player(player_pass_obj);
-        skill_process
+        (skill_process, experience, new_level, item_id_quantity_pairs::new_by_vector(building_expenses))
     }
 }

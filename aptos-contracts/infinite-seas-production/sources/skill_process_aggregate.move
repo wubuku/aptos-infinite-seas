@@ -94,7 +94,7 @@ module infinite_seas_production::skill_process_aggregate {
         player_level: u16,
         player_experience: u32,
         item_production_id: SkillTypeItemIdPair,
-    ) {
+    ): (u32, u16, ItemIdQuantityPairs) {
         production_friend_config::assert_allowlisted(_friend_witness);
         let id = object::object_address(&skill_process_obj);
         let skill_process = skill_process::remove_skill_process(id);
@@ -108,7 +108,7 @@ module infinite_seas_production::skill_process_aggregate {
             id,
             &skill_process,
         );
-        let updated_skill_process = skill_process_complete_production_logic::mutate(
+        let (updated_skill_process, experience_gained, new_level, item_output) = skill_process_complete_production_logic::mutate(
             account,
             &production_process_completed,
             id,
@@ -116,6 +116,7 @@ module infinite_seas_production::skill_process_aggregate {
         );
         skill_process::update_version_and_add(id, updated_skill_process);
         skill_process::emit_production_process_completed(store_address, production_process_completed);
+        (experience_gained, new_level, item_output)
     }
 
     public fun start_ship_production<FWT: drop>(
@@ -161,7 +162,7 @@ module infinite_seas_production::skill_process_aggregate {
         player_level: u16,
         player_experience: u32,
         item_production_id: SkillTypeItemIdPair,
-    ) {
+    ): (u32, u16, ItemIdQuantityPairs) {
         production_friend_config::assert_allowlisted(_friend_witness);
         let id = object::object_address(&skill_process_obj);
         let skill_process = skill_process::remove_skill_process(id);
@@ -176,7 +177,7 @@ module infinite_seas_production::skill_process_aggregate {
             id,
             &skill_process,
         );
-        let updated_skill_process = skill_process_complete_ship_production_logic::mutate(
+        let (updated_skill_process, experience_gained, new_level, building_expenses) = skill_process_complete_ship_production_logic::mutate(
             account,
             &ship_production_process_completed,
             id,
@@ -184,6 +185,7 @@ module infinite_seas_production::skill_process_aggregate {
         );
         skill_process::update_version_and_add(id, updated_skill_process);
         skill_process::emit_ship_production_process_completed(store_address, ship_production_process_completed);
+        (experience_gained, new_level, building_expenses)
     }
 
     public fun start_creation<FWT: drop>(
@@ -228,7 +230,7 @@ module infinite_seas_production::skill_process_aggregate {
         player_level: u16,
         player_experience: u32,
         item_creation_id: SkillTypeItemIdPair,
-    ) {
+    ): (u32, u16, ItemIdQuantityPairs) {
         production_friend_config::assert_allowlisted(_friend_witness);
         let id = object::object_address(&skill_process_obj);
         let skill_process = skill_process::remove_skill_process(id);
@@ -242,7 +244,7 @@ module infinite_seas_production::skill_process_aggregate {
             id,
             &skill_process,
         );
-        let updated_skill_process = skill_process_complete_creation_logic::mutate(
+        let (updated_skill_process, experience_gained, new_level, item_output) = skill_process_complete_creation_logic::mutate(
             account,
             &creation_process_completed,
             id,
@@ -250,6 +252,7 @@ module infinite_seas_production::skill_process_aggregate {
         );
         skill_process::update_version_and_add(id, updated_skill_process);
         skill_process::emit_creation_process_completed(store_address, creation_process_completed);
+        (experience_gained, new_level, item_output)
     }
 
 }
