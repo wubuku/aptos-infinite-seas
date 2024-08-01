@@ -193,6 +193,7 @@ module infinite_seas_production::skill_process {
         version: u64,
         batch_size: u32,
         player_id: address,
+        player_level: u16,
         item_id: u32,
         energy_cost: u64,
         started_at: u64,
@@ -210,6 +211,10 @@ module infinite_seas_production::skill_process {
 
     public fun production_process_started_player_id(production_process_started: &ProductionProcessStarted): address {
         production_process_started.player_id
+    }
+
+    public fun production_process_started_player_level(production_process_started: &ProductionProcessStarted): u16 {
+        production_process_started.player_level
     }
 
     public fun production_process_started_item_id(production_process_started: &ProductionProcessStarted): u32 {
@@ -237,6 +242,7 @@ module infinite_seas_production::skill_process {
         skill_process: &SkillProcess,
         batch_size: u32,
         player_id: address,
+        player_level: u16,
         item_id: u32,
         energy_cost: u64,
         started_at: u64,
@@ -248,6 +254,7 @@ module infinite_seas_production::skill_process {
             version: version(skill_process),
             batch_size,
             player_id,
+            player_level,
             item_id,
             energy_cost,
             started_at,
@@ -356,6 +363,7 @@ module infinite_seas_production::skill_process {
         id: address,
         version: u64,
         player_id: address,
+        player_level: u16,
         item_id: u32,
         energy_cost: u64,
         started_at: u64,
@@ -369,6 +377,10 @@ module infinite_seas_production::skill_process {
 
     public fun ship_production_process_started_player_id(ship_production_process_started: &ShipProductionProcessStarted): address {
         ship_production_process_started.player_id
+    }
+
+    public fun ship_production_process_started_player_level(ship_production_process_started: &ShipProductionProcessStarted): u16 {
+        ship_production_process_started.player_level
     }
 
     public fun ship_production_process_started_item_id(ship_production_process_started: &ShipProductionProcessStarted): u32 {
@@ -395,6 +407,7 @@ module infinite_seas_production::skill_process {
         id: address,
         skill_process: &SkillProcess,
         player_id: address,
+        player_level: u16,
         item_id: u32,
         energy_cost: u64,
         started_at: u64,
@@ -405,6 +418,7 @@ module infinite_seas_production::skill_process {
             id,
             version: version(skill_process),
             player_id,
+            player_level,
             item_id,
             energy_cost,
             started_at,
@@ -521,6 +535,7 @@ module infinite_seas_production::skill_process {
         version: u64,
         batch_size: u32,
         player_id: address,
+        player_level: u16,
         item_id: u32,
         energy_cost: u64,
         resource_cost: u32,
@@ -538,6 +553,10 @@ module infinite_seas_production::skill_process {
 
     public fun creation_process_started_player_id(creation_process_started: &CreationProcessStarted): address {
         creation_process_started.player_id
+    }
+
+    public fun creation_process_started_player_level(creation_process_started: &CreationProcessStarted): u16 {
+        creation_process_started.player_level
     }
 
     public fun creation_process_started_item_id(creation_process_started: &CreationProcessStarted): u32 {
@@ -565,6 +584,7 @@ module infinite_seas_production::skill_process {
         skill_process: &SkillProcess,
         batch_size: u32,
         player_id: address,
+        player_level: u16,
         item_id: u32,
         energy_cost: u64,
         resource_cost: u32,
@@ -576,6 +596,7 @@ module infinite_seas_production::skill_process {
             version: version(skill_process),
             batch_size,
             player_id,
+            player_level,
             item_id,
             energy_cost,
             resource_cost,

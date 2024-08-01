@@ -14,7 +14,7 @@ module infinite_seas_production::skill_process_create_logic {
         skill_process_id: SkillProcessId,
     ): skill_process::SkillProcessCreated {
         let _ = account;
-        // TODO: store_address: address, ...
+        // TODO: verification logic ...
 
         skill_process::new_skill_process_created(
             skill_process_id,

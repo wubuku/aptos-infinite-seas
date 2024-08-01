@@ -7,7 +7,7 @@ module infinite_seas_common::item_production_create_logic {
 
     public(friend) fun verify(
         account: &signer,
-        store_address: address,      
+        store_address: address,
         item_production_id: SkillTypeItemIdPair,
         production_materials: ItemIdQuantityPairs,
         requirements_level: u16,

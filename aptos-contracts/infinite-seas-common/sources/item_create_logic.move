@@ -6,7 +6,7 @@ module infinite_seas_common::item_create_logic {
 
     public(friend) fun verify(
         account: &signer,
-        store_address: address,      
+        store_address: address,
         item_id: u32,
         name: String,
         required_for_completion: bool,

@@ -70,6 +70,7 @@ module infinite_seas_production::skill_process_start_production_logic {
             skill_process,
             batch_size,
             player_id,
+            player_level,
             item_id,
             energy_cost,
             timestamp::now_seconds(), //clock::timestamp_ms(clock) / 1000,

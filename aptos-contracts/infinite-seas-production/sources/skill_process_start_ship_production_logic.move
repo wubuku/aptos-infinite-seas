@@ -89,6 +89,7 @@ module infinite_seas_production::skill_process_start_ship_production_logic {
         skill_process::new_ship_production_process_started(id,
             skill_process,
             player_id,
+            player_level,
             item_id,
             energy_cost,
             timestamp::now_seconds(), //clock::timestamp_ms(clock) / 1000,

@@ -88,13 +88,14 @@ aggregates:
             type: u64
         verificationLogic:
           Move: >
-            // TODO: ...
+            // TODO: verification logic ...
 
 
       StartProduction:
         inheritsFrom: SkillProcessTemplate.StartProduction
         metadata:
           IsExternalFriendly: true
+          IsExternalStoreAccountSignerRequired: true
         parameters:
           BatchSize:
             type: u32
@@ -105,6 +106,7 @@ aggregates:
         inheritsFrom: SkillProcessTemplate.CompleteProduction
         metadata:
           IsExternalFriendly: true
+          IsExternalStoreAccountSignerRequired: true
         event:
           name: ProductionProcessCompleted
 
@@ -112,6 +114,7 @@ aggregates:
         inheritsFrom: SkillProcessTemplate.StartProduction
         metadata:
           IsExternalFriendly: true
+          IsExternalStoreAccountSignerRequired: true
         parameters:
           ProductionMaterials:
             type: ItemIdQuantityPairs
@@ -122,6 +125,7 @@ aggregates:
         inheritsFrom: SkillProcessTemplate.CompleteProduction
         metadata:
           IsExternalFriendly: true
+          IsExternalStoreAccountSignerRequired: true
         parameters:
           UnassignedShips:
             type: address #type: Object<Roster> #referenceType: Roster
@@ -136,6 +140,7 @@ aggregates:
         inheritsFrom: SkillProcessTemplate.StartCreation
         metadata:
           IsExternalFriendly: true
+          IsExternalStoreAccountSignerRequired: true
         parameters:
           BatchSize:
             type: u32
@@ -145,9 +150,11 @@ aggregates:
       CompleteCreation:
         metadata:
           IsExternalFriendly: true
+          IsExternalStoreAccountSignerRequired: true
         inheritsFrom: SkillProcessTemplate.CompleteCreation
         event:
           name: CreationProcessCompleted
+
 
 superObjects:
   SkillProcessTemplate:
@@ -159,6 +166,8 @@ superObjects:
           PlayerId:
             type: address
             eventPropertyName: PlayerId #isIgnoredInEvent: true
+          PlayerLevel:
+            type: u16
           #Player:
           #  type: Object<Player> #referenceType: Player
           #  #isMutableReference: true
@@ -233,6 +242,8 @@ superObjects:
           PlayerId:
             type: address
             eventPropertyName: PlayerId #isIgnoredInEvent: true
+          PlayerLevel:
+            type: u16
           #Player:
           #  type: Object<Player> #referenceType: Player
           #isMutableReference: true

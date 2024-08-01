@@ -5,7 +5,7 @@ module infinite_seas_common::item_creation_update_logic {
 
     public(friend) fun verify(
         account: &signer,
-        store_address: address,      
+        store_address: address,
         resource_cost: u32,
         requirements_level: u16,
         base_quantity: u32,
