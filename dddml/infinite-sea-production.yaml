@@ -101,6 +101,10 @@ aggregates:
             type: u32
         event:
           name: ProductionProcessStarted
+        result:
+          tupleItems:
+            - name: RequiredItemInput
+              type: ItemIdQuantityPairs
 
       CompleteProduction:
         inheritsFrom: SkillProcessTemplate.CompleteProduction
@@ -128,6 +132,10 @@ aggregates:
             type: ItemIdQuantityPairs
         event:
           name: ShipProductionProcessStarted
+        result:
+          tupleItems:
+            - name: RequiredItemInput
+              type: ItemIdQuantityPairs
 
       CompleteShipProduction:
         inheritsFrom: SkillProcessTemplate.CompleteProduction
@@ -152,7 +160,6 @@ aggregates:
         #result:
         #  type: Ship
 
-
       StartCreation:
         inheritsFrom: SkillProcessTemplate.StartCreation
         metadata:
@@ -163,6 +170,10 @@ aggregates:
             type: u32
         event:
           name: CreationProcessStarted
+        result:
+          tupleItems:
+            - name: RequiredItemInput
+              type: ItemIdQuantityPairs
 
       CompleteCreation:
         metadata:

@@ -104,7 +104,7 @@ module infinite_seas_production::skill_process_start_ship_production_logic {
         ship_production_process_started: &skill_process::ShipProductionProcessStarted,
         id: address,
         skill_process: skill_process::SkillProcess,
-    ): skill_process::SkillProcess {
+    ): (skill_process::SkillProcess, ItemIdQuantityPairs) {
         let player_id = skill_process::ship_production_process_started_player_id(ship_production_process_started);
         let item_id = skill_process::ship_production_process_started_item_id(ship_production_process_started);
         let started_at = skill_process::ship_production_process_started_started_at(ship_production_process_started);
@@ -130,6 +130,6 @@ module infinite_seas_production::skill_process_start_ship_production_logic {
         // let player = player_properties::borrow_mut_player(&mut player_pass_obj);
         // player_properties::deduct_inventory(player, item_id_quantity_pairs::items(&production_materials));
         // player::return_player(player_pass_obj);
-        skill_process
+        (skill_process, production_materials)
     }
 }

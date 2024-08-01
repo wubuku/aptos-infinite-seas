@@ -5,6 +5,8 @@ module infinite_seas_production::skill_process_start_creation_logic {
     use infinite_seas_common::item_creation;
     use infinite_seas_common::item_id;
     use infinite_seas_common::item_id_quantity_pair;
+    use infinite_seas_common::item_id_quantity_pairs;
+    use infinite_seas_common::item_id_quantity_pairs::ItemIdQuantityPairs;
     use infinite_seas_common::skill_process_id;
     use infinite_seas_common::skill_type_item_id_pair::SkillTypeItemIdPair;
 
@@ -82,7 +84,7 @@ module infinite_seas_production::skill_process_start_creation_logic {
         creation_process_started: &skill_process::CreationProcessStarted,
         id: address,
         skill_process: skill_process::SkillProcess,
-    ): skill_process::SkillProcess {
+    ): (skill_process::SkillProcess, ItemIdQuantityPairs) {
         let player_id = skill_process::creation_process_started_player_id(creation_process_started);
         let item_id = skill_process::creation_process_started_item_id(creation_process_started);
         //let energy_cost = skill_process::creation_process_started_energy_cost(creation_process_started);
@@ -113,6 +115,6 @@ module infinite_seas_production::skill_process_start_creation_logic {
         // player_properties::deduct_inventory(player, required_resource_items);
         // player::return_player(player_pass_obj);
 
-        skill_process
+        (skill_process, item_id_quantity_pairs::new_by_vector(required_resource_items))
     }
 }

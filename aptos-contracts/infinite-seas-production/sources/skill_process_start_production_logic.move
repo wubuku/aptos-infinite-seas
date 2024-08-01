@@ -4,6 +4,7 @@ module infinite_seas_production::skill_process_start_production_logic {
 
     use infinite_seas_common::item_id;
     use infinite_seas_common::item_id_quantity_pairs;
+    use infinite_seas_common::item_id_quantity_pairs::ItemIdQuantityPairs;
     use infinite_seas_common::item_production;
     use infinite_seas_common::skill_type_item_id_pair::SkillTypeItemIdPair;
     use infinite_seas_common::sorted_vector_util;
@@ -85,7 +86,7 @@ module infinite_seas_production::skill_process_start_production_logic {
         production_process_started: &skill_process::ProductionProcessStarted,
         id: address,
         skill_process: skill_process::SkillProcess,
-    ): skill_process::SkillProcess {
+    ): (skill_process::SkillProcess, ItemIdQuantityPairs) {
         let batch_size = skill_process::production_process_started_batch_size(production_process_started);
         let player_id = skill_process::production_process_started_player_id(production_process_started);
         let item_id = skill_process::production_process_started_item_id(production_process_started);
@@ -110,6 +111,6 @@ module infinite_seas_production::skill_process_start_production_logic {
         // let player = player_properties::borrow_mut_player(&mut player_pass_obj);
         // player_properties::deduct_inventory(player, item_id_quantity_pairs::items(&production_materials));
         // player::return_player(player_pass_obj);
-        skill_process
+        (skill_process, production_materials)
     }
 }
