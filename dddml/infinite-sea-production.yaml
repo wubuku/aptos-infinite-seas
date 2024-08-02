@@ -10,6 +10,7 @@ aggregates:
       #ShouldIssuePublisherObject: true
     friends:
       - Player.ClaimIsland
+      - SkillProcessService
     id:
       name: Id
       type: AptosObjectID
