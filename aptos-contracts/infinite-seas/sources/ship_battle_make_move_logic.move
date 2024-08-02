@@ -8,7 +8,7 @@ module infinite_seas::ship_battle_make_move_logic {
     use infinite_seas_common::fight_to_death;
     use infinite_seas_common::ship_battle_command;
 
-    use infinite_seas::player::Player;
+    use infinite_seas_player::player::Player;
     use infinite_seas::roster;
     use infinite_seas::roster::Roster;
     use infinite_seas::roster_util;

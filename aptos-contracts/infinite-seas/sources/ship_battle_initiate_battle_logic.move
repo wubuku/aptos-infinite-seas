@@ -7,10 +7,9 @@ module infinite_seas::ship_battle_initiate_battle_logic {
     use infinite_seas_common::coordinates::Coordinates;
     use infinite_seas_common::roster_status;
 
-    use infinite_seas::pass_object;
     use infinite_seas::permission_util;
-    use infinite_seas::player;
-    use infinite_seas::player::Player;
+    use infinite_seas_player::player;
+    use infinite_seas_player::player::Player;
     use infinite_seas::roster;
     use infinite_seas::roster::Roster;
     use infinite_seas::roster_util;
@@ -39,7 +38,7 @@ module infinite_seas::ship_battle_initiate_battle_logic {
         let player_pass_obj = player::get_player(player_obj_addr);
         let initiator_pass_obj = roster::get_roster(initiator_obj_addr);
         let responder_pass_obj = roster::get_roster(responder_obj_addr);
-        let player = pass_object::borrow(&player_pass_obj);
+        let player = player::borrow(&player_pass_obj);
         let initiator = roster::borrow_mut(&mut initiator_pass_obj);
         let responder = roster::borrow_mut(&mut responder_pass_obj);
 

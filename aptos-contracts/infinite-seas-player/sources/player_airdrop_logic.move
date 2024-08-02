@@ -1,12 +1,13 @@
-module infinite_seas::player_airdrop_logic {
+module infinite_seas_player::player_airdrop_logic {
     use infinite_seas_common::item_id_quantity_pair;
     use infinite_seas_common::sorted_vector_util;
-    use infinite_seas::player;
+    use infinite_seas_player::player;
 
-    friend infinite_seas::player_aggregate;
+    friend infinite_seas_player::player_aggregate;
 
     public(friend) fun verify(
         account: &signer,
+        store_address: address,
         item_id: u32,
         quantity: u32,
         id: address,

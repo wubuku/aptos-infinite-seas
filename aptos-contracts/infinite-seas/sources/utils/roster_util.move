@@ -15,8 +15,8 @@ module infinite_seas::roster_util {
     use infinite_seas_common::speed_util;
 
     use infinite_seas::pass_object;
-    use infinite_seas::player;
-    use infinite_seas::player::Player;
+    use infinite_seas_player::player;
+    use infinite_seas_player::player::Player;
     use infinite_seas::roster::{Self, Roster};
     use infinite_seas::ship;
     use infinite_seas::ship::Ship;

@@ -5,7 +5,7 @@ module infinite_seas::ship_battle_take_loot_logic {
 
     use infinite_seas_common::sorted_vector_util;
 
-    use infinite_seas::player::Player;
+    use infinite_seas_player::player::Player;
     use infinite_seas::roster;
     use infinite_seas::roster::Roster;
     use infinite_seas::ship_battle;

@@ -21,14 +21,6 @@ module infinite_seas_production::skill_process_util {
     //     !is_non_mutex_skill(skill_type)
     // }
 
-    public fun skill_type_max_sequence_number(skill_type: u8): u8 {
-        if (skill_type == skill_type::farming()) {
-            1
-        } else {
-            0
-        }
-    }
-
     public fun assert_ids_are_consistent_for_starting_creation(
         player_id: address, //player: &Player,
         item_creation: &ItemCreation,

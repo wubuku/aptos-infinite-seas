@@ -10,12 +10,6 @@ module infinite_seas::genesis_account {
     use std::error;
     use std::signer;
 
-    friend infinite_seas::player;
-    friend infinite_seas::player_aggregate;
-    friend infinite_seas::player_create_logic;
-    friend infinite_seas::player_claim_island_logic;
-    friend infinite_seas::player_airdrop_logic;
-    friend infinite_seas::player_gather_island_resources_logic;
     friend infinite_seas::ship;
     friend infinite_seas::ship_aggregate;
     friend infinite_seas::ship_create_logic;

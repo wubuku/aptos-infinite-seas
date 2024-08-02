@@ -10,8 +10,8 @@ module infinite_seas::roster_put_in_ship_inventory_logic {
 
     use infinite_seas::pass_object;
     use infinite_seas::permission_util;
-    use infinite_seas::player;
-    use infinite_seas::player::Player;
+    use infinite_seas_player::player;
+    use infinite_seas_player::player::Player;
     use infinite_seas::roster;
     use infinite_seas::roster_util;
     use infinite_seas::ship;
@@ -33,7 +33,7 @@ module infinite_seas::roster_put_in_ship_inventory_logic {
     ): roster::RosterShipInventoryPutIn {
         let player_id = object::object_address(&player_obj);
         let player_pass_obj = player::get_player(player_id);
-        let player = pass_object::borrow(&player_pass_obj);
+        let player = player::borrow(&player_pass_obj);
         permission_util::assert_sender_is_player_owner(player, account);
         permission_util::assert_player_is_roster_owner(player_id, roster);
         roster_util::assert_roster_is_not_unassigned_ships(roster); // Is this necessary?
@@ -85,19 +85,19 @@ module infinite_seas::roster_put_in_ship_inventory_logic {
         let ship_inv = ship::borrow_mut_inventory(ship);
 
         let player_pass_obj = player::get_player(object::object_address(&player_obj));
-        let player = player::borrow_mut(&mut player_pass_obj);
-        let player_inv = player::borrow_mut_inventory(player);
-
-
-        let items = item_id_quantity_pairs::items(&item_id_quantity_pairs);
-        let i = 0;
-        let l = vector::length(&items);
-        while (i < l) {
-            let item = vector::borrow(&items, i);
-            sorted_vector_util::subtract_item_id_quantity_pair(player_inv, *item); // - item from player
-            sorted_vector_util::insert_or_add_item_id_quantity_pair(ship_inv, *item); // + item to ship
-            i = i + 1;
-        };
+        // TODO let player = player::borrow_mut(&mut player_pass_obj);
+        // let player_inv = player::borrow_mut_inventory(player);
+        //
+        //
+        // let items = item_id_quantity_pairs::items(&item_id_quantity_pairs);
+        // let i = 0;
+        // let l = vector::length(&items);
+        // while (i < l) {
+        //     let item = vector::borrow(&items, i);
+        //     sorted_vector_util::subtract_item_id_quantity_pair(player_inv, *item); // - item from player
+        //     sorted_vector_util::insert_or_add_item_id_quantity_pair(ship_inv, *item); // + item to ship
+        //     i = i + 1;
+        // };
 
         ship::return_ship(ship_pass_obj);
         player::return_player(player_pass_obj);

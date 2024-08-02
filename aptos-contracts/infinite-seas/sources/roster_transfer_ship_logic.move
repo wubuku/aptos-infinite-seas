@@ -8,8 +8,8 @@ module infinite_seas::roster_transfer_ship_logic {
 
     use infinite_seas::pass_object;
     use infinite_seas::permission_util;
-    use infinite_seas::player;
-    use infinite_seas::player::Player;
+    use infinite_seas_player::player;
+    use infinite_seas_player::player::Player;
     use infinite_seas::roster::{Self, Roster};
     use infinite_seas::roster_util;
 
@@ -29,7 +29,7 @@ module infinite_seas::roster_transfer_ship_logic {
     ): roster::RosterShipTransferred {
         let player_id = object::object_address(&player_obj); // Player Object Address
         let player_pass_obj = player::get_player(player_id);
-        let player = pass_object::borrow(&player_pass_obj);
+        let player = player::borrow(&player_pass_obj);
 
         let to_roster_obj_addr = object::object_address(&to_roster_obj);
         let to_roster_pass_obj = roster::get_roster(to_roster_obj_addr);

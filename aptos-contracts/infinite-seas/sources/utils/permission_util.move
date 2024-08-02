@@ -3,7 +3,7 @@ module infinite_seas::permission_util {
 
     use infinite_seas_common::roster_id;
 
-    use infinite_seas::player::{Self, Player};
+    use infinite_seas_player::player::{Self, Player};
     use infinite_seas::roster::{Self, Roster};
 
     const ESenderIsNotPlayerOwner: u64 = 1;

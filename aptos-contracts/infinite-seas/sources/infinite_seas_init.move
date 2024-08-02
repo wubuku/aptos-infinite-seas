@@ -5,7 +5,6 @@
 
 module infinite_seas::infinite_seas_init {
     use infinite_seas::genesis_account;
-    use infinite_seas::player;
     use infinite_seas::roster;
     use infinite_seas::ship;
     use infinite_seas::ship_battle;
@@ -13,7 +12,6 @@ module infinite_seas::infinite_seas_init {
 
     public entry fun initialize(account: &signer) {
         genesis_account::initialize(account);
-        player::initialize(account);
         ship::initialize(account);
         roster::initialize(account);
         ship_battle::initialize(account);
@@ -22,6 +20,7 @@ module infinite_seas::infinite_seas_init {
         infinite_seas_common::infinite_seas_common_init::initialize(&store_account);
         infinite_seas_map::infinite_seas_map_init::initialize(&store_account);
         infinite_seas_production::infinite_seas_production_init::initialize(&store_account);
+        infinite_seas_player::infinite_seas_player_init::initialize(&store_account);
     }
 
 }

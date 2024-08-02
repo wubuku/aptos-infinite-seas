@@ -1,30 +1,28 @@
-module infinite_seas::player_claim_island_logic {
+module infinite_seas_player::player_claim_island_logic {
     use std::option;
+    use std::signer;
     use std::vector;
     use aptos_framework::timestamp;
 
     use infinite_seas_common::coordinates::Coordinates;
-    use infinite_seas_common::roster_id;
-    use infinite_seas_common::roster_status;
     use infinite_seas_common::skill_type;
     use infinite_seas_common::sorted_vector_util;
     use infinite_seas_map::infinite_seas_map_pass_object;
     use infinite_seas_map::map;
     use infinite_seas_map::map_aggregate;
     use infinite_seas_map::map_location;
+    use infinite_seas_player::player_utils;
 
-    use infinite_seas::genesis_account;
-    use infinite_seas::player;
-    use infinite_seas::roster_aggregate;
-    use infinite_seas::skill_process_aggregate;
+    use infinite_seas_player::player;
 
-    friend infinite_seas::player_aggregate;
+    friend infinite_seas_player::player_aggregate;
 
     const ESenderHasNoPermission: u64 = 22;
     const EPlayerAlreadyClaimedIsland: u64 = 23;
 
     public(friend) fun verify(
         account: &signer,
+        store_account: &signer,
         coordinates: Coordinates,
         id: address,
         player: &player::Player,
@@ -37,6 +35,7 @@ module infinite_seas::player_claim_island_logic {
 
     public(friend) fun mutate(
         _account: &signer,
+        store_account: &signer,
         island_claimed: &player::IslandClaimed,
         id: address,
         player: player::Player,
@@ -48,14 +47,16 @@ module infinite_seas::player_claim_island_logic {
 
         player::set_claimed_island(&mut player, option::some(coordinates));
 
-        let store_address = genesis_account::resource_account_address();
+        let store_address = signer::address_of(store_account);//genesis_account::resource_account_address();
         let map_pass_obj = map::get_singleton_map(store_address);
         let map = infinite_seas_map_pass_object::borrow(&map_pass_obj);
         // move resources from island to player inventory
         let island = map::borrow_location(map, coordinates);
         let inv = player::borrow_mut_inventory(&mut player);
         sorted_vector_util::merge_item_id_quantity_pairs(inv, map_location::borrow_resources(island));
-        map::return_singleton_map(&genesis_account::resource_account_signer(), map_pass_obj);
+        map::return_singleton_map(store_account, //&genesis_account::resource_account_signer(),
+            map_pass_obj
+        );
         // call map_aggregate::claim_island
         map_aggregate::claim_island(
             player::friend_witness(),
@@ -66,19 +67,19 @@ module infinite_seas::player_claim_island_logic {
             claimed_at
         );
 
-        // create rosters after claiming the island
-        let roster_sequence_number: u32 = 0;
-        while (roster_sequence_number < 5) {
-            // 0-4
-            let roster_id = roster_id::new(player_id, roster_sequence_number);
-            let r = roster_aggregate::create(_account,
-                roster_id,
-                roster_status::at_anchor(), 0,
-                coordinates, 0, option::none(), option::none(),
-                option::none(),
-            );
-            roster_sequence_number = roster_sequence_number + 1;
-        };
+        // TODO // create rosters after claiming the island
+        // let roster_sequence_number: u32 = 0;
+        // while (roster_sequence_number < 5) {
+        //     // 0-4
+        //     let roster_id = roster_id::new(player_id, roster_sequence_number);
+        //     let r = roster_aggregate::create(_account,
+        //         roster_id,
+        //         roster_status::at_anchor(), 0,
+        //         coordinates, 0, option::none(), option::none(),
+        //         option::none(),
+        //     );
+        //     roster_sequence_number = roster_sequence_number + 1;
+        // };
 
         // create skill processes after claiming the island
         let skill_types = vector[
@@ -88,7 +89,7 @@ module infinite_seas::player_claim_island_logic {
         let l = vector::length(&skill_types);
         while (i < l) {
             let skill_type = *vector::borrow(&skill_types, i);
-            let max_seq_number = infinite_seas::skill_process_util::skill_type_max_sequence_number(skill_type);
+            let max_seq_number = player_utils::skill_type_max_sequence_number(skill_type);
             let seq_number = 0;
             while (seq_number <= max_seq_number) {
                 //TODO: skill_process_aggregate::create(_account, skill_type, player_id, seq_number);

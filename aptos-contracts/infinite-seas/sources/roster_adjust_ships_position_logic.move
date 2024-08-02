@@ -7,8 +7,8 @@ module infinite_seas::roster_adjust_ships_position_logic {
 
     use infinite_seas::pass_object;
     use infinite_seas::permission_util;
-    use infinite_seas::player;
-    use infinite_seas::player::Player;
+    use infinite_seas_player::player;
+    use infinite_seas_player::player::Player;
     use infinite_seas::roster;
 
     friend infinite_seas::roster_aggregate;
@@ -26,7 +26,7 @@ module infinite_seas::roster_adjust_ships_position_logic {
     ): roster::RosterShipsPositionAdjusted {
         let player_obj_addr = object::object_address(&player_obj);
         let player_pass_obj = player::get_player(player_obj_addr);
-        let player = pass_object::borrow(&player_pass_obj);
+        let player = player::borrow(&player_pass_obj);
         permission_util::assert_sender_is_player_owner(player, account);
         permission_util::assert_player_is_roster_owner(player_obj_addr, roster);
         assert!(vector::length(&ship_ids) == vector::length(&positions), EShipIdsAndPositionsLengthMismatch);

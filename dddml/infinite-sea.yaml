@@ -63,8 +63,7 @@ aggregates:
         - ShipBattle.MakeMove
         - ShipBattle.TakeLoot
     friends:
-      - Player.Create
-      - Player.ClaimIsland
+      # TODO - Player.ClaimIsland
       - SkillProcess.CompleteShipProduction
       #- ShipBattle.InitiateBattle
     id:

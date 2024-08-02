@@ -1,13 +1,14 @@
-module infinite_seas::player_create_logic {
+module infinite_seas_player::player_create_logic {
     use std::signer;
     use std::vector;
-    use infinite_seas::player;
+    use infinite_seas_player::player;
     use std::string::String;
 
-    friend infinite_seas::player_aggregate;
+    friend infinite_seas_player::player_aggregate;
 
     public(friend) fun verify(
         account: &signer,
+        store_account: &signer,
         name: String,
     ): player::PlayerCreated {
         let owner = signer::address_of(account);
@@ -19,6 +20,7 @@ module infinite_seas::player_create_logic {
 
     public(friend) fun mutate(
         _account: &signer,
+        store_account: &signer,
         player_created: &player::PlayerCreated,
         id: address,
     ): player::Player {

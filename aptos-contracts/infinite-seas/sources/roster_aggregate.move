@@ -6,7 +6,6 @@
 module infinite_seas::roster_aggregate {
     use aptos_framework::object::{Self, Object};
     use infinite_seas::genesis_account;
-    use infinite_seas::player::Player;
     use infinite_seas::roster::{Self, Roster};
     use infinite_seas::roster_add_ship_logic;
     use infinite_seas::roster_adjust_ships_position_logic;
@@ -23,9 +22,8 @@ module infinite_seas::roster_aggregate {
     use infinite_seas_common::roster_id::{Self, RosterId};
     use std::option::{Self, Option};
     use std::vector;
+    use infinite_seas_player::player::Player;
 
-    friend infinite_seas::player_create_logic;
-    friend infinite_seas::player_claim_island_logic;
     friend infinite_seas::skill_process_service;
 
     const EMismatchedObjectSeed: u64 = 150;

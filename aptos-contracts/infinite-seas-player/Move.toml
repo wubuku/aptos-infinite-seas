@@ -1,13 +1,12 @@
 [package]
-name = "InfiniteSeas"
+name = "InfiniteSeasPlayer"
 version = "0.0.1"
 
 [addresses]
-infinite_seas = "_"
+infinite_seas_player = "_"
 
 [dependencies]
 AptosFramework = { git = "https://github.com/aptos-labs/aptos-core.git", subdir = "aptos-move/framework/aptos-framework", rev = "main" }
 InfiniteSeasCommon = { local = "../infinite-seas-common" }
 InfiniteSeasMap = { local = "../infinite-seas-map" }
 InfiniteSeasProduction = { local = "../infinite-seas-production" }
-InfiniteSeasPlayer = { local = "../infinite-seas-player" }

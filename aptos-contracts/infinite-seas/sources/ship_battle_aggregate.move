@@ -5,7 +5,6 @@
 
 module infinite_seas::ship_battle_aggregate {
     use aptos_framework::object::{Self, Object};
-    use infinite_seas::player::Player;
     use infinite_seas::roster::Roster;
     use infinite_seas::ship_battle::{Self, ShipBattle};
     use infinite_seas::ship_battle_initiate_battle_logic;
@@ -13,6 +12,7 @@ module infinite_seas::ship_battle_aggregate {
     use infinite_seas::ship_battle_take_loot_logic;
     use infinite_seas_common::coordinates::Coordinates;
     use std::signer;
+    use infinite_seas_player::player::Player;
 
     friend infinite_seas::skill_process_service;
 

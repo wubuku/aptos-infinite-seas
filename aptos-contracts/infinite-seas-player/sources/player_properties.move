@@ -1,22 +1,20 @@
-module infinite_seas::player_properties {
+module infinite_seas_player::player_properties {
     use std::vector;
 
     use infinite_seas_common::item_id_quantity_pair;
     use infinite_seas_common::item_id_quantity_pair::ItemIdQuantityPair;
     use infinite_seas_common::sorted_vector_util;
 
-    use infinite_seas::pass_object;
-    use infinite_seas::player;
-    use infinite_seas::player::Player;
+    use infinite_seas_player::player;
+    use infinite_seas_player::player::Player;
 
-    friend infinite_seas::skill_process_start_creation_logic;
-    friend infinite_seas::skill_process_start_production_logic;
-    friend infinite_seas::skill_process_start_ship_production_logic;
-    friend infinite_seas::skill_process_complete_creation_logic;
-    friend infinite_seas::skill_process_complete_production_logic;
-    friend infinite_seas::skill_process_complete_ship_production_logic;
-    friend infinite_seas::player_gather_island_resources_logic;
-    friend infinite_seas::skill_process_service;
+    // friend infinite_seas::skill_process_start_creation_logic;
+    // friend infinite_seas::skill_process_start_production_logic;
+    // friend infinite_seas::skill_process_start_ship_production_logic;
+    // friend infinite_seas::skill_process_complete_creation_logic;
+    // friend infinite_seas::skill_process_complete_production_logic;
+    // friend infinite_seas::skill_process_complete_ship_production_logic;
+    friend infinite_seas_player::player_gather_island_resources_logic;
 
     public(friend) fun deduct_inventory(player: &mut Player, items: vector<ItemIdQuantityPair>) {
         let inv = player::borrow_mut_inventory(player);
@@ -68,7 +66,7 @@ module infinite_seas::player_properties {
         player::set_level(player, level);
     }
 
-    public(friend) fun borrow_mut_player(player_pass_obj: &mut pass_object::PassObject<Player>): &mut Player {
-        player::borrow_mut(player_pass_obj)
-    }
+    // public(friend) fun borrow_mut_player(player_pass_obj: &mut pass_object::PassObject<Player>): &mut Player {
+    //     player::borrow_mut(player_pass_obj)
+    // }
 }
