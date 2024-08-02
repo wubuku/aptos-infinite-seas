@@ -16,7 +16,7 @@ aptos move run --function-id 'default::map_aggregate::add_island' \
 
 ```shell
 aptos move run --function-id 'default::map_aggregate::claim_island' \
---args u32:coordinates_x u32:coordinates_y address:claimed_by u64:claimed_at \
+--args Coordinates:coordinates address:claimed_by u64:claimed_at \
 --assume-yes
 ```
 
@@ -24,7 +24,7 @@ aptos move run --function-id 'default::map_aggregate::claim_island' \
 
 ```shell
 aptos move run --function-id 'default::map_aggregate::gather_island_resources' \
---args address:player_id u32:coordinates_x u32:coordinates_y \
+--args address:player_id Coordinates:coordinates \
 --assume-yes
 ```
 

@@ -68,7 +68,7 @@ aptos move run --function-id 'default::roster_aggregate::put_in_ship_inventory' 
 
 ```shell
 aptos move run --function-id 'default::ship_battle_aggregate::initiate_battle' \
---args Object<Player>:player Object<Roster>:initiator Object<Roster>:responder u32:initiator_coordinates_x u32:initiator_coordinates_y u32:responder_coordinates_x u32:responder_coordinates_y \
+--args Object<Player>:player Object<Roster>:initiator Object<Roster>:responder Coordinates:initiator_coordinates Coordinates:responder_coordinates \
 --assume-yes
 ```
 

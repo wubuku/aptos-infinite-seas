@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"[]>
+<hibernate-mapping package="org.dddml.aptosinfiniteseas.domain.rosterlocation">
+  <class name="AbstractRosterLocationEvent" table="roster_location_event" abstract="true">
+    <composite-id name="rosterLocationEventId" class="org.dddml.aptosinfiniteseas.domain.rosterlocation.RosterLocationEventId">
+      <key-property name="rosterObjectId">
+        <column name="roster_object_id" sql-type="VARCHAR(66)" />
+      </key-property>
+      <key-property name="version">
+        <column name="version" sql-type="DECIMAL(20,0)" />
+      </key-property>
+    </composite-id>
+    <discriminator column="event_class" type="string" />
+    <property name="createdBy" column="created_by" />
+    <property name="createdAt" column="created_at" />
+    <property name="commandId" column="command_id" />
+    <property name="aptosEventVersion">
+      <column name="aptos_event_version" sql-type="DECIMAL(20,0)" />
+    </property>
+    <property name="aptosEventSequenceNumber">
+      <column name="aptos_event_sequence_number" sql-type="DECIMAL(20,0)" />
+    </property>
+    <property name="aptosEventType">
+      <column name="aptos_event_type" length="500" />
+    </property>
+    <component name="aptosEventGuid" class="org.dddml.aptosinfiniteseas.domain.AptosEventGuid">
+      <property name="creationNumber">
+        <column name="aptos_event_guid_creation_number" sql-type="DECIMAL(20,0)" />
+      </property>
+      <property name="accountAddress">
+        <column name="aptos_event_guid_account_address" sql-type="VARCHAR(66)" />
+      </property>
+    </component>
+    <property name="eventStatus">
+      <column name="event_status" sql-type="CHAR(1)" />
+    </property>
+    <property name="commandType" column="command_type" length="50" />
+    <subclass name="AbstractRosterLocationEvent$RosterLocationLobEvent" discriminator-value="RosterLocationLobEvent">
+      <property name="dynamicProperties">
+        <column name="dynamic_properties" sql-type="json" />
+        <type name="io.hypersistence.utils.hibernate.type.json.JsonType">
+          <param name="org.hibernate.type.ParameterType">java.util.HashMap</param>
+        </type>
+      </property>
+    </subclass>
+  </class>
+</hibernate-mapping>

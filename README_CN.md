@@ -60,21 +60,16 @@ wubuku/dddappp-aptos:master \
 
 ### 部署合约
 
-在目录 `aptos-contracts/infinite-seas-common` 下，执行：
+依次进入以下目录：
+
+* `aptos-contracts/infinite-seas-common`
+* `aptos-contracts/infinite-seas-map`
+* `aptos-contracts/infinite-seas-production`
+* `aptos-contracts/infinite-seas`
+
+执行以下命令（每个目录执行一次）：
 
 ```shell
-aptos move publish --named-addresses infinite_seas_map=default,infinite_seas_common=default,infinite_seas=default --included-artifacts none --skip-fetch-latest-git-deps --assume-yes
-```
-
-在目录 `aptos-contracts/infinite-seas-map` 下，执行：
-
-```shell
-aptos move publish --named-addresses infinite_seas_map=default,infinite_seas_common=default,infinite_seas=default --included-artifacts none --skip-fetch-latest-git-deps --assume-yes
-```
-
-在目录 `aptos-contracts/infinite-seas` 下，执行：
-
-```shell
-aptos move publish --named-addresses infinite_seas_map=default,infinite_seas_common=default,infinite_seas=default --included-artifacts none --skip-fetch-latest-git-deps --assume-yes
+aptos move publish --named-addresses infinite_seas_map=default,infinite_seas_production=default,infinite_seas_common=default,infinite_seas=default --included-artifacts none --skip-fetch-latest-git-deps --assume-yes
 ```
 

@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"[]>
+<hibernate-mapping package="org.dddml.aptosinfiniteseas.domain.roster">
+  <class name="org.dddml.aptosinfiniteseas.domain.roster.AbstractRosterState$SimpleRosterState" table="roster">
+    <id name="id" length="66">
+      <column name="id" sql-type="VARCHAR(66)" />
+      <generator class="assigned" />
+    </id>
+    <version name="offChainVersion" column="off_chain_version" type="long" />
+    <component name="rosterId" class="org.dddml.aptosinfiniteseas.domain.RosterId">
+      <property name="playerId">
+        <column name="roster_id_player_id" sql-type="VARCHAR(66)" />
+      </property>
+      <property name="sequenceNumber">
+        <column name="roster_id_sequence_number" />
+      </property>
+    </component>
+    <property name="status">
+      <column name="status" />
+    </property>
+    <property name="speed">
+      <column name="speed" />
+    </property>
+    <component name="updatedCoordinates" class="org.dddml.aptosinfiniteseas.domain.Coordinates">
+      <property name="x">
+        <column name="updated_coordinates_x" />
+      </property>
+      <property name="y">
+        <column name="updated_coordinates_y" />
+      </property>
+    </component>
+    <property name="coordinatesUpdatedAt">
+      <column name="coordinates_updated_at" sql-type="DECIMAL(20,0)" />
+    </property>
+    <component name="targetCoordinates" class="org.dddml.aptosinfiniteseas.domain.Coordinates">
+      <property name="x">
+        <column name="target_coordinates_x" />
+      </property>
+      <property name="y">
+        <column name="target_coordinates_y" />
+      </property>
+    </component>
+    <component name="originCoordinates" class="org.dddml.aptosinfiniteseas.domain.Coordinates">
+      <property name="x">
+        <column name="origin_coordinates_x" />
+      </property>
+      <property name="y">
+        <column name="origin_coordinates_y" />
+      </property>
+    </component>
+    <property name="sailDuration">
+      <column name="sail_duration" sql-type="DECIMAL(20,0)" />
+    </property>
+    <property name="shipBattleId">
+      <column name="ship_battle_id" sql-type="VARCHAR(66)" />
+    </property>
+    <property name="environmentOwned">
+      <column name="environment_owned" />
+    </property>
+    <property name="baseExperience">
+      <column name="base_experience" />
+    </property>
+    <property name="version">
+      <column name="version" sql-type="DECIMAL(20,0)" />
+    </property>
+    <property name="createdBy">
+      <column name="created_by" />
+    </property>
+    <property name="updatedBy">
+      <column name="updated_by" />
+    </property>
+    <property name="active">
+      <column name="active" />
+    </property>
+    <property name="deleted">
+      <column name="deleted" />
+    </property>
+    <property name="createdAt" column="created_at" />
+    <property name="updatedAt" column="updated_at" />
+    <set name="shipIds" table="roster_ship_ids" lazy="false">
+      <key column="Id" />
+      <element column="ship_ids_item" type="string" not-null="true" />
+    </set>
+  </class>
+</hibernate-mapping>

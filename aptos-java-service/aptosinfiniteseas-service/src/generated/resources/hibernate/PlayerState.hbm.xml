@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd"[]>
+<hibernate-mapping package="org.dddml.aptosinfiniteseas.domain.player">
+  <class name="org.dddml.aptosinfiniteseas.domain.player.AbstractPlayerState$SimplePlayerState" table="player">
+    <id name="id" length="66">
+      <column name="id" sql-type="VARCHAR(66)" />
+      <generator class="assigned" />
+    </id>
+    <version name="offChainVersion" column="off_chain_version" type="long" />
+    <property name="owner">
+      <column name="owner" sql-type="VARCHAR(66)" />
+    </property>
+    <property name="level">
+      <column name="level" />
+    </property>
+    <property name="experience">
+      <column name="experience" />
+    </property>
+    <property name="name">
+      <column name="name" length="50" />
+    </property>
+    <component name="claimedIsland" class="org.dddml.aptosinfiniteseas.domain.Coordinates">
+      <property name="x">
+        <column name="claimed_island_x" />
+      </property>
+      <property name="y">
+        <column name="claimed_island_y" />
+      </property>
+    </component>
+    <property name="version">
+      <column name="version" sql-type="DECIMAL(20,0)" />
+    </property>
+    <property name="createdBy">
+      <column name="created_by" />
+    </property>
+    <property name="updatedBy">
+      <column name="updated_by" />
+    </property>
+    <property name="active">
+      <column name="active" />
+    </property>
+    <property name="deleted">
+      <column name="deleted" />
+    </property>
+    <property name="createdAt" column="created_at" />
+    <property name="updatedAt" column="updated_at" />
+    <set name="inventory" table="player_inventory" lazy="false">
+      <key column="Id" />
+      <composite-element class="org.dddml.aptosinfiniteseas.domain.ItemIdQuantityPair">
+        <property name="itemId">
+          <column name="item_id" not-null="true" />
+        </property>
+        <property name="quantity">
+          <column name="quantity" not-null="true" />
+        </property>
+      </composite-element>
+    </set>
+  </class>
+</hibernate-mapping>

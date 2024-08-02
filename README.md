@@ -59,3 +59,21 @@ wubuku/dddappp-aptos:master \
 
 [TBD]
 
+## Test application
+
+### Deploy contract
+
+Go into the following directories in order:
+
+* `aptos-contracts/infinite-seas-common`
+* `aptos-contracts/infinite-seas-map`
+* `aptos-contracts/infinite-seas-production`
+* `aptos-contracts/infinite-seas`
+
+Execute the following command (execute once in each directory):
+
+```shell
+aptos move publish --named-addresses infinite_seas_map=default,infinite_seas_production=default,infinite_seas_common=default,infinite_seas=default --included-artifacts none --skip-fetch-latest-git-deps --assume-yes
+```
+
+
