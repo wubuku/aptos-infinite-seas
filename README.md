@@ -11,7 +11,7 @@ The Aptos version of Infinite Seas was ported from the [Sui version](https://git
 Thanks to the use of the dddappp low-code development platform as the engine for Inifinite Seas,
 both the development of the Sui version and the migration to the Aptos version were amazingly quick and easy.
 
-If you know a little bit about how to use dddappp as a fully on-chain game engine,
+If you want to find out how to use dddappp as a fully on-chain game engine,
 you can refer to this getting-started example: https://github.com/wubuku/aptos-constantinople
 
 

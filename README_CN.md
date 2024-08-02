@@ -8,7 +8,7 @@ Infinite Seas 的 Aptos 版本是从 [Sui 版本](https://github.com/InfiniteSea
 
 由于使用了 dddappp 低代码开发平台作为 Inifinite Seas 的开发引擎，不管是 Sui 版本的开发，还是迁移到 Aptos 版本，都惊人的快捷和简单。
 
-如果你了解一下怎么将 dddappp 作为全链游戏的开发引擎，你可以参考这个入门级的例子：https://github.com/wubuku/aptos-constantinople
+如果你想要了解一下怎么将 dddappp 作为全链游戏的开发引擎，你可以参考这个入门级的例子：https://github.com/wubuku/aptos-constantinople
 
 
 ## 编写代码
