@@ -1,12 +1,7 @@
 module infinite_seas::permission_util {
     use std::signer;
-    use std::option;
 
-    use infinite_seas_common::map_location_type;
     use infinite_seas_common::roster_id;
-
-    use infinite_seas_map::map::{Self, Map};
-    use infinite_seas_map::map_location;
 
     use infinite_seas::player::{Self, Player};
     use infinite_seas::roster::{Self, Roster};
@@ -28,15 +23,15 @@ module infinite_seas::permission_util {
         assert!(roster_id::player_id(&roster_id) == player_id, EPlayerIsNotRosterOwner);
     }
 
-    public fun assert_player_is_island_owner(player_id: address, player: &Player, map: &Map) {
-        let coordinates_o = player::claimed_island(player);
-        assert!(option::is_some(&coordinates_o), EPlayerClaimedNoIsland);
-        let coordinates = option::extract(&mut coordinates_o);
-        assert!(map::locations_contains(map, coordinates), ELocationNotFound);
-        let island = map::borrow_location(map, coordinates);
-        assert!(map_location_type::island() == map_location::type(island), ELocationNotAnIsland);
-        let occupied_by = map_location::occupied_by(island);
-        assert!(option::is_some(&occupied_by), EIslandNotOccupied);
-        assert!(option::extract(&mut occupied_by) == player_id, EPlayerIsNotIslandOwner);
-    }
+    // public fun assert_player_is_island_owner(player_id: address, player: &Player, map: &Map) {
+    //     let coordinates_o = player::claimed_island(player);
+    //     assert!(option::is_some(&coordinates_o), EPlayerClaimedNoIsland);
+    //     let coordinates = option::extract(&mut coordinates_o);
+    //     assert!(map::locations_contains(map, coordinates), ELocationNotFound);
+    //     let island = map::borrow_location(map, coordinates);
+    //     assert!(map_location_type::island() == map_location::type(island), ELocationNotAnIsland);
+    //     let occupied_by = map_location::occupied_by(island);
+    //     assert!(option::is_some(&occupied_by), EIslandNotOccupied);
+    //     assert!(option::extract(&mut occupied_by) == player_id, EPlayerIsNotIslandOwner);
+    // }
 }

@@ -19,6 +19,7 @@ module infinite_seas_production::skill_process_aggregate {
     use infinite_seas_production::skill_process_start_ship_production_logic;
     use std::signer;
 
+
     const EMismatchedObjectSeed: u64 = 150;
 
     public fun create<FWT: drop>(

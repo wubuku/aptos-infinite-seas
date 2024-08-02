@@ -57,34 +57,34 @@ module infinite_seas::ship_battle_util {
         }
     }
 
-    public fun assert_ids_are_consistent_and_player_is_current_round_mover(
-        player_id: address, //player: &Player,
-        ship_battle_id: address, ship_battle: &ShipBattle,
-        initiator_obj_addr: address, initiator: &Roster,
-        responder_obj_addr: address, responder: &Roster
-    ) {
-        assert_ids_are_consistent(
-            ship_battle_id,
-            ship_battle,
-            initiator_obj_addr,
-            initiator,
-            responder_obj_addr,
-            responder
-        );
-        assert_player_is_current_round_mover(player_id, ship_battle, initiator, responder);
-    }
+    // public fun assert_ids_are_consistent_and_player_is_current_round_mover(
+    //     player_id: address, //player: &Player,
+    //     ship_battle_id: address, ship_battle: &ShipBattle,
+    //     initiator_obj_addr: address, initiator: &Roster,
+    //     responder_obj_addr: address, responder: &Roster
+    // ) {
+    //     assert_ids_are_consistent(
+    //         ship_battle_id,
+    //         ship_battle,
+    //         initiator_obj_addr,
+    //         initiator,
+    //         responder_obj_addr,
+    //         responder
+    //     );
+    //     assert_player_is_current_round_mover(player_id, ship_battle, initiator, responder);
+    // }
 
-    public fun assert_player_is_current_round_mover(
-        player_id: address, ship_battle: &ShipBattle, initiator: &Roster, responder: &Roster
-    ) {
-        let round_mover = ship_battle::round_mover(ship_battle);
-        assert!(option::is_some(&round_mover), ERoundMoverNotSet);
-        if (*option::borrow(&round_mover) == initiator()) {
-            permission_util::assert_player_is_roster_owner(player_id, initiator);
-        } else {
-            permission_util::assert_player_is_roster_owner(player_id, responder);
-        };
-    }
+    // public fun assert_player_is_current_round_mover(
+    //     player_id: address, ship_battle: &ShipBattle, initiator: &Roster, responder: &Roster
+    // ) {
+    //     let round_mover = ship_battle::round_mover(ship_battle);
+    //     assert!(option::is_some(&round_mover), ERoundMoverNotSet);
+    //     if (*option::borrow(&round_mover) == initiator()) {
+    //         permission_util::assert_player_is_roster_owner(player_id, initiator);
+    //     } else {
+    //         permission_util::assert_player_is_roster_owner(player_id, responder);
+    //     };
+    // }
 
     public fun assert_ids_are_consistent(
         ship_battle_id: address, ship_battle: &ShipBattle,

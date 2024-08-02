@@ -161,12 +161,12 @@ module infinite_seas::roster_util {
         true
     }
 
-    public fun get_last_ship_id(roster: &Roster): address {
-        let ship_ids = roster::borrow_ship_ids(roster);
-        let l = vector::length(ship_ids);
-        assert!(l > 0, EEmptyRosterShipIds);
-        *vector::borrow(ship_ids, l - 1)
-    }
+    // public fun get_last_ship_id(roster: &Roster): address {
+    //     let ship_ids = roster::borrow_ship_ids(roster);
+    //     let l = vector::length(ship_ids);
+    //     assert!(l > 0, EEmptyRosterShipIds);
+    //     *vector::borrow(ship_ids, l - 1)
+    // }
 
     /// Wether the status of the roster is battle ready.
     public fun is_status_battle_ready(roster: &Roster): bool {
