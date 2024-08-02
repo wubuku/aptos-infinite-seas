@@ -78,6 +78,7 @@ module infinite_seas_production::skill_process_aggregate {
         );
         let (updated_skill_process, required_item_input) = skill_process_start_production_logic::mutate(
             account,
+            store_address,
             &production_process_started,
             id,
             skill_process,
@@ -112,6 +113,7 @@ module infinite_seas_production::skill_process_aggregate {
         );
         let (updated_skill_process, experience_gained, new_level, item_output) = skill_process_complete_production_logic::mutate(
             account,
+            store_address,
             &production_process_completed,
             id,
             skill_process,
@@ -146,6 +148,7 @@ module infinite_seas_production::skill_process_aggregate {
         );
         let (updated_skill_process, required_item_input) = skill_process_start_ship_production_logic::mutate(
             account,
+            store_address,
             &ship_production_process_started,
             id,
             skill_process,
@@ -182,6 +185,7 @@ module infinite_seas_production::skill_process_aggregate {
         );
         let (updated_skill_process, experience_gained, new_level, building_expenses) = skill_process_complete_ship_production_logic::mutate(
             account,
+            store_address,
             &ship_production_process_completed,
             id,
             skill_process,
@@ -216,6 +220,7 @@ module infinite_seas_production::skill_process_aggregate {
         );
         let (updated_skill_process, required_item_input) = skill_process_start_creation_logic::mutate(
             account,
+            store_address,
             &creation_process_started,
             id,
             skill_process,
@@ -250,6 +255,7 @@ module infinite_seas_production::skill_process_aggregate {
         );
         let (updated_skill_process, experience_gained, new_level, item_output) = skill_process_complete_creation_logic::mutate(
             account,
+            store_address,
             &creation_process_completed,
             id,
             skill_process,

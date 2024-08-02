@@ -96,6 +96,7 @@ module infinite_seas_common::item_production_aggregate {
         );
         let updated_item_production = item_production_update_logic::mutate(
             account,
+            store_address,
             &item_production_updated,
             item_production,
         );

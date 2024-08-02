@@ -17,8 +17,6 @@ import org.dddml.aptosinfiniteseas.domain.Command;
 public interface PlayerApplicationService {
     void when(PlayerCommands.Create c);
 
-    void when(PlayerCommands.ClaimIsland c);
-
     void when(PlayerCommands.Airdrop c);
 
     void when(PlayerCommands.GatherIslandResources c);

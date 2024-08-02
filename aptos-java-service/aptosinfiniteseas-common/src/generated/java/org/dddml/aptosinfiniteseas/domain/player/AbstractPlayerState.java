@@ -231,8 +231,6 @@ public abstract class AbstractPlayerState implements PlayerState.SqlPlayerState 
             ;
         } else if (e instanceof AbstractPlayerEvent.PlayerCreated) {
             when((AbstractPlayerEvent.PlayerCreated)e);
-        } else if (e instanceof AbstractPlayerEvent.IslandClaimed) {
-            when((AbstractPlayerEvent.IslandClaimed)e);
         } else if (e instanceof AbstractPlayerEvent.PlayerAirdropped) {
             when((AbstractPlayerEvent.PlayerAirdropped)e);
         } else if (e instanceof AbstractPlayerEvent.PlayerIslandResourcesGathered) {

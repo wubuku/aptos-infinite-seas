@@ -57,6 +57,7 @@ module infinite_seas_common::item_aggregate {
         );
         let updated_item = item_update_logic::mutate(
             account,
+            store_address,
             &item_updated,
             item,
         );

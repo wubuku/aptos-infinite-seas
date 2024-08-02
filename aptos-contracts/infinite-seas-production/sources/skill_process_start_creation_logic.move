@@ -80,7 +80,7 @@ module infinite_seas_production::skill_process_start_creation_logic {
 
     public(friend) fun mutate(
         _account: &signer,
-        //store_account: &signer,
+        _store_address: address,
         creation_process_started: &skill_process::CreationProcessStarted,
         id: address,
         skill_process: skill_process::SkillProcess,

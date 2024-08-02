@@ -109,7 +109,7 @@ module infinite_seas_production::skill_process_complete_ship_production_logic {
 
     public(friend) fun mutate(
         _account: &signer,
-        //store_account: &signer,
+        _store_address: address,
         ship_production_process_completed: &skill_process::ShipProductionProcessCompleted,
         id: address,
         skill_process: skill_process::SkillProcess,

@@ -9,11 +9,11 @@ module infinite_seas::roster {
     use aptos_framework::object::{Self, Object};
     use infinite_seas::genesis_account;
     use infinite_seas::pass_object;
-    use infinite_seas::player::Player;
     use infinite_seas::ship::Ship;
     use infinite_seas_common::coordinates::Coordinates;
     use infinite_seas_common::item_id_quantity_pairs::ItemIdQuantityPairs;
     use infinite_seas_common::roster_id::RosterId;
+    use infinite_seas_player::player::Player;
     use std::option::{Self, Option};
     friend infinite_seas::roster_create_logic;
     friend infinite_seas::roster_create_environment_roster_logic;

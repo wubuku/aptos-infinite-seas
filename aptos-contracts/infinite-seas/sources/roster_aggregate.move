@@ -20,9 +20,9 @@ module infinite_seas::roster_aggregate {
     use infinite_seas_common::coordinates::{Self, Coordinates};
     use infinite_seas_common::item_id_quantity_pairs::{Self, ItemIdQuantityPairs};
     use infinite_seas_common::roster_id::{Self, RosterId};
+    use infinite_seas_player::player::Player;
     use std::option::{Self, Option};
     use std::vector;
-    use infinite_seas_player::player::Player;
 
     friend infinite_seas::skill_process_service;
 

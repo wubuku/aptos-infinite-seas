@@ -11,8 +11,8 @@ module infinite_seas::ship_battle_aggregate {
     use infinite_seas::ship_battle_make_move_logic;
     use infinite_seas::ship_battle_take_loot_logic;
     use infinite_seas_common::coordinates::Coordinates;
-    use std::signer;
     use infinite_seas_player::player::Player;
+    use std::signer;
 
     friend infinite_seas::skill_process_service;
 

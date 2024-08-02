@@ -189,24 +189,6 @@ public class PlayerResource {
     }
 
 
-    @PutMapping("{id}/_commands/ClaimIsland")
-    public void claimIsland(@PathVariable("id") String id, @RequestBody PlayerCommands.ClaimIsland content) {
-        try {
-
-            PlayerCommands.ClaimIsland cmd = content;//.toClaimIsland();
-            String idObj = id;
-            if (cmd.getId() == null) {
-                cmd.setId(idObj);
-            } else if (!cmd.getId().equals(idObj)) {
-                throw DomainError.named("inconsistentId", "Argument Id %1$s NOT equals body Id %2$s", id, cmd.getId());
-            }
-            cmd.setRequesterId(SecurityContextUtil.getRequesterId());
-            playerApplicationService.when(cmd);
-
-        } catch (Exception ex) { logger.info(ex.getMessage(), ex); throw DomainErrorUtils.convertException(ex); }
-    }
-
-
     @PutMapping("{id}/_commands/Airdrop")
     public void airdrop(@PathVariable("id") String id, @RequestBody PlayerCommands.Airdrop content) {
         try {

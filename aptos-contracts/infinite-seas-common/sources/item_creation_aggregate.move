@@ -85,6 +85,7 @@ module infinite_seas_common::item_creation_aggregate {
         );
         let updated_item_creation = item_creation_update_logic::mutate(
             account,
+            store_address,
             &item_creation_updated,
             item_creation,
         );

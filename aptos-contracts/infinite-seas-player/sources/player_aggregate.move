@@ -6,11 +6,12 @@
 #[allow(unused_mut_parameter, unused_use)]
 module infinite_seas_player::player_aggregate {
     use aptos_framework::object::{Self, Object};
-    use infinite_seas_common::coordinates::{Self, Coordinates};
+    use infinite_seas_common::coordinates::Coordinates;
     use infinite_seas_player::player::{Self, Player};
     use infinite_seas_player::player_airdrop_logic;
     use infinite_seas_player::player_claim_island_logic;
     use infinite_seas_player::player_create_logic;
+    use infinite_seas_player::player_friend_config;
     use infinite_seas_player::player_gather_island_resources_logic;
     use std::signer;
     use std::string::String;
@@ -49,18 +50,15 @@ module infinite_seas_player::player_aggregate {
         player::emit_player_created(signer::address_of(store_account), player_created);
     }
 
-    public entry fun claim_island(
+    public fun claim_island<FWT: drop>(
+        _friend_witness: FWT,
         account: &signer,
         store_account: &signer,
         player_obj: Object<Player>,
-        coordinates_x: u32,
-        coordinates_y: u32,
+        coordinates: Coordinates,
     ) {
+        player_friend_config::assert_allowlisted(_friend_witness);
         let store_address = std::signer::address_of(store_account);
-        let coordinates: Coordinates = coordinates::new(
-            coordinates_x,
-            coordinates_y,
-        );
         let id = object::object_address(&player_obj);
         let player = player::remove_player(id);
         let island_claimed = player_claim_island_logic::verify(
@@ -101,6 +99,7 @@ module infinite_seas_player::player_aggregate {
         );
         let updated_player = player_airdrop_logic::mutate(
             account,
+            store_address,
             &player_airdropped,
             id,
             player,

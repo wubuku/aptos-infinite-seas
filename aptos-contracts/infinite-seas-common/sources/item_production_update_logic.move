@@ -31,6 +31,7 @@ module infinite_seas_common::item_production_update_logic {
 
     public(friend) fun mutate(
         _account: &signer,
+        _store_address: address,
         item_production_updated: &item_production::ItemProductionUpdated,
         item_production: item_production::ItemProduction,
     ): item_production::ItemProduction {

@@ -82,7 +82,7 @@ module infinite_seas_production::skill_process_start_production_logic {
 
     public(friend) fun mutate(
         _account: &signer,
-        //store_account: &signer,
+        _store_address: address,
         production_process_started: &skill_process::ProductionProcessStarted,
         id: address,
         skill_process: skill_process::SkillProcess,

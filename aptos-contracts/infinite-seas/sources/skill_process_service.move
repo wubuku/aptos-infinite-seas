@@ -1,15 +1,11 @@
 module infinite_seas::skill_process_service {
     use aptos_framework::object::{Self, Object};
 
-    use infinite_seas_common::item_id_quantity_pairs;
     use infinite_seas_common::skill_type_item_id_pair;
     use infinite_seas_production::skill_process::SkillProcess;
-    use infinite_seas_production::skill_process_aggregate;
 
-    use infinite_seas::genesis_account;
     use infinite_seas::player;
     use infinite_seas::player::Player;
-    use infinite_seas::player_properties;
 
     const ENotInitialized: u64 = 110;
     const ESenderHasNoPermission: u64 = 111;

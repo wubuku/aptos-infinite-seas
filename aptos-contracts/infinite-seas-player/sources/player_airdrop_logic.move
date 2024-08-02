@@ -23,6 +23,7 @@ module infinite_seas_player::player_airdrop_logic {
 
     public(friend) fun mutate(
         _account: &signer,
+        store_address: address,
         player_airdropped: &player::PlayerAirdropped,
         id: address,
         player: player::Player,

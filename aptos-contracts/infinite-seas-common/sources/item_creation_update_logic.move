@@ -30,6 +30,7 @@ module infinite_seas_common::item_creation_update_logic {
 
     public(friend) fun mutate(
         _account: &signer,
+        _store_address: address,
         item_creation_updated: &item_creation::ItemCreationUpdated,
         item_creation: item_creation::ItemCreation,
     ): item_creation::ItemCreation {

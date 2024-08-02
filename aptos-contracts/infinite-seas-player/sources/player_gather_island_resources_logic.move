@@ -1,7 +1,5 @@
 module infinite_seas_player::player_gather_island_resources_logic {
     use std::option;
-    use infinite_seas_common::item_id_quantity_pairs;
-    use infinite_seas_player::player_properties;
     use infinite_seas_map::map_aggregate;
     use infinite_seas_player::player;
 
@@ -35,7 +33,7 @@ module infinite_seas_player::player_gather_island_resources_logic {
             id,
             option::extract(&mut coordinates_o),
         );
-        player_properties::increase_inventory(&mut player, item_id_quantity_pairs::items(&resources));
+        //todo player_properties::increase_inventory(&mut player, item_id_quantity_pairs::items(&resources));
         player
     }
 

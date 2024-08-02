@@ -57,6 +57,9 @@ aggregates:
               type: address
 
       ClaimIsland:
+        metadata:
+          IsExternalFriendly: true
+          IsExternalStoreAccountSignerRequired: true
         parameters:
           # Map:
           #   referenceType: Map
