@@ -14,6 +14,8 @@ module infinite_seas::ship_battle_aggregate {
     use infinite_seas_common::coordinates::Coordinates;
     use std::signer;
 
+    friend infinite_seas::skill_process_service;
+
     public fun initiate_battle(
         account: &signer,
         player: Object<Player>,

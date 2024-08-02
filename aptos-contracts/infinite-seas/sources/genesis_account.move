@@ -35,6 +35,7 @@ module infinite_seas::genesis_account {
     friend infinite_seas::ship_battle_initiate_battle_logic;
     friend infinite_seas::ship_battle_make_move_logic;
     friend infinite_seas::ship_battle_take_loot_logic;
+    friend infinite_seas::skill_process_service;
 
     const ENotGenesisAccount: u64 = 100;
 

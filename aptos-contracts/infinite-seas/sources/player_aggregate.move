@@ -15,6 +15,8 @@ module infinite_seas::player_aggregate {
     use infinite_seas_common::coordinates::{Self, Coordinates};
     use std::string::String;
 
+    friend infinite_seas::skill_process_service;
+
     const EMismatchedObjectSeed: u64 = 150;
 
     const ENotPublisher: u64 = 50;

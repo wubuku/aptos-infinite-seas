@@ -26,6 +26,7 @@ module infinite_seas::roster_aggregate {
 
     friend infinite_seas::player_create_logic;
     friend infinite_seas::player_claim_island_logic;
+    friend infinite_seas::skill_process_service;
 
     const EMismatchedObjectSeed: u64 = 150;
 

@@ -11,6 +11,7 @@ module infinite_seas::ship_aggregate {
     use std::signer;
 
     friend infinite_seas::roster_create_environment_roster_logic;
+    friend infinite_seas::skill_process_service;
 
     public(friend) fun create(
         account: &signer,

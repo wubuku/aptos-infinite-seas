@@ -1,22 +1,22 @@
-# services:
-#   SkillProcessService:
-#     methods:
-#       StartCreation:
-#         parameters:
-#           SkillProcess:
-#             referenceType: SkillProcess
-#             isMutableReference: true
-#           BatchSize:
-#             type: u32
-#           Player:
-#             referenceType: Player
-#             isMutableReference: true
-#           ItemCreation:
-#             referenceType: ItemCreation
-#           Clock:
-#             referenceType: Clock
-#           Energy:
-#             type: "Coin<ENERGY>"
+services:
+  SkillProcessService:
+    methods:
+      StartCreation:
+        parameters:
+          SkillProcessObject:
+            type: Object<SkillProcess> #referenceType: SkillProcess
+            #isMutableReference: true
+          BatchSize:
+            type: u32
+          PlayerObject:
+            type: Object<Player> #referenceType: Player
+            #isMutableReference: true
+          ItemCreationId:
+            type: SkillTypeItemIdPair #referenceType: ItemCreation
+          #Clock:
+          #  referenceType: Clock
+          #TODO Energy:
+          #  type: "Coin<ENERGY>"
 
 
 #       StartProduction:
