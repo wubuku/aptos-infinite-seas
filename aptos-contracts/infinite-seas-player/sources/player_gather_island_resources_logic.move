@@ -1,7 +1,12 @@
 module infinite_seas_player::player_gather_island_resources_logic {
     use std::option;
+
+    use infinite_seas_common::item_id_quantity_pairs;
     use infinite_seas_map::map_aggregate;
+
     use infinite_seas_player::player;
+    use infinite_seas_player::player_properties;
+    use infinite_seas_player::player_util;
 
     friend infinite_seas_player::player_aggregate;
 
@@ -11,7 +16,7 @@ module infinite_seas_player::player_gather_island_resources_logic {
         id: address,
         player: &player::Player,
     ): player::PlayerIslandResourcesGathered {
-        //todo permission_util::assert_sender_is_player_owner(player, account);
+        player_util::assert_sender_is_player_owner(player, account);
         player::new_player_island_resources_gathered(
             id,
             player,
@@ -33,8 +38,7 @@ module infinite_seas_player::player_gather_island_resources_logic {
             id,
             option::extract(&mut coordinates_o),
         );
-        //todo player_properties::increase_inventory(&mut player, item_id_quantity_pairs::items(&resources));
+        player_properties::increase_inventory(&mut player, item_id_quantity_pairs::items(&resources));
         player
     }
-
 }

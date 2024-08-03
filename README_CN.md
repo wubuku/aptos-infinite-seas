@@ -65,11 +65,16 @@ wubuku/dddappp-aptos:master \
 * `aptos-contracts/infinite-seas-common`
 * `aptos-contracts/infinite-seas-map`
 * `aptos-contracts/infinite-seas-production`
+* `aptos-contracts/infinite-seas-player`
 * `aptos-contracts/infinite-seas`
 
 执行以下命令（每个目录执行一次）：
 
 ```shell
-aptos move publish --named-addresses infinite_seas_map=default,infinite_seas_production=default,infinite_seas_common=default,infinite_seas=default --included-artifacts none --skip-fetch-latest-git-deps --assume-yes
+aptos move publish \
+  --named-addresses infinite_seas_common=default,infinite_seas_map=default,infinite_seas_production=default,infinite_seas_player=default,infinite_seas=default \
+  --included-artifacts none \
+  --skip-fetch-latest-git-deps \
+  --assume-yes
 ```
 

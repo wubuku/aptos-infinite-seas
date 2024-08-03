@@ -18,6 +18,7 @@ module infinite_seas_player::player {
     friend infinite_seas_player::player_gather_island_resources_logic;
     friend infinite_seas_player::player_aggregate;
 
+    friend infinite_seas_player::player_properties;
     const EDataTooLong: u64 = 102;
     const EInappropriateVersion: u64 = 103;
     const ENotInitialized: u64 = 110;

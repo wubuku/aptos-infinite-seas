@@ -16,7 +16,7 @@ aptos move run --function-id 'default::player_aggregate::create' \
 
 ```shell
 aptos move run --function-id 'default::player_aggregate::claim_island' \
---args address:id u32:coordinates_x u32:coordinates_y \
+--args address:id Coordinates:coordinates \
 --assume-yes
 ```
 
