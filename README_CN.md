@@ -78,3 +78,26 @@ aptos move publish \
   --assume-yes
 ```
 
+执行下面的命令初始化合约：
+
+```shell
+aptos move run --function-id 'default::infinite_seas_common_init::initialize' --assume-yes
+aptos move run --function-id 'default::infinite_seas_map_init::initialize' --assume-yes
+aptos move run --function-id 'default::infinite_seas_production_init::initialize' --assume-yes
+aptos move run --function-id 'default::infinite_seas_player_init::initialize' --assume-yes
+aptos move run --function-id 'default::infinite_seas_init::initialize' --assume-yes
+```
+
+模块之间进行“友好”调用需要做一些配置，执行命令（下面我们假设合约部署的地址是 `0xbaa5fe82af4febb7b7ed96c38f5f105d8e52db429c8787f24d29ecddc9a5646e`）：
+
+```shell
+aptos move run --function-id 'default::player_friend_config::add_allowed_caller' \
+  --type-args '0xbaa5fe82af4febb7b7ed96c38f5f105d8e52db429c8787f24d29ecddc9a5646e::skill_process_service::FriendWitness' \
+  --assume-yes
+
+aptos move run --function-id 'default::production_friend_config::add_allowed_caller' \
+  --type-args '0xbaa5fe82af4febb7b7ed96c38f5f105d8e52db429c8787f24d29ecddc9a5646e::skill_process_service::FriendWitness' \
+  --assume-yes
+```
+
+
