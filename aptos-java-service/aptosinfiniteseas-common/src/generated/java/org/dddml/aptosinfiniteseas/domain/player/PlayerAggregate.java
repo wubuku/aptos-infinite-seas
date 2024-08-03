@@ -19,6 +19,8 @@ public interface PlayerAggregate {
 
     void create(String name, Long offChainVersion, String commandId, String requesterId, PlayerCommands.Create c);
 
+    void update(Long experienceGained, Integer newLevel, InventoryEntry[] inventoryEntries, Long offChainVersion, String commandId, String requesterId, PlayerCommands.Update c);
+
     void claimIsland(Coordinates coordinates, Long offChainVersion, String commandId, String requesterId, PlayerCommands.ClaimIsland c);
 
     void airdrop(Long itemId, Long quantity, Long offChainVersion, String commandId, String requesterId, PlayerCommands.Airdrop c);

@@ -12,6 +12,14 @@ aptos move run --function-id 'default::player_aggregate::create' \
 --assume-yes
 ```
 
+### Update method
+
+```shell
+aptos move run --function-id 'default::player_aggregate::update' \
+--args address:id u32:experience_gained u16:new_level 'InventoryEntry:[inventory_entries_item_1,inventory_entries_item_2]' \
+--assume-yes
+```
+
 ### ClaimIsland method
 
 ```shell

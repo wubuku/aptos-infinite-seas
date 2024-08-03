@@ -7,14 +7,18 @@
 module infinite_seas_player::player_aggregate {
     use aptos_framework::object::{Self, Object};
     use infinite_seas_common::coordinates::Coordinates;
+    use infinite_seas_common::inventory_entry::{Self, InventoryEntry};
     use infinite_seas_player::player::{Self, Player};
     use infinite_seas_player::player_airdrop_logic;
     use infinite_seas_player::player_claim_island_logic;
     use infinite_seas_player::player_create_logic;
     use infinite_seas_player::player_friend_config;
     use infinite_seas_player::player_gather_island_resources_logic;
+    use infinite_seas_player::player_update_logic;
+    use std::option::{Self, Option};
     use std::signer;
     use std::string::String;
+    use std::vector;
 
     const EMismatchedObjectSeed: u64 = 150;
 
@@ -50,6 +54,38 @@ module infinite_seas_player::player_aggregate {
         );
         player::set_player_created_id(&mut player_created, id);
         player::emit_player_created(signer::address_of(store_account), player_created);
+    }
+
+    public fun update<FWT: drop>(
+        _friend_witness: FWT,
+        account: &signer,
+        store_address: address,
+        player_obj: Object<Player>,
+        experience_gained: Option<u32>,
+        new_level: Option<u16>,
+        inventory_entries: vector<InventoryEntry>,
+    ) {
+        player_friend_config::assert_allowlisted(_friend_witness);
+        let id = object::object_address(&player_obj);
+        let player = player::remove_player(id);
+        let player_updated = player_update_logic::verify(
+            account,
+            store_address,
+            experience_gained,
+            new_level,
+            inventory_entries,
+            id,
+            &player,
+        );
+        let updated_player = player_update_logic::mutate(
+            account,
+            store_address,
+            &mut player_updated,
+            id,
+            player,
+        );
+        player::update_version_and_add(id, updated_player);
+        player::emit_player_updated(store_address, player_updated);
     }
 
     public fun claim_island<FWT: drop>(
@@ -131,6 +167,14 @@ module infinite_seas_player::player_aggregate {
         );
         player::update_version_and_add(id, updated_player);
         player::emit_player_island_resources_gathered(store_address, player_island_resources_gathered);
+    }
+
+    fun vector_to_option<V : drop>(v: vector<V>): Option<V> {
+        if (vector::length(&v) == 0) { option::none() } else {
+            option::some(
+                vector::pop_back(&mut v)
+            )
+        }
     }
 
 }

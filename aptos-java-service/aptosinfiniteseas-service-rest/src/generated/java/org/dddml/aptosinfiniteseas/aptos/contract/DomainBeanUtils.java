@@ -30,6 +30,7 @@ import org.dddml.aptosinfiniteseas.aptos.contract.skillprocess.CreationProcessSt
 import org.dddml.aptosinfiniteseas.aptos.contract.skillprocess.CreationProcessCompleted;
 import org.dddml.aptosinfiniteseas.domain.player.AbstractPlayerEvent;
 import org.dddml.aptosinfiniteseas.aptos.contract.player.PlayerCreated;
+import org.dddml.aptosinfiniteseas.aptos.contract.player.PlayerUpdated;
 import org.dddml.aptosinfiniteseas.aptos.contract.player.IslandClaimed;
 import org.dddml.aptosinfiniteseas.aptos.contract.player.PlayerAirdropped;
 import org.dddml.aptosinfiniteseas.aptos.contract.player.PlayerIslandResourcesGathered;
@@ -118,6 +119,16 @@ public class DomainBeanUtils {
         fungibleStore.setBalance(contractFungibleStore.getBalance());
         fungibleStore.setFrozen(contractFungibleStore.getFrozen());
         return fungibleStore;
+    }
+
+    public static org.dddml.aptosinfiniteseas.domain.InventoryEntry toInventoryEntry(InventoryEntry contractInventoryEntry) {
+        if (contractInventoryEntry == null) {
+            return null;
+        }
+        org.dddml.aptosinfiniteseas.domain.InventoryEntry inventoryEntry = new org.dddml.aptosinfiniteseas.domain.InventoryEntry();
+        inventoryEntry.setItemIdAndQuantity(toItemIdQuantityPair(contractInventoryEntry.getItemIdAndQuantity()));
+        inventoryEntry.setSign(contractInventoryEntry.getSign());
+        return inventoryEntry;
     }
 
     public static org.dddml.aptosinfiniteseas.domain.ItemIdQuantityPair toItemIdQuantityPair(ItemIdQuantityPair contractItemIdQuantityPair) {
@@ -388,6 +399,19 @@ public class DomainBeanUtils {
         setAptosEventProperties(playerCreated, eventEnvelope);
 
         return playerCreated;
+    }
+
+    public static AbstractPlayerEvent.PlayerUpdated toPlayerUpdated(Event<PlayerUpdated> eventEnvelope) {
+        PlayerUpdated contractEvent = eventEnvelope.getData();
+
+        AbstractPlayerEvent.PlayerUpdated playerUpdated = new AbstractPlayerEvent.PlayerUpdated();
+        playerUpdated.setId(contractEvent.getId());
+        playerUpdated.setDynamicProperties(contractEvent.getDynamicProperties());
+        playerUpdated.setVersion(contractEvent.getVersion());
+
+        setAptosEventProperties(playerUpdated, eventEnvelope);
+
+        return playerUpdated;
     }
 
     public static AbstractPlayerEvent.IslandClaimed toIslandClaimed(Event<IslandClaimed> eventEnvelope) {

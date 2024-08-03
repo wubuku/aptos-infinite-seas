@@ -1,6 +1,8 @@
 module infinite_seas_player::player_properties {
     use std::vector;
 
+    use infinite_seas_common::inventory_entry;
+    use infinite_seas_common::inventory_entry::InventoryEntry;
     use infinite_seas_common::item_id_quantity_pair;
     use infinite_seas_common::item_id_quantity_pair::ItemIdQuantityPair;
     use infinite_seas_common::sorted_vector_util;
@@ -9,6 +11,7 @@ module infinite_seas_player::player_properties {
     use infinite_seas_player::player::Player;
 
     friend infinite_seas_player::player_gather_island_resources_logic;
+    friend infinite_seas_player::player_update_logic;
 
     //     public(friend) fun increase_experience_and_inventory_and_set_level(
     //         player: &mut Player,
@@ -25,6 +28,27 @@ module infinite_seas_player::player_properties {
     //     //     player::borrow_mut(player_pass_obj)
     //     // }
 
+    public(friend) fun modify_inventory(player: &mut Player, items: &vector<InventoryEntry>) {
+        let i = 0;
+        let l = vector::length(items);
+        let inv = player::borrow_mut_inventory(player);
+        while (i < l) {
+            let entry = vector::borrow(items, i);
+            let item_id_and_quantity = inventory_entry::item_id_and_quantity(entry);
+            let item_id = item_id_quantity_pair::item_id(&item_id_and_quantity);
+            let quantity = item_id_quantity_pair::quantity(&item_id_and_quantity);
+            let sign = inventory_entry::sign(entry);
+            if (sign == 0) {
+                sorted_vector_util::insert_or_add_item_id_quantity_pair(
+                    inv,
+                    item_id_quantity_pair::new(item_id, quantity)
+                );
+            } else if (sign == 1) {
+                sorted_vector_util::subtract_item_id_quantity_pair(inv, item_id_quantity_pair::new(item_id, quantity));
+            };
+            i = i + 1;
+        };
+    }
 
     public(friend) fun deduct_inventory(player: &mut Player, items: vector<ItemIdQuantityPair>) {
         let inv = player::borrow_mut_inventory(player);

@@ -222,6 +222,16 @@ valueObjects:
 #              Move: 11
 #            type: u64
 
+  InventoryEntry:
+    module: "Common"
+    properties:
+      ItemIdAndQuantity:
+        type: ItemIdQuantityPair
+      Sign:
+        type: u8
+        description: "0: positive, 1: negative"
+
+
   ItemIdQuantityPair:
     module: "Common"
     properties:

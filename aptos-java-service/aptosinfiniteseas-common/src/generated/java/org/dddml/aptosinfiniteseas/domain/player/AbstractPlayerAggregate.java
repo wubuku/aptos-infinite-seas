@@ -60,6 +60,19 @@ public abstract class AbstractPlayerAggregate extends AbstractAggregate implemen
         }
 
         @Override
+        public void update(Long experienceGained, Integer newLevel, InventoryEntry[] inventoryEntries, Long offChainVersion, String commandId, String requesterId, PlayerCommands.Update c) {
+            java.util.function.Supplier<PlayerEvent.PlayerUpdated> eventFactory = () -> newPlayerUpdated(experienceGained, newLevel, inventoryEntries, offChainVersion, commandId, requesterId);
+            PlayerEvent.PlayerUpdated e;
+            try {
+                e = verifyUpdate(eventFactory, experienceGained, newLevel, inventoryEntries, c);
+            } catch (Exception ex) {
+                throw new DomainError("VerificationFailed", ex);
+            }
+
+            apply(e);
+        }
+
+        @Override
         public void claimIsland(Coordinates coordinates, Long offChainVersion, String commandId, String requesterId, PlayerCommands.ClaimIsland c) {
             java.util.function.Supplier<PlayerEvent.IslandClaimed> eventFactory = () -> newIslandClaimed(coordinates, offChainVersion, commandId, requesterId);
             PlayerEvent.IslandClaimed e;
@@ -112,6 +125,29 @@ public abstract class AbstractPlayerAggregate extends AbstractAggregate implemen
 //
 //public class CreateLogic {
 //    public static PlayerEvent.PlayerCreated verify(java.util.function.Supplier<PlayerEvent.PlayerCreated> eventFactory, PlayerState playerState, String name, VerificationContext verificationContext) {
+//    }
+//}
+
+            return e;
+        }
+           
+
+        protected PlayerEvent.PlayerUpdated verifyUpdate(java.util.function.Supplier<PlayerEvent.PlayerUpdated> eventFactory, Long experienceGained, Integer newLevel, InventoryEntry[] inventoryEntries, PlayerCommands.Update c) {
+            Long ExperienceGained = experienceGained;
+            Integer NewLevel = newLevel;
+            InventoryEntry[] InventoryEntries = inventoryEntries;
+
+            PlayerEvent.PlayerUpdated e = (PlayerEvent.PlayerUpdated) ReflectUtils.invokeStaticMethod(
+                    "org.dddml.aptosinfiniteseas.domain.player.UpdateLogic",
+                    "verify",
+                    new Class[]{java.util.function.Supplier.class, PlayerState.class, Long.class, Integer.class, InventoryEntry[].class, VerificationContext.class},
+                    new Object[]{eventFactory, getState(), experienceGained, newLevel, inventoryEntries, VerificationContext.forCommand(c)}
+            );
+
+//package org.dddml.aptosinfiniteseas.domain.player;
+//
+//public class UpdateLogic {
+//    public static PlayerEvent.PlayerUpdated verify(java.util.function.Supplier<PlayerEvent.PlayerUpdated> eventFactory, PlayerState playerState, Long experienceGained, Integer newLevel, InventoryEntry[] inventoryEntries, VerificationContext verificationContext) {
 //    }
 //}
 
@@ -188,6 +224,27 @@ public abstract class AbstractPlayerAggregate extends AbstractAggregate implemen
 
             e.getDynamicProperties().put("name", name);
             e.setOwner(null);
+            e.setAptosEventVersion(null);
+            e.setAptosEventSequenceNumber(null);
+            e.setAptosEventType(null);
+            e.setAptosEventGuid(null);
+            e.setEventStatus(null);
+
+            e.setCommandId(commandId);
+            e.setCreatedBy(requesterId);
+            e.setCreatedAt((java.util.Date)ApplicationContext.current.getTimestampService().now(java.util.Date.class));
+
+            e.setPlayerEventId(eventId);
+            return e;
+        }
+
+        protected AbstractPlayerEvent.PlayerUpdated newPlayerUpdated(Long experienceGained, Integer newLevel, InventoryEntry[] inventoryEntries, Long offChainVersion, String commandId, String requesterId) {
+            PlayerEventId eventId = new PlayerEventId(getState().getId(), null);
+            AbstractPlayerEvent.PlayerUpdated e = new AbstractPlayerEvent.PlayerUpdated();
+
+            e.getDynamicProperties().put("experienceGained", experienceGained);
+            e.getDynamicProperties().put("newLevel", newLevel);
+            e.getDynamicProperties().put("inventoryEntries", inventoryEntries);
             e.setAptosEventVersion(null);
             e.setAptosEventSequenceNumber(null);
             e.setAptosEventType(null);

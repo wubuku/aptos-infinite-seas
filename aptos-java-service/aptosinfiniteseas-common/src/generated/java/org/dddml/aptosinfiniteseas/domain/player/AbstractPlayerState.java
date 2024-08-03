@@ -295,6 +295,53 @@ public abstract class AbstractPlayerState implements PlayerState.SqlPlayerState 
 
     }
 
+    public void when(AbstractPlayerEvent.PlayerUpdated e) {
+        throwOnWrongEvent(e);
+
+        Long experienceGained = e.getExperienceGained();
+        Long ExperienceGained = experienceGained;
+        Integer newLevel = e.getNewLevel();
+        Integer NewLevel = newLevel;
+        InventoryEntry[] inventoryEntries = e.getInventoryEntries();
+        InventoryEntry[] InventoryEntries = inventoryEntries;
+        BigInteger aptosEventVersion = e.getAptosEventVersion();
+        BigInteger AptosEventVersion = aptosEventVersion;
+        BigInteger aptosEventSequenceNumber = e.getAptosEventSequenceNumber();
+        BigInteger AptosEventSequenceNumber = aptosEventSequenceNumber;
+        String aptosEventType = e.getAptosEventType();
+        String AptosEventType = aptosEventType;
+        AptosEventGuid aptosEventGuid = e.getAptosEventGuid();
+        AptosEventGuid AptosEventGuid = aptosEventGuid;
+        String eventStatus = e.getEventStatus();
+        String EventStatus = eventStatus;
+
+        if (this.getCreatedBy() == null){
+            this.setCreatedBy(e.getCreatedBy());
+        }
+        if (this.getCreatedAt() == null){
+            this.setCreatedAt(e.getCreatedAt());
+        }
+        this.setUpdatedBy(e.getCreatedBy());
+        this.setUpdatedAt(e.getCreatedAt());
+
+        PlayerState updatedPlayerState = (PlayerState) ReflectUtils.invokeStaticMethod(
+                    "org.dddml.aptosinfiniteseas.domain.player.UpdateLogic",
+                    "mutate",
+                    new Class[]{PlayerState.class, Long.class, Integer.class, InventoryEntry[].class, BigInteger.class, BigInteger.class, String.class, AptosEventGuid.class, String.class, MutationContext.class},
+                    new Object[]{this, experienceGained, newLevel, inventoryEntries, aptosEventVersion, aptosEventSequenceNumber, aptosEventType, aptosEventGuid, eventStatus, MutationContext.forEvent(e, s -> {if (s == this) {return this;} else {throw new UnsupportedOperationException();}})}
+            );
+
+//package org.dddml.aptosinfiniteseas.domain.player;
+//
+//public class UpdateLogic {
+//    public static PlayerState mutate(PlayerState playerState, Long experienceGained, Integer newLevel, InventoryEntry[] inventoryEntries, BigInteger aptosEventVersion, BigInteger aptosEventSequenceNumber, String aptosEventType, AptosEventGuid aptosEventGuid, String eventStatus, MutationContext<PlayerState, PlayerState.MutablePlayerState> mutationContext) {
+//    }
+//}
+
+        if (this != updatedPlayerState) { merge(updatedPlayerState); } //else do nothing
+
+    }
+
     public void when(AbstractPlayerEvent.IslandClaimed e) {
         throwOnWrongEvent(e);
 

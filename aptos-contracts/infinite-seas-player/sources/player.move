@@ -8,11 +8,13 @@ module infinite_seas_player::player {
     use aptos_framework::event;
     use aptos_framework::object;
     use infinite_seas_common::coordinates::Coordinates;
+    use infinite_seas_common::inventory_entry::InventoryEntry;
     use infinite_seas_common::item_id_quantity_pair::ItemIdQuantityPair;
     use infinite_seas_player::infinite_seas_player_pass_object as pass_object;
     use std::option::{Self, Option};
     use std::string::String;
     friend infinite_seas_player::player_create_logic;
+    friend infinite_seas_player::player_update_logic;
     friend infinite_seas_player::player_claim_island_logic;
     friend infinite_seas_player::player_airdrop_logic;
     friend infinite_seas_player::player_gather_island_resources_logic;
@@ -25,6 +27,7 @@ module infinite_seas_player::player {
 
     struct Events has key {
         player_created_handle: event::EventHandle<PlayerCreated>,
+        player_updated_handle: event::EventHandle<PlayerUpdated>,
         island_claimed_handle: event::EventHandle<IslandClaimed>,
         player_airdropped_handle: event::EventHandle<PlayerAirdropped>,
         player_island_resources_gathered_handle: event::EventHandle<PlayerIslandResourcesGathered>,
@@ -39,6 +42,7 @@ module infinite_seas_player::player {
     public fun initialize(store_account: &signer) {
         move_to(store_account, Events {
             player_created_handle: account::new_event_handle<PlayerCreated>(store_account),
+            player_updated_handle: account::new_event_handle<PlayerUpdated>(store_account),
             island_claimed_handle: account::new_event_handle<IslandClaimed>(store_account),
             player_airdropped_handle: account::new_event_handle<PlayerAirdropped>(store_account),
             player_island_resources_gathered_handle: account::new_event_handle<PlayerIslandResourcesGathered>(store_account),
@@ -186,6 +190,54 @@ module infinite_seas_player::player {
         }
     }
 
+    struct PlayerUpdated has store, drop {
+        id: address,
+        version: u64,
+        experience_gained: Option<u32>,
+        new_level: Option<u16>,
+        inventory_entries: vector<InventoryEntry>,
+    }
+
+    public fun player_updated_id(player_updated: &PlayerUpdated): address {
+        player_updated.id
+    }
+
+    public fun player_updated_experience_gained(player_updated: &PlayerUpdated): Option<u32> {
+        player_updated.experience_gained
+    }
+
+    public(friend) fun set_player_updated_experience_gained(player_updated: &mut PlayerUpdated, experience_gained: Option<u32>) {
+        player_updated.experience_gained = experience_gained;
+    }
+
+    public fun player_updated_new_level(player_updated: &PlayerUpdated): Option<u16> {
+        player_updated.new_level
+    }
+
+    public(friend) fun set_player_updated_new_level(player_updated: &mut PlayerUpdated, new_level: Option<u16>) {
+        player_updated.new_level = new_level;
+    }
+
+    public fun player_updated_inventory_entries(player_updated: &PlayerUpdated): vector<InventoryEntry> {
+        player_updated.inventory_entries
+    }
+
+    public(friend) fun new_player_updated(
+        id: address,
+        player: &Player,
+        experience_gained: Option<u32>,
+        new_level: Option<u16>,
+        inventory_entries: vector<InventoryEntry>,
+    ): PlayerUpdated {
+        PlayerUpdated {
+            id,
+            version: version(player),
+            experience_gained,
+            new_level,
+            inventory_entries,
+        }
+    }
+
     struct IslandClaimed has store, drop {
         id: address,
         version: u64,
@@ -328,6 +380,12 @@ module infinite_seas_player::player {
         assert!(exists<Events>(store_address), ENotInitialized);
         let events = borrow_global_mut<Events>(store_address);
         event::emit_event(&mut events.player_created_handle, player_created);
+    }
+
+    public(friend) fun emit_player_updated(store_address: address, player_updated: PlayerUpdated) acquires Events {
+        assert!(exists<Events>(store_address), ENotInitialized);
+        let events = borrow_global_mut<Events>(store_address);
+        event::emit_event(&mut events.player_updated_handle, player_updated);
     }
 
     public(friend) fun emit_island_claimed(store_address: address, island_claimed: IslandClaimed) acquires Events {

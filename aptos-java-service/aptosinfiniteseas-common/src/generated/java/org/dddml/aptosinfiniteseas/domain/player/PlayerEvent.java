@@ -32,6 +32,21 @@ public interface PlayerEvent extends Event, AptosEvent, HasEventStatus {
 
     }
 
+    interface PlayerUpdated extends PlayerEvent {
+        Long getExperienceGained();
+
+        void setExperienceGained(Long value);
+
+        Integer getNewLevel();
+
+        void setNewLevel(Integer value);
+
+        InventoryEntry[] getInventoryEntries();
+
+        void setInventoryEntries(InventoryEntry[] value);
+
+    }
+
     interface IslandClaimed extends PlayerEvent {
         Coordinates getCoordinates();
 

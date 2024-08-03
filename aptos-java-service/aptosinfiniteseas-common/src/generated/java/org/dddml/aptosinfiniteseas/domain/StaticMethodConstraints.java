@@ -140,6 +140,14 @@ public class StaticMethodConstraints {
 
 
         ReflectUtils.assertStaticMethodIfClassExists(
+                    "org.dddml.aptosinfiniteseas.domain.player.UpdateLogic",
+                    "verify",
+                    new Class[]{java.util.function.Supplier.class, PlayerState.class, Long.class, Integer.class, InventoryEntry[].class, VerificationContext.class},
+                    new String[]{"_", "_", "experienceGained", "newLevel", "inventoryEntries"}
+            );
+
+
+        ReflectUtils.assertStaticMethodIfClassExists(
                     "org.dddml.aptosinfiniteseas.domain.player.ClaimIslandLogic",
                     "verify",
                     new Class[]{java.util.function.Supplier.class, PlayerState.class, Coordinates.class, VerificationContext.class},
@@ -432,6 +440,14 @@ public class StaticMethodConstraints {
                     "mutate",
                     new Class[]{PlayerState.class, String.class, String.class, BigInteger.class, BigInteger.class, String.class, AptosEventGuid.class, String.class, MutationContext.class},
                     new String[]{"_", "name", "owner", "aptosEventVersion", "aptosEventSequenceNumber", "aptosEventType", "aptosEventGuid", "eventStatus"}
+            );
+
+
+        ReflectUtils.assertStaticMethodIfClassExists(
+                    "org.dddml.aptosinfiniteseas.domain.player.UpdateLogic",
+                    "mutate",
+                    new Class[]{PlayerState.class, Long.class, Integer.class, InventoryEntry[].class, BigInteger.class, BigInteger.class, String.class, AptosEventGuid.class, String.class, MutationContext.class},
+                    new String[]{"_", "experienceGained", "newLevel", "inventoryEntries", "aptosEventVersion", "aptosEventSequenceNumber", "aptosEventType", "aptosEventGuid", "eventStatus"}
             );
 
 

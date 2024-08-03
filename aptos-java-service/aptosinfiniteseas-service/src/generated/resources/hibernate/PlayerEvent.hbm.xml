@@ -43,6 +43,7 @@
         </type>
       </property>
       <subclass name="AbstractPlayerEvent$PlayerCreated" discriminator-value="PlayerCreated" />
+      <subclass name="AbstractPlayerEvent$PlayerUpdated" discriminator-value="PlayerUpdated" />
       <subclass name="AbstractPlayerEvent$IslandClaimed" discriminator-value="IslandClaimed" />
       <subclass name="AbstractPlayerEvent$PlayerAirdropped" discriminator-value="PlayerAirdropped" />
       <subclass name="AbstractPlayerEvent$PlayerIslandResourcesGathered" discriminator-value="PlayerIslandResourcesGathered" />

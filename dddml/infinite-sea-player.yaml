@@ -58,6 +58,21 @@ aggregates:
             Owner:
               type: address
 
+      Update:
+        metadata:
+          IsExternalFriendly: true
+        parameters:
+          ExperienceGained:
+            type: u32
+            optional: true
+          NewLevel:
+            type: u16
+            optional: true
+          InventoryEntries:
+            itemType: InventoryEntry
+        event:
+          name: PlayerUpdated
+
       ClaimIsland:
         metadata:
           IsExternalFriendly: true

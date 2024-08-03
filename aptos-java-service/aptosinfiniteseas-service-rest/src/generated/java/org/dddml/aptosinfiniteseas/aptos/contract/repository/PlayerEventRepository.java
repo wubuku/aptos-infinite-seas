@@ -17,6 +17,8 @@ public interface PlayerEventRepository extends JpaRepository<AbstractPlayerEvent
 
     AbstractPlayerEvent.PlayerCreated findFirstPlayerCreatedByOrderByAptosEventSequenceNumber();
 
+    AbstractPlayerEvent.PlayerUpdated findFirstPlayerUpdatedByOrderByAptosEventSequenceNumber();
+
     AbstractPlayerEvent.IslandClaimed findFirstIslandClaimedByOrderByAptosEventSequenceNumber();
 
     AbstractPlayerEvent.PlayerAirdropped findFirstPlayerAirdroppedByOrderByAptosEventSequenceNumber();

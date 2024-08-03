@@ -53,6 +53,9 @@ public class ContractConstants {
     public static final String PLAYER_MODULE_PLAYER_CREATED = "player::PlayerCreated";
     public static final String PLAYER_MODULE_PLAYER_CREATED_HANDLE_FIELD = "player_created_handle";
 
+    public static final String PLAYER_MODULE_PLAYER_UPDATED = "player::PlayerUpdated";
+    public static final String PLAYER_MODULE_PLAYER_UPDATED_HANDLE_FIELD = "player_updated_handle";
+
     public static final String PLAYER_MODULE_ISLAND_CLAIMED = "player::IslandClaimed";
     public static final String PLAYER_MODULE_ISLAND_CLAIMED_HANDLE_FIELD = "island_claimed_handle";
 

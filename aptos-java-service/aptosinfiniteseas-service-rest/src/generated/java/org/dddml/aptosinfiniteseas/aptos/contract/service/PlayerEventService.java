@@ -14,6 +14,7 @@ import org.dddml.aptosinfiniteseas.aptos.contract.DomainBeanUtils;
 import org.dddml.aptosinfiniteseas.aptos.contract.AptosAccount;
 
 import org.dddml.aptosinfiniteseas.aptos.contract.player.PlayerCreated;
+import org.dddml.aptosinfiniteseas.aptos.contract.player.PlayerUpdated;
 import org.dddml.aptosinfiniteseas.aptos.contract.player.IslandClaimed;
 import org.dddml.aptosinfiniteseas.aptos.contract.player.PlayerAirdropped;
 import org.dddml.aptosinfiniteseas.aptos.contract.player.PlayerIslandResourcesGathered;
@@ -98,6 +99,56 @@ public class PlayerEventService {
             return;
         }
         playerEventRepository.save(playerCreated);
+    }
+
+    @Transactional
+    public void pullPlayerUpdatedEvents() {
+        String resourceAccountAddress = getResourceAccountAddress();
+        if (resourceAccountAddress == null) {
+            return;
+        }
+        int limit = 1;
+        BigInteger cursor = getPlayerUpdatedEventNextCursor();
+        if (cursor == null) {
+            cursor = BigInteger.ZERO;
+        }
+        while (true) {
+            List<Event<PlayerUpdated>> eventPage;
+            try {
+                eventPage = aptosNodeApiClient.getEventsByEventHandle(
+                        resourceAccountAddress,
+                        this.aptosContractAddress + "::" + ContractConstants.PLAYER_MODULE_EVENTS,
+                        ContractConstants.PLAYER_MODULE_PLAYER_UPDATED_HANDLE_FIELD,
+                        PlayerUpdated.class,
+                        cursor.longValue(),
+                        limit
+                );
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            if (eventPage != null && eventPage.size() > 0) {
+                cursor = cursor.add(BigInteger.ONE);
+                for (Event<PlayerUpdated> eventEnvelope : eventPage) {
+                    savePlayerUpdated(eventEnvelope);
+                }
+            } else {
+                break;
+            }
+        }
+    }
+
+    private BigInteger getPlayerUpdatedEventNextCursor() {
+        AbstractPlayerEvent.PlayerUpdated lastEvent = playerEventRepository.findFirstPlayerUpdatedByOrderByAptosEventSequenceNumber();
+        return lastEvent != null ? lastEvent.getAptosEventSequenceNumber() : null;
+    }
+
+    private void savePlayerUpdated(Event<PlayerUpdated> eventEnvelope) {
+        AbstractPlayerEvent.PlayerUpdated playerUpdated = DomainBeanUtils.toPlayerUpdated(eventEnvelope);
+        if (playerEventRepository.findById(playerUpdated.getPlayerEventId()).isPresent()) {
+            return;
+        }
+        playerEventRepository.save(playerUpdated);
     }
 
     @Transactional

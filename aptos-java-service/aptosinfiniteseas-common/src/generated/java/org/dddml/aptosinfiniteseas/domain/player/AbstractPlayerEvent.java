@@ -201,6 +201,51 @@ public abstract class AbstractPlayerEvent extends AbstractEvent implements Playe
 
     }
 
+    public static class PlayerUpdated extends PlayerLobEvent implements PlayerEvent.PlayerUpdated {
+
+        @Override
+        public String getEventClass() {
+            return "PlayerUpdated";
+        }
+
+        public Long getExperienceGained() {
+            Object val = getDynamicProperties().get("experienceGained");
+            if (val instanceof Long) {
+                return (Long) val;
+            }
+            return ApplicationContext.current.getTypeConverter().convertValue(val, Long.class);
+        }
+
+        public void setExperienceGained(Long value) {
+            getDynamicProperties().put("experienceGained", value);
+        }
+
+        public Integer getNewLevel() {
+            Object val = getDynamicProperties().get("newLevel");
+            if (val instanceof Integer) {
+                return (Integer) val;
+            }
+            return ApplicationContext.current.getTypeConverter().convertValue(val, Integer.class);
+        }
+
+        public void setNewLevel(Integer value) {
+            getDynamicProperties().put("newLevel", value);
+        }
+
+        public InventoryEntry[] getInventoryEntries() {
+            Object val = getDynamicProperties().get("inventoryEntries");
+            if (val instanceof InventoryEntry[]) {
+                return (InventoryEntry[]) val;
+            }
+            return ApplicationContext.current.getTypeConverter().convertValue(val, InventoryEntry[].class);
+        }
+
+        public void setInventoryEntries(InventoryEntry[] value) {
+            getDynamicProperties().put("inventoryEntries", value);
+        }
+
+    }
+
     public static class IslandClaimed extends PlayerLobEvent implements PlayerEvent.IslandClaimed {
 
         @Override
