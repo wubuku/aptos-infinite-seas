@@ -15,11 +15,7 @@ import org.dddml.aptosinfiniteseas.specialization.Event;
 import org.dddml.aptosinfiniteseas.domain.Command;
 
 public interface PlayerApplicationService {
-    void when(PlayerCommands.Create c);
-
     void when(PlayerCommands.Airdrop c);
-
-    void when(PlayerCommands.GatherIslandResources c);
 
     PlayerState get(String id);
 

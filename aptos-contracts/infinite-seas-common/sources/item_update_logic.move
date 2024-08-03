@@ -23,7 +23,7 @@ module infinite_seas_common::item_update_logic {
 
     public(friend) fun mutate(
         _account: &signer,
-        _store_address: address,
+        store_address: address,
         item_updated: &item::ItemUpdated,
         item: item::Item,
     ): item::Item {

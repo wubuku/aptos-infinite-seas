@@ -11,7 +11,7 @@ module infinite_seas_player::player_claim_island_logic {
     use infinite_seas_map::map;
     use infinite_seas_map::map_aggregate;
     use infinite_seas_map::map_location;
-    use infinite_seas_player::player_utils;
+    use infinite_seas_player::player_util;
 
     use infinite_seas_player::player;
 
@@ -27,7 +27,7 @@ module infinite_seas_player::player_claim_island_logic {
         id: address,
         player: &player::Player,
     ): player::IslandClaimed {
-        assert!(std::signer::address_of(account) == player::owner(player), ESenderHasNoPermission);
+        player_util::assert_sender_is_player_owner(player, account);//assert!(std::signer::address_of(account) == player::owner(player), ESenderHasNoPermission);
         assert!(option::is_none(&player::claimed_island(player)), EPlayerAlreadyClaimedIsland);
         let claimed_at = timestamp::now_seconds(); //clock::timestamp_ms(clock) / 1000;
         player::new_island_claimed(id, player, coordinates, claimed_at)
@@ -81,7 +81,7 @@ module infinite_seas_player::player_claim_island_logic {
         //     roster_sequence_number = roster_sequence_number + 1;
         // };
 
-        // create skill processes after claiming the island
+        // TODO create skill processes after claiming the island
         let skill_types = vector[
             skill_type::mining(), skill_type::woodcutting(), skill_type::farming(), skill_type::crafting()
         ];
@@ -89,7 +89,7 @@ module infinite_seas_player::player_claim_island_logic {
         let l = vector::length(&skill_types);
         while (i < l) {
             let skill_type = *vector::borrow(&skill_types, i);
-            let max_seq_number = player_utils::skill_type_max_sequence_number(skill_type);
+            let max_seq_number = player_util::skill_type_max_sequence_number(skill_type);
             let seq_number = 0;
             while (seq_number <= max_seq_number) {
                 //TODO: skill_process_aggregate::create(_account, skill_type, player_id, seq_number);

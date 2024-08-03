@@ -50,16 +50,8 @@ public abstract class AbstractPlayerApplicationService implements PlayerApplicat
         this.stateQueryRepository = stateQueryRepository;
     }
 
-    public void when(PlayerCommands.Create c) {
-        update(c, ar -> ar.create(c.getName(), c.getOffChainVersion(), c.getCommandId(), c.getRequesterId(), c));
-    }
-
     public void when(PlayerCommands.Airdrop c) {
         update(c, ar -> ar.airdrop(c.getItemId(), c.getQuantity(), c.getOffChainVersion(), c.getCommandId(), c.getRequesterId(), c));
-    }
-
-    public void when(PlayerCommands.GatherIslandResources c) {
-        update(c, ar -> ar.gatherIslandResources(c.getOffChainVersion(), c.getCommandId(), c.getRequesterId(), c));
     }
 
     public PlayerState get(String id) {

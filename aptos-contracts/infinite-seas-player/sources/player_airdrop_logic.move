@@ -7,7 +7,7 @@ module infinite_seas_player::player_airdrop_logic {
 
     public(friend) fun verify(
         account: &signer,
-        store_address: address,
+        //_store_address: address,
         item_id: u32,
         quantity: u32,
         id: address,
@@ -23,7 +23,7 @@ module infinite_seas_player::player_airdrop_logic {
 
     public(friend) fun mutate(
         _account: &signer,
-        store_address: address,
+        //_store_address: address,
         player_airdropped: &player::PlayerAirdropped,
         id: address,
         player: player::Player,

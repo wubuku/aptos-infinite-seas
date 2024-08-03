@@ -229,12 +229,8 @@ public abstract class AbstractPlayerState implements PlayerState.SqlPlayerState 
         setStateReadOnly(false);
         if (false) { 
             ;
-        } else if (e instanceof AbstractPlayerEvent.PlayerCreated) {
-            when((AbstractPlayerEvent.PlayerCreated)e);
         } else if (e instanceof AbstractPlayerEvent.PlayerAirdropped) {
             when((AbstractPlayerEvent.PlayerAirdropped)e);
-        } else if (e instanceof AbstractPlayerEvent.PlayerIslandResourcesGathered) {
-            when((AbstractPlayerEvent.PlayerIslandResourcesGathered)e);
         } else {
             throw new UnsupportedOperationException(String.format("Unsupported event type: %1$s", e.getClass().getName()));
         }

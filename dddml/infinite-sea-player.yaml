@@ -45,6 +45,8 @@ aggregates:
 
     methods:
       Create:
+        metadata:
+          IsExternalFriendly: true
         isCreationCommand: true
         parameters:
           Name:
@@ -93,6 +95,8 @@ aggregates:
             assert!(std::signer::address_of(account) == player::owner(player), ESenderHasNoPermission);
 
       Airdrop:
+        metadata:
+          IsExternalStoreAddressNotRequired: true
         requiredPermission: "__Publisher__"
         #requiredPermission: AdminCap
         parameters:
@@ -104,6 +108,8 @@ aggregates:
           name: PlayerAirdropped
 
       GatherIslandResources:
+        metadata:
+          IsExternalFriendly: true
         #parameters:
         event:
           name: PlayerIslandResourcesGathered

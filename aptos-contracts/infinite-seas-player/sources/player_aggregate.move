@@ -20,11 +20,13 @@ module infinite_seas_player::player_aggregate {
 
     const ENotPublisher: u64 = 50;
 
-    public entry fun create(
+    public fun create<FWT: drop>(
+        _friend_witness: FWT,
         account: &signer,
         store_account: &signer,
         name: String,
     ) {
+        player_friend_config::assert_allowlisted(_friend_witness);
         let player_created = player_create_logic::verify(
             account,
             store_account,
@@ -81,7 +83,6 @@ module infinite_seas_player::player_aggregate {
 
     public entry fun airdrop(
         account: &signer,
-        store_address: address,
         player_obj: Object<Player>,
         item_id: u32,
         quantity: u32,
@@ -91,7 +92,6 @@ module infinite_seas_player::player_aggregate {
         let player = player::remove_player(id);
         let player_airdropped = player_airdrop_logic::verify(
             account,
-            store_address,
             item_id,
             quantity,
             id,
@@ -99,20 +99,21 @@ module infinite_seas_player::player_aggregate {
         );
         let updated_player = player_airdrop_logic::mutate(
             account,
-            store_address,
             &player_airdropped,
             id,
             player,
         );
         player::update_version_and_add(id, updated_player);
-        player::emit_player_airdropped(store_address, player_airdropped);
+        // TODO: player::emit_player_airdropped(store_address, player_airdropped);
     }
 
-    public entry fun gather_island_resources(
+    public fun gather_island_resources<FWT: drop>(
+        _friend_witness: FWT,
         account: &signer,
         store_address: address,
         player_obj: Object<Player>,
     ) {
+        player_friend_config::assert_allowlisted(_friend_witness);
         let id = object::object_address(&player_obj);
         let player = player::remove_player(id);
         let player_island_resources_gathered = player_gather_island_resources_logic::verify(
