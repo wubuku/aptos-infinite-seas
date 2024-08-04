@@ -74,3 +74,5 @@ aptos move run --function-id 'default::experience_table_aggregate::update_level'
 --assume-yes
 ```
 
+## Register "friends" in dependency packages
+

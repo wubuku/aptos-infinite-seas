@@ -60,3 +60,5 @@ aptos move run --function-id 'default::skill_process_aggregate::complete_creatio
 --assume-yes
 ```
 
+## Register "friends" in dependency packages
+

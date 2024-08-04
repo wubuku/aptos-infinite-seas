@@ -28,3 +28,5 @@ aptos move run --function-id 'default::map_aggregate::gather_island_resources' \
 --assume-yes
 ```
 
+## Register "friends" in dependency packages
+

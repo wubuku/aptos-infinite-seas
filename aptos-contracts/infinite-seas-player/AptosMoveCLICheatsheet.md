@@ -16,7 +16,7 @@ aptos move run --function-id 'default::player_aggregate::create' \
 
 ```shell
 aptos move run --function-id 'default::player_aggregate::update' \
---args address:id u32:experience_gained u16:new_level 'InventoryEntry:[inventory_entries_item_1,inventory_entries_item_2]' \
+--args address:id Option<u32>:experience_gained Option<u16>:new_level 'InventoryEntry:[inventory_entries_item_1,inventory_entries_item_2]' \
 --assume-yes
 ```
 
@@ -42,5 +42,21 @@ aptos move run --function-id 'default::player_aggregate::airdrop' \
 aptos move run --function-id 'default::player_aggregate::gather_island_resources' \
 --args address:id \
 --assume-yes
+```
+
+## Register "friends" in dependency packages
+
+```shell
+aptos move run --function-id '{MAP_PACKAGE}::map_friend_config::add_allowed_caller' \
+  --type-args '{PLAYER_PACKAGE}::player::FriendWitness' \
+  --assume-yes
+
+```
+
+```shell
+aptos move run --function-id '{PRODUCTION_PACKAGE}::production_friend_config::add_allowed_caller' \
+  --type-args '{PLAYER_PACKAGE}::player::FriendWitness' \
+  --assume-yes
+
 ```
 

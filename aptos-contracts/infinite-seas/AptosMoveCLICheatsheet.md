@@ -88,3 +88,12 @@ aptos move run --function-id 'default::ship_battle_aggregate::take_loot' \
 --assume-yes
 ```
 
+## Register "friends" in dependency packages
+
+```shell
+aptos move run --function-id '{PRODUCTION_PACKAGE}::production_friend_config::add_allowed_caller' \
+  --type-args '{__CURRENT_PACKAGE__}::skill_process_service::FriendWitness' \
+  --assume-yes
+
+```
+
