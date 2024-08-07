@@ -28,10 +28,12 @@ public class UpdatePlayerStateTaskService {
     @Scheduled(fixedDelayString = "${aptos.contract.update-player-states.fixed-delay:5000}")
     @Transactional
     public void updatePlayerStates() {
-        AbstractPlayerEvent e = playerEventRepository.findFirstByEventStatusIsNull();
+        java.util.List<AbstractPlayerEvent> es = playerEventRepository.findByEventStatusIsNull();
+        AbstractPlayerEvent e = es.stream().findFirst().orElse(null);
         if (e != null) {
             aptosPlayerService.updatePlayerState(e.getId());
-            playerEventService.updateStatusToProcessed(e);
+            es.stream().filter(ee -> ee.getId().equals(e.getId()))
+                    .forEach(playerEventService::updateStatusToProcessed);
         }
     }
 

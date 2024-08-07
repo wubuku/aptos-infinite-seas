@@ -28,10 +28,12 @@ public class UpdateItemProductionStateTaskService {
     @Scheduled(fixedDelayString = "${aptos.contract.update-item-production-states.fixed-delay:5000}")
     @Transactional
     public void updateItemProductionStates() {
-        AbstractItemProductionEvent e = itemProductionEventRepository.findFirstByEventStatusIsNull();
+        java.util.List<AbstractItemProductionEvent> es = itemProductionEventRepository.findByEventStatusIsNull();
+        AbstractItemProductionEvent e = es.stream().findFirst().orElse(null);
         if (e != null) {
             aptosItemProductionService.updateItemProductionState(e.getItemProductionId());
-            itemProductionEventService.updateStatusToProcessed(e);
+            es.stream().filter(ee -> ee.getItemProductionId().equals(e.getItemProductionId()))
+                    .forEach(itemProductionEventService::updateStatusToProcessed);
         }
     }
 

@@ -28,10 +28,12 @@ public class UpdateSkillProcessStateTaskService {
     @Scheduled(fixedDelayString = "${aptos.contract.update-skill-process-states.fixed-delay:5000}")
     @Transactional
     public void updateSkillProcessStates() {
-        AbstractSkillProcessEvent e = skillProcessEventRepository.findFirstByEventStatusIsNull();
+        java.util.List<AbstractSkillProcessEvent> es = skillProcessEventRepository.findByEventStatusIsNull();
+        AbstractSkillProcessEvent e = es.stream().findFirst().orElse(null);
         if (e != null) {
             aptosSkillProcessService.updateSkillProcessState(e.getId());
-            skillProcessEventService.updateStatusToProcessed(e);
+            es.stream().filter(ee -> ee.getId().equals(e.getId()))
+                    .forEach(skillProcessEventService::updateStatusToProcessed);
         }
     }
 

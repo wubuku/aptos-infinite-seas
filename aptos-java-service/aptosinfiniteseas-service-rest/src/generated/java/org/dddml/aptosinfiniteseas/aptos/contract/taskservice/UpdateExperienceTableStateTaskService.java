@@ -28,10 +28,12 @@ public class UpdateExperienceTableStateTaskService {
     @Scheduled(fixedDelayString = "${aptos.contract.update-experience-table-states.fixed-delay:5000}")
     @Transactional
     public void updateExperienceTableStates() {
-        AbstractExperienceTableEvent e = experienceTableEventRepository.findFirstByEventStatusIsNull();
+        java.util.List<AbstractExperienceTableEvent> es = experienceTableEventRepository.findByEventStatusIsNull();
+        AbstractExperienceTableEvent e = es.stream().findFirst().orElse(null);
         if (e != null) {
             aptosExperienceTableService.updateExperienceTableState(e.getAccountAddress());
-            experienceTableEventService.updateStatusToProcessed(e);
+            es.stream().filter(ee -> ee.getAccountAddress().equals(e.getAccountAddress()))
+                    .forEach(experienceTableEventService::updateStatusToProcessed);
         }
     }
 

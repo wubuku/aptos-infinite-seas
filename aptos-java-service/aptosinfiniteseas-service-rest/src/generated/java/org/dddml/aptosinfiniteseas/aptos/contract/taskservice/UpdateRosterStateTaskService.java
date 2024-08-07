@@ -28,10 +28,12 @@ public class UpdateRosterStateTaskService {
     @Scheduled(fixedDelayString = "${aptos.contract.update-roster-states.fixed-delay:5000}")
     @Transactional
     public void updateRosterStates() {
-        AbstractRosterEvent e = rosterEventRepository.findFirstByEventStatusIsNull();
+        java.util.List<AbstractRosterEvent> es = rosterEventRepository.findByEventStatusIsNull();
+        AbstractRosterEvent e = es.stream().findFirst().orElse(null);
         if (e != null) {
             aptosRosterService.updateRosterState(e.getId());
-            rosterEventService.updateStatusToProcessed(e);
+            es.stream().filter(ee -> ee.getId().equals(e.getId()))
+                    .forEach(rosterEventService::updateStatusToProcessed);
         }
     }
 

@@ -21,9 +21,9 @@ public class PullPlayerEventsTaskService {
         playerEventService.pullPlayerCreatedEvents();
     }
 
-    @Scheduled(fixedDelayString = "${aptos.contract.pull-player-events.update-event.fixed-delay:5000}")
-    public void pullUpdateEvents() {
-        playerEventService.pullUpdateEvents();
+    @Scheduled(fixedDelayString = "${aptos.contract.pull-player-events.player-updated.fixed-delay:5000}")
+    public void pullPlayerUpdatedEvents() {
+        playerEventService.pullPlayerUpdatedEvents();
     }
 
     @Scheduled(fixedDelayString = "${aptos.contract.pull-player-events.island-claimed.fixed-delay:5000}")

@@ -28,10 +28,12 @@ public class UpdateShipBattleStateTaskService {
     @Scheduled(fixedDelayString = "${aptos.contract.update-ship-battle-states.fixed-delay:5000}")
     @Transactional
     public void updateShipBattleStates() {
-        AbstractShipBattleEvent e = shipBattleEventRepository.findFirstByEventStatusIsNull();
+        java.util.List<AbstractShipBattleEvent> es = shipBattleEventRepository.findByEventStatusIsNull();
+        AbstractShipBattleEvent e = es.stream().findFirst().orElse(null);
         if (e != null) {
             aptosShipBattleService.updateShipBattleState(e.getId());
-            shipBattleEventService.updateStatusToProcessed(e);
+            es.stream().filter(ee -> ee.getId().equals(e.getId()))
+                    .forEach(shipBattleEventService::updateStatusToProcessed);
         }
     }
 
