@@ -2,11 +2,11 @@
 
 [English](./README.md) | 中文版
 
-本代码库包含了 Aptos 版本的 Infinite Seas 的链上合约，以及链下查询服务（有时被称为 indexer）。
+本代码库包含了 Aptos 版本的全链游戏 [Infinite Seas](https://game.infiniteseas.io/) 的链上合约，以及链下查询服务（有时被称为 indexer）。
 
 Infinite Seas 的 Aptos 版本是从 [Sui 版本](https://github.com/InfiniteSeas/sui-infinite-seas)移植过来的。
 
-由于使用了 dddappp 低代码开发平台作为 Inifinite Seas 的开发引擎，不管是 Sui 版本的开发，还是迁移到 Aptos 版本，都惊人的快捷和简单。
+由于使用了 dddappp 低代码开发平台作为 Infinite Seas 的开发引擎，不管是 Sui 版本的开发，还是迁移到 Aptos 版本，都惊人的快捷和简单。
 
 如果你想要了解一下怎么将 dddappp 作为全链游戏的开发引擎，你可以参考这个入门级的例子：https://github.com/wubuku/aptos-constantinople
 

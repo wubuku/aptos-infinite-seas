@@ -3,12 +3,12 @@
 English | [中文版](./README_CN.md)
 
 
-This repository contains the Aptos version of the Infinite Seas on-chain contract,
+This repository contains the Aptos version of the fully on-chain game [Infinite Seas](https://game.infiniteseas.io/) on-chain contract,
 as well as the off-chain query service (sometimes called indexer).
 
 The Aptos version of Infinite Seas was ported from the [Sui version](https://github.com/InfiniteSeas/sui-infinite-seas).
 
-Thanks to the use of the dddappp low-code development platform as the engine for Inifinite Seas,
+Thanks to the use of the dddappp low-code development platform as the engine for Infinite Seas,
 both the development of the Sui version and the migration to the Aptos version were amazingly quick and easy.
 
 If you want to find out how to use dddappp as a fully on-chain game engine,
