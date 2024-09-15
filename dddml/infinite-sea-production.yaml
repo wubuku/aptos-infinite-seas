@@ -65,7 +65,7 @@ aggregates:
     methods:
       Create:
         metadata:
-          IsExternalFriendly: true
+          IsOnlyOpenToFriends: true
         parameters:
           SkillProcessId:
             type: SkillProcessId
@@ -95,7 +95,7 @@ aggregates:
       StartProduction:
         inheritsFrom: SkillProcessTemplate.StartProduction
         metadata:
-          IsExternalFriendly: true
+          IsOnlyOpenToFriends: true
           #IsExternalStoreAccountSignerRequired: true
         parameters:
           BatchSize:
@@ -110,7 +110,7 @@ aggregates:
       CompleteProduction:
         inheritsFrom: SkillProcessTemplate.CompleteProduction
         metadata:
-          IsExternalFriendly: true
+          IsOnlyOpenToFriends: true
           #IsExternalStoreAccountSignerRequired: true
         event:
           name: ProductionProcessCompleted
@@ -126,7 +126,7 @@ aggregates:
       StartShipProduction:
         inheritsFrom: SkillProcessTemplate.StartProduction
         metadata:
-          IsExternalFriendly: true
+          IsOnlyOpenToFriends: true
           #IsExternalStoreAccountSignerRequired: true
         parameters:
           ProductionMaterials:
@@ -141,7 +141,7 @@ aggregates:
       CompleteShipProduction:
         inheritsFrom: SkillProcessTemplate.CompleteProduction
         metadata:
-          IsExternalFriendly: true
+          IsOnlyOpenToFriends: true
           #IsExternalStoreAccountSignerRequired: true
         parameters:
           UnassignedShips:
@@ -164,7 +164,7 @@ aggregates:
       StartCreation:
         inheritsFrom: SkillProcessTemplate.StartCreation
         metadata:
-          IsExternalFriendly: true
+          IsOnlyOpenToFriends: true
           #IsExternalStoreAccountSignerRequired: true
         parameters:
           BatchSize:
@@ -178,7 +178,7 @@ aggregates:
 
       CompleteCreation:
         metadata:
-          IsExternalFriendly: true
+          IsOnlyOpenToFriends: true
           #IsExternalStoreAccountSignerRequired: true
         inheritsFrom: SkillProcessTemplate.CompleteCreation
         event:

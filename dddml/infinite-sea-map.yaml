@@ -45,7 +45,7 @@ singletonObjects:
       ClaimIsland:
         #isInternal: true
         metadata:
-          IsExternalFriendly: true
+          IsOnlyOpenToFriends: true
         parameters:
           Coordinates:
             type: Coordinates
@@ -59,7 +59,7 @@ singletonObjects:
       GatherIslandResources:
         #isInternal: true
         metadata:
-          IsExternalFriendly: true
+          IsOnlyOpenToFriends: true
           #ParametersIncludedInMutationFunction: [ "Clock" ]
         parameters:
           PlayerId:

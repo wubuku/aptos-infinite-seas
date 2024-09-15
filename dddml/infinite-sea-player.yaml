@@ -46,7 +46,7 @@ aggregates:
     methods:
       Create:
         metadata:
-          IsExternalFriendly: true
+          IsOnlyOpenToFriends: true
         isCreationCommand: true
         parameters:
           Name:
@@ -60,7 +60,7 @@ aggregates:
 
       Update:
         metadata:
-          IsExternalFriendly: true
+          IsOnlyOpenToFriends: true
         parameters:
           ExperienceGained:
             type: u32
@@ -75,7 +75,7 @@ aggregates:
 
       ClaimIsland:
         metadata:
-          IsExternalFriendly: true
+          IsOnlyOpenToFriends: true
           IsExternalStoreAccountSignerRequired: true
         parameters:
           # Map:
@@ -124,7 +124,7 @@ aggregates:
 
       GatherIslandResources:
         metadata:
-          IsExternalFriendly: true
+          IsOnlyOpenToFriends: true
         #parameters:
         event:
           name: PlayerIslandResourcesGathered
