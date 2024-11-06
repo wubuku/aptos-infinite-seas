@@ -16,6 +16,7 @@ module infinite_seas::roster_create_logic {
         target_coordinates: Option<Coordinates>,
         origin_coordinates: Option<Coordinates>,
         ship_battle_id: Option<address>,
+        id: address,
     ): roster::RosterCreated {
         let _ = account;
         roster::new_roster_created(

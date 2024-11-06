@@ -32,6 +32,7 @@ module infinite_seas::roster_create_environment_roster_logic {
         ship_resource_quantity: u32,
         ship_base_resource_quantity: u32,
         base_experience: u32,
+        id: address,
     ): roster::EnvironmentRosterCreated {
         assert!(ship_resource_quantity >= ship_base_resource_quantity * 3, EInvalidShipResourceQuantity);
         assert!(ship_base_resource_quantity > 0, EInvalidShipBaseResourceQuantity);

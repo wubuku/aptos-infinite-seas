@@ -12,6 +12,7 @@ module infinite_seas_production::skill_process_create_logic {
         account: &signer,
         store_account: &signer,
         skill_process_id: SkillProcessId,
+        id: address,
     ): skill_process::SkillProcessCreated {
         let _ = account;
         // TODO: verification logic ...

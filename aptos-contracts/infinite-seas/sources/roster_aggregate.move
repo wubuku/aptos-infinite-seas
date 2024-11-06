@@ -41,6 +41,10 @@ module infinite_seas::roster_aggregate {
         origin_coordinates: Option<Coordinates>,
         ship_battle_id: Option<address>,
     ): Object<roster::Roster> {
+        let constructor_ref = object::create_named_object(&genesis_account::resource_account_signer(), std::bcs::to_bytes(&roster_id));
+        let object_signer = object::generate_signer(&constructor_ref);
+        let extend_ref = object::generate_extend_ref(&constructor_ref);
+        let id = object::address_from_constructor_ref(&constructor_ref);
         let roster_created = roster_create_logic::verify(
             account,
             roster_id,
@@ -51,11 +55,8 @@ module infinite_seas::roster_aggregate {
             target_coordinates,
             origin_coordinates,
             ship_battle_id,
+            id,
         );
-        let constructor_ref = object::create_named_object(&genesis_account::resource_account_signer(), std::bcs::to_bytes(&roster_id));
-        let object_signer = object::generate_signer(&constructor_ref);
-        let extend_ref = object::generate_extend_ref(&constructor_ref);
-        let id = object::address_from_constructor_ref(&constructor_ref);
         let roster = roster_create_logic::mutate(
             account,
             &mut roster_created,
@@ -90,6 +91,10 @@ module infinite_seas::roster_aggregate {
             coordinates_x,
             coordinates_y,
         );
+        let constructor_ref = object::create_named_object(&genesis_account::resource_account_signer(), std::bcs::to_bytes(&roster_id));
+        let object_signer = object::generate_signer(&constructor_ref);
+        let extend_ref = object::generate_extend_ref(&constructor_ref);
+        let id = object::address_from_constructor_ref(&constructor_ref);
         let environment_roster_created = roster_create_environment_roster_logic::verify(
             account,
             roster_id,
@@ -97,11 +102,8 @@ module infinite_seas::roster_aggregate {
             ship_resource_quantity,
             ship_base_resource_quantity,
             base_experience,
+            id,
         );
-        let constructor_ref = object::create_named_object(&genesis_account::resource_account_signer(), std::bcs::to_bytes(&roster_id));
-        let object_signer = object::generate_signer(&constructor_ref);
-        let extend_ref = object::generate_extend_ref(&constructor_ref);
-        let id = object::address_from_constructor_ref(&constructor_ref);
         let roster = roster_create_environment_roster_logic::mutate(
             account,
             &environment_roster_created,

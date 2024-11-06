@@ -12,6 +12,7 @@ module infinite_seas::ship_create_logic {
         protection: u32,
         speed: u32,
         building_expenses: ItemIdQuantityPairs,
+        id: address,
     ): ship::ShipCreated {
         let _ = account;
         ship::new_ship_created(

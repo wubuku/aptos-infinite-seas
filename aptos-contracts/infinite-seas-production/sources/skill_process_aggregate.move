@@ -29,15 +29,16 @@ module infinite_seas_production::skill_process_aggregate {
         skill_process_id: SkillProcessId,
     ) {
         production_friend_config::assert_allowlisted(_friend_witness);
-        let skill_process_created = skill_process_create_logic::verify(
-            account,
-            store_account,
-            skill_process_id,
-        );
         let constructor_ref = object::create_named_object(store_account, std::bcs::to_bytes(&skill_process_id));
         let object_signer = object::generate_signer(&constructor_ref);
         let extend_ref = object::generate_extend_ref(&constructor_ref);
         let id = object::address_from_constructor_ref(&constructor_ref);
+        let skill_process_created = skill_process_create_logic::verify(
+            account,
+            store_account,
+            skill_process_id,
+            id,
+        );
         let skill_process = skill_process_create_logic::mutate(
             account,
             store_account,

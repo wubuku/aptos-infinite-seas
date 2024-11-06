@@ -22,15 +22,6 @@ module infinite_seas::ship_aggregate {
         speed: u32,
         building_expenses: ItemIdQuantityPairs,
     ): Object<ship::Ship> {
-        let ship_created = ship_create_logic::verify(
-            account,
-            owner,
-            health_points,
-            attack,
-            protection,
-            speed,
-            building_expenses,
-        );
         let account_address = signer::address_of(account);
         let constructor_ref = object::create_object(account_address);
         let object_signer = object::generate_signer(&constructor_ref);
@@ -39,6 +30,16 @@ module infinite_seas::ship_aggregate {
         let transfer_ref = object::generate_transfer_ref(&constructor_ref);
         object::disable_ungated_transfer(&transfer_ref);
         let id = object::address_from_constructor_ref(&constructor_ref);
+        let ship_created = ship_create_logic::verify(
+            account,
+            owner,
+            health_points,
+            attack,
+            protection,
+            speed,
+            building_expenses,
+            id,
+        );
         let ship = ship_create_logic::mutate(
             account,
             &ship_created,

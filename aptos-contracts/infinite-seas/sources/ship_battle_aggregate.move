@@ -24,6 +24,12 @@ module infinite_seas::ship_battle_aggregate {
         initiator_coordinates: Coordinates,
         responder_coordinates: Coordinates,
     ): Object<ship_battle::ShipBattle> {
+        let account_address = signer::address_of(account);
+        let constructor_ref = object::create_object(account_address);
+        let object_signer = object::generate_signer(&constructor_ref);
+        let extend_ref = object::generate_extend_ref(&constructor_ref);
+        let delete_ref = object::generate_delete_ref(&constructor_ref);
+        let id = object::address_from_constructor_ref(&constructor_ref);
         let ship_battle_initiated = ship_battle_initiate_battle_logic::verify(
             account,
             player,
@@ -31,13 +37,8 @@ module infinite_seas::ship_battle_aggregate {
             responder,
             initiator_coordinates,
             responder_coordinates,
+            id,
         );
-        let account_address = signer::address_of(account);
-        let constructor_ref = object::create_object(account_address);
-        let object_signer = object::generate_signer(&constructor_ref);
-        let extend_ref = object::generate_extend_ref(&constructor_ref);
-        let delete_ref = object::generate_delete_ref(&constructor_ref);
-        let id = object::address_from_constructor_ref(&constructor_ref);
         let ship_battle = ship_battle_initiate_battle_logic::mutate(
             account,
             &mut ship_battle_initiated,

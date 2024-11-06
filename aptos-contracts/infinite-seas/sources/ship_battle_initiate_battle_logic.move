@@ -31,6 +31,7 @@ module infinite_seas::ship_battle_initiate_battle_logic {
         responder_obj: Object<Roster>,
         initiator_coordinates: Coordinates,
         responder_coordinates: Coordinates,
+        id: address,
     ): ship_battle::ShipBattleInitiated {
         let player_obj_addr = object::object_address(&player_obj); // Player Object ID
         let initiator_obj_addr = object::object_address(&initiator_obj);
