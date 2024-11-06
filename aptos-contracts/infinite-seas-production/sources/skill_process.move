@@ -742,6 +742,11 @@ module infinite_seas_production::skill_process {
         pass_object::borrow_mut(skill_process_pass_obj)
     }
 
+    public(friend) fun object_signer(obj_addr: address): signer acquires ObjectController {
+        let extend_ref = &borrow_global<ObjectController>(obj_addr).extend_ref;
+        object::generate_signer_for_extending(extend_ref)
+    }
+
     public(friend) fun drop_skill_process(skill_process: SkillProcess) {
         let SkillProcess {
             version: _version,

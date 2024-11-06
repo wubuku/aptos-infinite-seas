@@ -364,6 +364,11 @@ module infinite_seas_player::player {
         pass_object::borrow_mut(player_pass_obj)
     }
 
+    public(friend) fun object_signer(obj_addr: address): signer acquires ObjectController {
+        let extend_ref = &borrow_global<ObjectController>(obj_addr).extend_ref;
+        object::generate_signer_for_extending(extend_ref)
+    }
+
     public(friend) fun drop_player(player: Player) {
         let Player {
             version: _version,
